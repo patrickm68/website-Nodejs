@@ -29,6 +29,8 @@
       />
     </Sidebar>
 
+
+
     <Home v-if="$page.frontmatter.home"/>
 
     <Page
@@ -44,6 +46,8 @@
         #bottom
       />
     </Page>
+
+    <RightSidebar />
   </div>
 </template>
 
@@ -52,10 +56,11 @@ import Home from '@theme/components/Home.vue'
 import Navbar from '@theme/components/Navbar.vue'
 import Page from '@theme/components/Page.vue'
 import Sidebar from '@theme/components/Sidebar.vue'
+import RightSidebar from '@theme/components/RightSidebar.vue'
 import { resolveSidebarItems } from '../util'
 
 export default {
-  components: { Home, Page, Sidebar, Navbar },
+  components: { Home, Page, Sidebar, Navbar, RightSidebar },
 
   data () {
     return {

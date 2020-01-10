@@ -400,7 +400,9 @@ Test events provide a test object with following fields:
 * `tags` array of tags for this test
 * `file` path to a file with a test.
 * `steps` array of executed steps (available only in `test.passed`, `test.failed`, `test.finished` event)
-
+* `skipInfo` additional test options when test skipped 
+* * `message` string with reason for skip
+* * `description` string with test body
 and others
 
 #### Step Object
@@ -531,18 +533,19 @@ if (config.myKey == 'value') {
 
 ## Custom Runner
 
+> 📺 [Watch this](https://www.youtube.com/watch?v=3eZtVL0Ad0A) material on YouTube
+
 CodeceptJS can be imported and used in custom runners.
 To initialize Codecept you need to create Config and Container objects.
 
 ```js
-let Container = require('codeceptjs').container;
-let Codecept = require('codeceptjs').codecept;
+const { container: Container, codecept: Codecept } = require('codeceptjs').container;
 
-let config = { helpers: { WebDriver: { browser: 'chrome', url: 'http://localhost' } } };
-let opts = { steps: true };
+const config = { helpers: { WebDriver: { browser: 'chrome', url: 'http://localhost' } } };
+const opts = { steps: true };
 
 // create runner
-let codecept = new Codecept(config, opts);
+const codecept = new Codecept(config, opts);
 
 // initialize codeceptjs in current dir
 codecept.initGlobals(__dirname);

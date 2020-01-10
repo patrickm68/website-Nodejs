@@ -88,6 +88,36 @@ Run tests in parallel threads.
 npx codeceptjs run-workers 3
 ```
 
+## Run Rerun <Badge text="Since 2.4" type="warning"/>
+
+Run tests multiple times to detect and fix flaky tests.
+
+```
+npx codeceptjs run-rerun
+```
+
+For this command configuration is required:
+
+```js
+{
+  // inside codecept.conf.js
+  rerun: {
+    // how many times all tests should pass
+    minSuccess: 2,
+
+    // how many times to try to rerun all tests
+    maxReruns: 4,
+  }
+}
+```
+
+Use Cases:
+
+* `minSuccess: 1, maxReruns: 5` - run all tests no more than 5 times, until first successful run.
+* `minSuccess: 3, maxReruns: 5` - run all tests no more than 5 times, until reaching 3 successfull runs.
+* `minSuccess: 10, maxReruns: 10` - run all tests exactly 10 times, to check their stability.
+
+
 ## Dry Run
 
 Prints test scenarios without executing them

@@ -2,6 +2,7 @@
   <main class="page">
     <div class="article-title">{{title}}</div>
 
+    <RightSidebar />
 
 
     <slot name="top">
@@ -48,6 +49,7 @@ export default {
   @apply text-black uppercase
 
 .page
+  padding-bottom 2rem
   display block
 
 </style>

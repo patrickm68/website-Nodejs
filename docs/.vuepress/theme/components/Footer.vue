@@ -78,7 +78,8 @@ export default {
     }
     section {
       max-width: 960px;
-      margin: 0 auto;
+      margin: 0 1rem;
+      padding: 1rem 2rem;
       @apply flex;
       .col {
         @apply flex-auto px-2;

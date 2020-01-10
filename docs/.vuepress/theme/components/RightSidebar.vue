@@ -47,10 +47,9 @@
 .sidebar {
   position: fixed;
   // zoom: 0.75;
-  top: 80px;
   left: auto;
-  right: 0px;
-  bottom: auto;
+  right: 0;
+  bottom: 0;
   opacity: 0.7;
   @apply text-sm bg-yellow-100 rounded px-8 py-4;
 

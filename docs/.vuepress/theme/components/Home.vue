@@ -450,6 +450,8 @@ export default {
       display block
       margin 3rem auto 1.5rem
       margin-top 0
+      @media(max-width: 640px)
+        max-width 100%
     h1
       font-size 3rem
     h1, .description, .action

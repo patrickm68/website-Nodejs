@@ -1,5 +1,6 @@
 ---
-permalink: "/docker"
+permalink: /docker
+layout: Section
 sidebar: false
 title: Docker
 editLink: false

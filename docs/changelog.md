@@ -1,5 +1,5 @@
 ---
-permalink: "/changelog"
+permalink: /changelog
 title: Releases
 sidebar: false
 layout: Section

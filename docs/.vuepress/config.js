@@ -11,7 +11,7 @@ module.exports = {
     // if your docs are not at the root of the repo:
     docsDir: 'docs',
     // if your docs are in a specific branch (defaults to 'master'):
-    // docsBranch: 'master',
+    docsBranch: 'master',
     // defaults to false, set to true to enable
     editLinks: true,
     // custom text for edit link. Defaults to "Edit this page"
@@ -65,7 +65,37 @@ module.exports = {
             { text: "Advanced Usage", link: "/advanced" },
           ]
         },
-      ]
+
+        // {
+        //   group: "Mobile Testing",
+        //   text: 'Mobile Testing',
+        //   items: [
+        //     "mobile",
+        //     "detox",
+        //   ],
+        // },
+        // {
+        //   group: "Organizing Tests",
+        //   text: 'Organizing Tests',
+        //   items: [
+        //     { text: "best", link: "best" },
+        //     { text: "locators", link: "locators" },
+        //     { text: "pageobjects", link: "pageobjects" },
+        //     { text: "helpers", link: "helpers" },
+        //     { text: "bdd", link: "bdd" },
+        //     { text: "data", link: "data" },
+        //     { text: "parallel", link: "parallel" },
+        //     { text: "reports", link: "reports" },
+        //     { text: "advanced", link: "advanced" },
+        //     { text: "hooks", link: "hooks" },
+        //   ],
+        // }
+      ],
+      // "Tutorials": [
+      // { text: //   "books, link: //   "books" },
+      // { text: //   "videos, link: //   "videos" },
+      //   "examples"
+      // ]
     },
     {
       text: "Helpers",
@@ -164,43 +194,43 @@ module.exports = {
           sidebarDepth: 2,    // optional, defaults to 1
           collapsable: true,
           children: [
-            "/basics",
-            '/webdriver',
-            '/puppeteer',
-            '/testcafe',
-            '/angular',
-            '/nightmare',
+            "basics",
+            'webdriver',
+            'puppeteer',
+            'testcafe',
+            'angular',
+            'nightmare',
           ]
         },
         {
           title: 'Mobile Testing',
           children: [
-            "/mobile",
-            "/detox",
+            "mobile",
+            "detox",
           ]
         },
         {
           title: 'Organizing Tests',
           children: [
-            "/best",
-            "/locators",
-            "/pageobjects",
-            "/bdd",
-            "/data",
-            "/parallel",
-            "/reports",
-            "/continuous-integration",
+            "best",
+            "locators",
+            "pageobjects",
+            "bdd",
+            "data",
+            "parallel",
+            "reports",
+            "continuous-integration",
           ]
         },
         {
           title: 'Advanced Usage',
           children: [
-            "/advanced",
-            '/visual',
-            '/email',
-            '/react',
-            "/hooks",
-            "/custom-helpers",
+            "advanced",
+            'visual',
+            'email',
+            'react',
+            "hooks",
+            "custom-helpers",
           ]
         },
       ]

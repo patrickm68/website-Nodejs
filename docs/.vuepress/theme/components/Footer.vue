@@ -55,6 +55,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .sectionLayout footer section {
+    margin: auto;
+    max-width: 860px;
+  }
   footer {
     border-top: 5px dashed #fff;
     @apply bg-gray-100 mt-4;

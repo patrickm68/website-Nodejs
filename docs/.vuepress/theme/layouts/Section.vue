@@ -45,8 +45,8 @@
   position: fixed;
   top: 80px;
   left: auto;
-  bottom: auto;
-  right: 0px;
+  bottom: 0;
+  right: 0;
   @apply rounded bg-gray-200;
   div {
     @apply px-8 py-4;

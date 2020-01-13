@@ -121,7 +121,6 @@
 @media (max-width: 1350px) {
   .container {
     @apply px-4;
-    margin-left: 0;
   }
 }
 </style>

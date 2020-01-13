@@ -31,7 +31,7 @@ module.exports = {
       cfg.line('');
       cfg.textFromFile('codeceptjs/docker/README.md');
     });
-    writeToFile('codeceptjs/changelog.md', (cfg) => {
+    writeToFile('docs/changelog.md', (cfg) => {
       cfg.line('---');
       cfg.line('permalink: /changelog');
       cfg.line('sidebar: false');

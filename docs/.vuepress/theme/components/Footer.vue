@@ -83,6 +83,10 @@ export default {
     section {
       max-width: 960px;
       margin: 0 auto;
+<<<<<<< HEAD
+=======
+      padding: 1rem 2rem;
+>>>>>>> 98465128433c71b97fffbfdaabc3b71634d97b79
       @apply flex;
       .col {
         @apply flex-auto px-2;

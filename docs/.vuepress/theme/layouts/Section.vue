@@ -67,7 +67,7 @@
     z-index: 100;
     @apply p-8 rounded-lg;
   }
-  width: 860px;
+  max-width: 860px;
   margin: 0 auto;
   @apply mt-20 mb-10;
 

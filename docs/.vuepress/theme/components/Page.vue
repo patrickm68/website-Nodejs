@@ -2,9 +2,6 @@
   <main class="page">
     <div class="article-title">{{title}}</div>
 
-    <RightSidebar />
-
-
     <slot name="top">
     </slot>
 

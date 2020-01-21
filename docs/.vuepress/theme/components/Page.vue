@@ -46,7 +46,6 @@ export default {
   @apply text-black uppercase
 
 .page
-  padding-bottom 2rem
   display block
 
 </style>

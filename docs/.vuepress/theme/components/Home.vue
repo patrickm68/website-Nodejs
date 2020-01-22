@@ -17,7 +17,7 @@
         <div class="video">
           <a href="#" @click="toggleVideo">📺 Watch a video ▶</a>
           <div v-if="showVideo" class="videoModal">
-            <video controls="" src="/img/codeceptjs_demo.mp4" style="width:100%;padding:20px"></video>
+            <video controls="" src="/img/codeceptjs_demo.mp4" style="width:100%;"></video>
           </div>
         </div>
 

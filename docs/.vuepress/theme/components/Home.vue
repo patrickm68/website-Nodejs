@@ -1,6 +1,6 @@
 <template>
   <main class="home" aria-labelledby="main-title">
-    <header class="hero">
+    <div class="hero">
   <div class="mountains">
       <img
         v-if="data.heroImage"
@@ -31,7 +31,7 @@
         />
       </p>
   </div>
-    </header>
+    </div>
 <div class="frameworks">
     <div class="content">
       <h4>

@@ -447,6 +447,7 @@ export default {
 
     img
       max-width: 600px
+      width 100%
       display block
       margin 3rem auto 1.5rem
       margin-top 0

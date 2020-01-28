@@ -440,6 +440,9 @@ export default {
         right 0
         bottom 0
         padding 20px
+        display flex
+        align-items center
+        justify-content center
         background rgba(#fff, 0.5)
         video
           z-index 10000

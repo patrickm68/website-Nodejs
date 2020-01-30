@@ -524,9 +524,3 @@ export default {
       h2
         font-size 1.25rem
 </style>
-
-<style lang="scss" scoped>
-header {
-
-}
-</style>

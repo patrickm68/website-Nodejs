@@ -46,7 +46,7 @@
 
     <div class="content">
 
-  <div class="flex features">
+  <div class="features">
 
     <div class="feature">
       <img src="/img/Checklist.svg" alt="" />
@@ -404,7 +404,12 @@ export default {
   .feature {
     padding: 0;
   }
+}
 
+@media(min-width: 719px) and (max-width: 1023px) {
+  .features img {
+    width: 78px;
+  }
 }
 
 </style>
@@ -493,13 +498,15 @@ export default {
     text-align center
     color lighten($textColor, 25%)
 
-@media (max-width: $MQMobile)
+@media (max-width: 719px)
   .home
     .features
       flex-direction column
     .feature
       max-width 100%
+      width 100%
       padding 0 2.5rem
+      box-sizing border-box
 
 @media (max-width: $MQMobileNarrow)
   .home

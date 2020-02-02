@@ -47,5 +47,8 @@ export default {
 
 .page
   display block
+  footer
+    section
+      max-width 760px
 
 </style>

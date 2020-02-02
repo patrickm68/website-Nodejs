@@ -356,6 +356,11 @@ export default {
     display: inline-block;
 
   }
+  &:last-child {
+    .inner {
+      padding-right: 0;
+    }
+  }
 }
 .features h5 {
   font-size: 100%;

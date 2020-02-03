@@ -85,8 +85,9 @@ export default {
       margin: 0 auto;
       padding: 1rem 2rem;
       @apply flex;
+      justify-content: space-around;
       .col {
-        @apply flex-auto px-2;
+        @apply px-2;
       }
     }
 

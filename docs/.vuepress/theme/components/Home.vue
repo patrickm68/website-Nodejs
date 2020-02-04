@@ -218,7 +218,8 @@ export default {
   },
 
   methods: {
-    toggleVideo() {
+    toggleVideo(event) {
+      event.preventDefault();
       this.showVideo = !this.showVideo;
       const hideVideo = () => {
         this.showVideo = false;
@@ -444,8 +445,8 @@ export default {
         z-index 1000
         @apply text-white text-sm
       .videoModal
-        position absolute
-        top 30px
+        position fixed
+        top 0
         left 0
         right 0
         bottom 0
@@ -454,6 +455,7 @@ export default {
         align-items center
         justify-content center
         background rgba(#fff, 0.5)
+        z-index 200
         video
           z-index 10000
           max-width 800px

@@ -137,9 +137,6 @@ $textColor = white
 
 @media (max-width: $MQMobile)
   .navbar
-    padding-left 4rem
-    .can-hide
-      display none
     .links
       padding-left 1.5rem
     .site-name
@@ -147,4 +144,10 @@ $textColor = white
       overflow hidden
       white-space nowrap
       text-overflow ellipsis
+
+@media (max-width: 1140px)
+  .navbar
+    padding-left 4rem
+    .can-hide
+      display none
 </style>

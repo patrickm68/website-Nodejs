@@ -145,7 +145,7 @@ $textColor = white
       white-space nowrap
       text-overflow ellipsis
 
-@media (max-width: 1140px)
+@media (max-width: 838px)
   .navbar
     padding-left 4rem
     .can-hide

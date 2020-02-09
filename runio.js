@@ -56,7 +56,7 @@ module.exports = {
       await exec('git init');
       await exec('git checkout -b master');
       stopOnFail(true);
-      await exec('g263it add -A');
+      await exec('git add -A');
       await exec('git commit -m "deploy"');
       await exec('git push -f git@github.com:codecept-js.github.io.git master:master');
     });

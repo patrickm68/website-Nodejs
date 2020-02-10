@@ -435,7 +435,8 @@ export default {
     border-top 5px dashed #8065d5;
     margin-top $navbarHeight;
     border-bottom 5px dashed #fff;
-    background url(/img/back.png) #805ad5;
+    background-image url(/img/back.png)
+    background-color #805ad5
     text-align center
     .video
       margin-top -30px

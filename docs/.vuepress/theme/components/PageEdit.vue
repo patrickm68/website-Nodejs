@@ -1,5 +1,5 @@
 <template>
-  <footer class="page-edit">
+  <div class="page-edit">
     <div class="edit-link" v-if="editLink">
       <a :href="editLink" target="_blank" rel="noopener noreferrer">{{ editLinkText }}</a>
       <OutboundLink />
@@ -9,7 +9,7 @@
       <span class="prefix">{{ lastUpdatedText }}:</span>
       <span class="time">{{ lastUpdated }}</span>
     </div>
-  </footer>
+  </div>
 </template>
 <script>
 import isNil from 'lodash/isNil'

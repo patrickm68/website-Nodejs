@@ -2,9 +2,6 @@
   <main class="page">
     <div class="article-title">{{title}}</div>
 
-    <RightSidebar />
-
-
     <slot name="top">
     </slot>
 
@@ -49,7 +46,9 @@ export default {
   @apply text-black uppercase
 
 .page
-  padding-bottom 2rem
   display block
+  footer
+    section
+      max-width 760px
 
 </style>

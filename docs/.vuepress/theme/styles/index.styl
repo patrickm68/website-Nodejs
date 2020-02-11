@@ -23,6 +23,8 @@ body
 
 .page
   padding-left $sidebarWidth
+  @media (min-width: 1401px)
+    padding-right $sidebarWidth
 
 .navbar
   position fixed
@@ -206,10 +208,17 @@ th, td
 
 @media (min-width: ($MQMobile + 1px))
   .theme-container.no-sidebar
+    .page
+      padding-left 0
+      padding-right 0
+
+@media (min-width: 839px)
+  .theme-container.no-sidebar
     .sidebar
       display none
 
-    .page
-      padding-left 0
+@media (max-width: 719px)
+  .links .search-box input
+    left 0
 
 @require 'mobile.styl'

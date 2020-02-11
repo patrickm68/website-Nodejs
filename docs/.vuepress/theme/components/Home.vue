@@ -1,6 +1,6 @@
 <template>
   <main class="home" aria-labelledby="main-title">
-    <header class="hero">
+    <div class="hero">
   <div class="mountains">
       <img
         v-if="data.heroImage"
@@ -17,7 +17,7 @@
         <div class="video">
           <a href="#" @click="toggleVideo">📺 Watch a video ▶</a>
           <div v-if="showVideo" class="videoModal">
-            <video controls="" src="/img/codeceptjs_demo.mp4" style="width:100%;padding:20px"></video>
+            <video controls="" src="/img/codeceptjs_demo.mp4" style="width:100%;"></video>
           </div>
         </div>
 
@@ -31,7 +31,7 @@
         />
       </p>
   </div>
-    </header>
+    </div>
 <div class="frameworks">
     <div class="content">
       <h4>
@@ -46,7 +46,7 @@
 
     <div class="content">
 
-  <div class="flex features">
+  <div class="features">
 
     <div class="feature">
       <img src="/img/Checklist.svg" alt="" />
@@ -218,7 +218,8 @@ export default {
   },
 
   methods: {
-    toggleVideo() {
+    toggleVideo(event) {
+      event.preventDefault();
       this.showVideo = !this.showVideo;
       const hideVideo = () => {
         this.showVideo = false;
@@ -356,6 +357,11 @@ export default {
     display: inline-block;
 
   }
+  &:last-child {
+    .inner {
+      padding-right: 0;
+    }
+  }
 }
 .features h5 {
   font-size: 100%;
@@ -404,7 +410,12 @@ export default {
   .feature {
     padding: 0;
   }
+}
 
+@media(min-width: 719px) and (max-width: 1023px) {
+  .features img {
+    width: 78px;
+  }
 }
 
 </style>
@@ -424,7 +435,8 @@ export default {
     border-top 5px dashed #8065d5;
     margin-top $navbarHeight;
     border-bottom 5px dashed #fff;
-    background url(/img/back.png) #805ad5;
+    background-image url(/img/back.png)
+    background-color #805ad5
     text-align center
     .video
       margin-top -30px
@@ -434,19 +446,24 @@ export default {
         z-index 1000
         @apply text-white text-sm
       .videoModal
-        position absolute
-        top 30px
+        position fixed
+        top 0
         left 0
         right 0
         bottom 0
         padding 20px
+        display flex
+        align-items center
+        justify-content center
         background rgba(#fff, 0.5)
+        z-index 200
         video
           z-index 10000
           max-width 800px
 
     img
       max-width: 600px
+      width 100%
       display block
       margin 3rem auto 1.5rem
       margin-top 0
@@ -489,13 +506,15 @@ export default {
     text-align center
     color lighten($textColor, 25%)
 
-@media (max-width: $MQMobile)
+@media (max-width: 719px)
   .home
     .features
       flex-direction column
     .feature
       max-width 100%
+      width 100%
       padding 0 2.5rem
+      box-sizing border-box
 
 @media (max-width: $MQMobileNarrow)
   .home
@@ -519,10 +538,4 @@ export default {
     .feature
       h2
         font-size 1.25rem
-</style>
-
-<style lang="scss" scoped>
-header {
-
-}
 </style>

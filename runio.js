@@ -51,14 +51,14 @@ module.exports = {
     await exec('npm i');
     await npx('vuepress build docs');
     await chdir('docs/.vuepress/dist', async () => {
-      writeToFile('CNAME', cfg => cfg.line('codecept.io'));
+      writeToFile('CNAME', cfg => cfg.line('codecept-js.github.io'));
       stopOnFail(false);
       await exec('git init');
-      await exec('git checkout -b gh-pages');
+      await exec('git checkout -b master');
       stopOnFail(true);
       await exec('git add -A');
       await exec('git commit -m "deploy"');
-      await exec('git push -f git@github.com:Codeception/CodeceptJS.git gh-pages:gh-pages');
+      await exec('git push -f git@github.com:codecept-js.github.io.git master:master');
     });
   },
 }

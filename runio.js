@@ -6,10 +6,10 @@ module.exports = {
 
   async update() {
     stopOnFail(false);
-    const dir = 'codeceptjs';
+    const dir = 'website';
     if (!fs.existsSync(dir)) {
       await git((fn) => {
-        fn.cloneShallow('git@github.com:Codeception/CodeceptJS.git', dir);        
+        fn.cloneShallow('git@github.com:codecept-js/website.git', dir);
       });
     }
     await chdir(dir, async () => {
@@ -18,7 +18,7 @@ module.exports = {
       });
     });
 
-    await copy('codeceptjs/docs/', 'docs');
+    await copy('website/docs/', 'docs');
     await exec('rm -rf docs/api'); // disabling api at this point
     writeToFile('docs/docker.md', (cfg) => {
       cfg.line('---');
@@ -29,7 +29,7 @@ module.exports = {
       cfg.line('editLink: false');
       cfg.line('---');
       cfg.line('');
-      cfg.textFromFile('codeceptjs/docker/README.md');
+      cfg.textFromFile('website/docker/README.md');
     });
     writeToFile('docs/changelog.md', (cfg) => {
       cfg.line('---');
@@ -39,7 +39,7 @@ module.exports = {
       cfg.line('editLink: false');
       cfg.line('---');
       cfg.line('');
-      cfg.textFromFile('codeceptjs/CHANGELOG.md');
+      cfg.textFromFile('website/CHANGELOG.md');
     });    
   },
 
@@ -54,11 +54,11 @@ module.exports = {
       writeToFile('CNAME', cfg => cfg.line('codecept-js.github.io'));
       stopOnFail(false);
       await exec('git init');
-      await exec('git checkout -b master');
+      await exec('git checkout -b deploy');
       stopOnFail(true);
       await exec('git add -A');
       await exec('git commit -m "deploy"');
-      await exec('git push -f git@github.com:codecept-js.github.io.git master:master');
+      await exec('git push -f git@github.com:codecept-js/codecept-js.github.io.git master:master');
     });
   },
 }

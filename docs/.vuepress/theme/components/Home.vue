@@ -148,10 +148,7 @@
     </div>
   </div>
 
-
-
     </div>
-
 
 <div class="demos">
 <ClientOnly>
@@ -273,9 +270,7 @@ export default {
     .row {
       @apply flex;
 
-
       .quote {
-
         @apply flex-1 px-2 ;
         .signature {
           @apply flex items-center content-center;
@@ -330,7 +325,6 @@ export default {
   @apply bg-white my-4 py-8 border-gray-100;
 }
 
-
 .features {
   @apply flex my-2;
   img {
@@ -341,8 +335,6 @@ export default {
     &:hover {
       opacity: 1;
     }
-    // display: inline;
-    // @apply flex-1;
   }
 }
 .feature {
@@ -494,8 +486,6 @@ export default {
         background-color lighten($accentColor, 10%)
 
   .content
-
-
     max-width 1200px
     margin 0 auto
     padding-top 3rem

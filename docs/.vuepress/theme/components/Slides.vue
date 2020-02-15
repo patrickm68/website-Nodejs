@@ -40,9 +40,6 @@
           </div>
         </div>
       </slide>
-
-
-
       <slide :is="slideComp">
         <div class="slide">
           <img src="/img/new-test.gif" alt="">
@@ -52,7 +49,6 @@
           </div>
         </div>
       </slide>
-
     </carousel>
   </div>
 </template>

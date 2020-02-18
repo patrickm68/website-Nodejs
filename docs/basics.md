@@ -41,6 +41,7 @@ Refer to following guides to more information on:
 * [▶ WebDriver](/webdriver)
 * [▶ Protractor](/angular)
 * [▶ Puppeteer](/puppeteer)
+* [▶ Playwright](/playwright)
 * [▶ Nightmare](/nightmare)
 * [▶ TestCafe](/testcafe)
 
@@ -423,6 +424,7 @@ Try to perform your scenario step by step. Then copy succesful commands and inse
 ### Pause
 
 Test execution can be paused in any place of a test with `pause()` call.
+Variables can also be passed to `pause({data: 'hi', func: () => console.log('hello')})` which can be accessed in Interactive shell.
 
 This launches the interactive console where you can call any action from the `I` object.
 
@@ -432,8 +434,8 @@ This launches the interactive console where you can call any action from the `I`
  - Use JavaScript syntax to try steps in action
  - Press TAB twice to see all available commands
  - Enter next to run the next step
- I.click
 
+ I.
 ```
 
 Type in different actions to try them, copy and paste successful ones into the test file.
@@ -444,10 +446,21 @@ To **debug test step-by-step** press Enter, the next step will be executed and i
 
 To see all available commands, press TAB two times to see list of all actions included in the `I` object.
 
-The interactive shell can be started outside of test context by running
+> The interactive shell can be started outside of test context by running `npx codeceptjs shell`
 
-```bash
-npx codeceptjs shell
+PageObjects and other variables can also be passed to as object:
+
+```js
+pause({ loginPage, data: 'hi', func: () => console.log('hello') });
+```
+
+Inside a pause mode you can use `loginPage`, `data`, `func` variables.
+Arbitrary JavaScript code can be executed when used `=> ` prefix:
+
+```js
+I.=> loginPage.open()
+I.=> func()
+I.=> 2 + 5
 ```
 
 ### Pause on Failure <Badge text="Since 2.4" type="warning"/>

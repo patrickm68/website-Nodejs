@@ -199,6 +199,7 @@ module.exports = {
             "basics",
             'webdriver',
             'puppeteer',
+            'playwright',
             'testcafe',
             'angular',
             'nightmare',

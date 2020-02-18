@@ -12,7 +12,9 @@
         Supercharged<br><span class="name">End 2 End</span> Testing
       </h1>
 
-      <div><router-link to="/playwright" class="badge">Now with <b>Playwright</b> support</router-link></div>
+      <div class="playwright-home">
+        <router-link to="/playwright" class="badge">Now with <b>Playwright</b> support</router-link>
+      </div>
 
       <img src="/img/code.png" alt="" />
 

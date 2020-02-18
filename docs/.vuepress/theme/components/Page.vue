@@ -4,8 +4,6 @@
 
     <slot name="top">
     </slot>
-
-
     <div class="post">
       <article>
         <Content class="theme-default-content" />

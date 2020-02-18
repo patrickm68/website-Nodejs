@@ -150,10 +150,7 @@
     </div>
   </div>
 
-
-
     </div>
-
 
 <div class="demos">
 <ClientOnly>
@@ -254,6 +251,8 @@ export default {
 .mountains {
   background:  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1900' height='650' viewBox='0 0 1600 900'%3E%3Cpolygon fill='%2376509a' points='957 450 539 900 1396 900'/%3E%3Cpolygon fill='%2332184b' points='957 450 872.9 900 1396 900'/%3E%3Cpolygon fill='%237b53a0' points='-60 900 398 662 816 900'/%3E%3Cpolygon fill='%233c1d5a' points='337 900 398 662 816 900'/%3E%3Cpolygon fill='%237e59a1' points='1203 546 1552 900 876 900'/%3E%3Cpolygon fill='%2347236a' points='1203 546 1552 900 1162 900'/%3E%3Cpolygon fill='%23815ea6' points='641 695 886 900 367 900'/%3E%3Cpolygon fill='%2352277a' points='587 900 641 695 886 900'/%3E%3Cpolygon fill='%238661ab' points='1710 900 1401 632 1096 900'/%3E%3Cpolygon fill='%235b2d88' points='1710 900 1401 632 1365 900'/%3E%3Cpolygon fill='%238c61b4' points='1210 900 971 687 725 900'/%3E%3Cpolygon fill='%2367329b' points='943 900 1210 900 971 687'/%3E%3C/svg%3E");
   background-position: bottom left;
+  margin-left: -2rem;
+  margin-right: -2rem;
 }
 
 .content {
@@ -279,9 +278,7 @@ export default {
     .row {
       @apply flex;
 
-
       .quote {
-
         @apply flex-1 px-2 ;
         .signature {
           @apply flex items-center content-center;
@@ -336,7 +333,6 @@ export default {
   @apply bg-white my-4 py-8 border-gray-100;
 }
 
-
 .features {
   @apply flex my-2;
   img {
@@ -347,8 +343,6 @@ export default {
     &:hover {
       opacity: 1;
     }
-    // display: inline;
-    // @apply flex-1;
   }
 }
 .feature {
@@ -500,8 +494,6 @@ export default {
         background-color lighten($accentColor, 10%)
 
   .content
-
-
     max-width 1200px
     margin 0 auto
     padding-top 3rem

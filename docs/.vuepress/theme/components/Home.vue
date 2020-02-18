@@ -12,6 +12,8 @@
         Supercharged<br><span class="name">End 2 End</span> Testing
       </h1>
 
+      <div><router-link to="/playwright" class="badge">Now with <b>Playwright</b> support</router-link></div>
+
       <img src="/img/code.png" alt="" />
 
         <div class="video">
@@ -256,6 +258,10 @@ export default {
 
 .content {
   @apply pb-8;
+}
+
+.badge {
+  @apply bg-yellow-400 text-purple-800 p-1 px-2 rounded-lg text-sm;
 }
 
 .testimonials {

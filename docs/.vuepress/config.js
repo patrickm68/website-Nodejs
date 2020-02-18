@@ -43,6 +43,7 @@ module.exports = {
           items: [
             { text: "Using WebDriver", link: '/webdriver' },
             { text: "Using Puppeteer", link: '/puppeteer' },
+            { text: "Using Playwright", link: '/playwright' },
             { text: "Using TestCafe", link: '/testcafe' },
             { text: "Mobile Testing", link: '/mobile' },
           ]
@@ -106,6 +107,7 @@ module.exports = {
           items: [
             { text: "WebDriver", link: "/helpers/WebDriver" },
             { text: "Puppeteer", link: "/helpers/Puppeteer" },
+            { text: "Playwright", link: "/helpers/Playwright" },
             { text: "Protractor", link: "/helpers/Protractor" },
             { text: "TestCafe", link: "/helpers/TestCafe" },
             { text: "Nightmare", link: "/helpers/Nightmare" },

@@ -174,7 +174,7 @@
         We would recommend CodeceptJS to anyone who is looking for a Javascript based testing framework.
       </p>
       <div class="signature">
-        <img src="/img/kala.jpg"></img>
+        <img src="/img/kala.jpg" alt="kala">
 
         <div class="position"><b>Puneet Kala</b><br> Frontend QA Automation Engineer at <b>Percona</b></div>
       </div>
@@ -184,7 +184,7 @@
       We were searching for a solution to write tests which are good to read and easy to write. It must be able to run on several browsers and understandable across different teams with different knowledge and different frameworks in usage. <b>CodeceptJS helps us with all this and much more at Porsche</b> and we are happy that we made that decision.
       </p>
       <div class="signature">
-        <img src="/img/mitko.jpg"></img>
+        <img src="/img/mitko.jpg" alt="mitko">
         <div class="position"><b>Mitko Tschimev</b><br> Frontend Tech Lead at <b>My Porsche Core</b></div>
       </div>
     </div>

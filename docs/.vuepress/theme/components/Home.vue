@@ -262,6 +262,10 @@ export default {
   @apply pb-8;
 }
 
+.playwright-home {
+  margin-top: 10px;
+}
+
 .badge {
   @apply bg-yellow-400 text-purple-800 p-1 px-2 rounded-lg text-sm;
 }

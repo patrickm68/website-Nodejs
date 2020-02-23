@@ -87,6 +87,7 @@
     @apply px-0 text-sm;
     width: 100%;
     padding-left: 0 !important;
+    padding-right: 0 !important;
 
     .content {
       @apply px-1;

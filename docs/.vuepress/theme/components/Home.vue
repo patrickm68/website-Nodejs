@@ -321,8 +321,6 @@ export default {
   border-bottom: 5px dashed;
   @apply bg-white border-gray-100;
   text-align: center;
-  .content {
-  }
   img {
     filter: grayscale(1);
     width: 50px;

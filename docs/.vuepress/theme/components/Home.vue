@@ -383,7 +383,7 @@ export default {
     .content {
       padding-top: 0;
       max-width: 100%;
-      @apply text-sm px-1;
+      @apply text-sm px-4;
     }
   }
 

@@ -405,7 +405,7 @@ export default {
     .row {
       display: block !important;
     }
-    @apply px-1;
+    @apply px-4;
   }
 }
 @media(max-width: 1200px) {

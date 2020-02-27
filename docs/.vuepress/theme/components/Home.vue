@@ -390,7 +390,7 @@ export default {
   body .features {
     .feature {
       width: 100%;
-      @apply px-1 mb-0 text-sm;
+      @apply px-0 mb-0 text-sm;
 
       img {
         width: 48px;

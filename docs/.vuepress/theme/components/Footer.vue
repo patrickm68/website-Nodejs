@@ -96,6 +96,8 @@ export default {
 @media(max-width: 600px) {
   footer section {
     display: block;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 }
 </style>

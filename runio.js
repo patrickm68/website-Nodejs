@@ -56,6 +56,7 @@ module.exports = {
       await exec('git init');
       await exec('git remote add origin git@github.com:codecept-js/codecept-js.github.io.git');
       await exec('git checkout -b deploy');
+      await exec('git reset --soft HEAD~$(git rev-list --count HEAD ^master)');
       await exec('git add -A');
       await exec('git commit -m "deploy"');
       stopOnFail(true);

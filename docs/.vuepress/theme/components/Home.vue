@@ -286,7 +286,7 @@ export default {
       @apply flex;
 
       .quote {
-        @apply flex-1 px-2 ;
+        @apply flex-1;
         .signature {
           @apply flex items-center content-center;
 

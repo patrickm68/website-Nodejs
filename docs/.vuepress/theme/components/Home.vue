@@ -75,21 +75,21 @@
   </div>
   <div class="features">
     <div class="feature">
-      <img src="/img/Prism-3.svg" alt="" />
+      <img src="/img/Prism-3.svg" alt="feature" />
       <div class="inner"><h5>Rich Locators</h5>
       Use semantic locators, CSS, XPath to find elements on page
       <router-link to="/locators">Learn More</router-link></div>
     </div>
 
     <div class="feature">
-      <img src="/img/Prism-3.svg" style="filter: hue-rotate(45deg); transform: rotate(225deg)" alt="" />
+      <img src="/img/Prism-3.svg" style="filter: hue-rotate(45deg); transform: rotate(225deg)" alt="feature" />
       <div class="inner"><h5>PageObjects</h5>
       PageObjects are essential to write stable and reusable code!
       <router-link to="/pageobjects">Learn More</router-link></div>
     </div>
 
     <div class="feature">
-      <img src="/img/Prism-3.svg" style="filter: hue-rotate(90deg); transform: rotate(180deg)" alt="" />
+      <img src="/img/Prism-3.svg" style="filter: hue-rotate(90deg); transform: rotate(180deg)" alt="feature" />
       <div class="inner"><h5>Web & Mobile Testing</h5>
       Test native mobile apps using <b>Appium</b> or <b>Detox</b>.
       <router-link to="/mobile">Learn More</router-link></div>
@@ -100,7 +100,7 @@
 
 
     <div class="feature">
-      <img src="/img/Prism-3.svg" style="filter: hue-rotate(135deg); transform: rotate(45deg)" alt="" />
+      <img src="/img/Prism-3.svg" style="filter: hue-rotate(135deg); transform: rotate(45deg)" alt="feature" />
       <div class="inner"><h5>Cucumber-like BDD</h5>
       Automate business scenarios as you do in CucumberJS
       <router-link to="/bdd">Learn More</router-link>
@@ -108,7 +108,7 @@
     </div>
 
     <div class="feature">
-      <img src="/img/Prism-3.svg" style="filter: hue-rotate(180deg); transform: rotate(90deg)" alt="" />
+      <img src="/img/Prism-3.svg" style="filter: hue-rotate(180deg); transform: rotate(90deg)" alt="feature" />
       <div class="inner"><h5>Beautiful Reports</h5>
       Integrated with Allure reporter
       <router-link to="/plugins#allure">Learn More </router-link>
@@ -116,7 +116,7 @@
     </div>
 
     <div class="feature">
-      <img src="/img/Prism-3.svg" style="filter: hue-rotate(225deg); transform: rotate(135deg)" alt="" />
+      <img src="/img/Prism-3.svg" style="filter: hue-rotate(225deg); transform: rotate(135deg)" alt="feature" />
       <div class="inner"><h5>Data Management</h5>
       Create fake data and clean it up via REST API
       <router-link to="/data">Learn More </router-link>
@@ -127,7 +127,7 @@
   <div class="features">
 
     <div class="feature">
-      <img src="/img/Prism-3.svg" style="transform: rotate(90deg); filter: hue-rotate(60deg) saturate(20%)" alt="" />
+      <img src="/img/Prism-3.svg" style="transform: rotate(90deg); filter: hue-rotate(60deg) saturate(20%)" alt="feature" />
       <div class="inner"><h5>Parallel Testing</h5>
       Tests are split into chunks and executed in multiple processes.
       <router-link to="/advanced#parallel-execution">Learn More </router-link>
@@ -136,7 +136,7 @@
     </div>
 
     <div class="feature">
-      <img src="/img/Prism-3.svg" style="filter: hue-rotate(105deg) saturate(20%); transform: 'rotate(45deg)" alt="" />
+      <img src="/img/Prism-3.svg" style="filter: hue-rotate(105deg) saturate(20%); transform: 'rotate(45deg)" alt="feature" />
       <div class="inner"><h5>Reduced Flackiness</h5>
       Automatically retry failed steps
       <router-link to="/basics#retries">Learn More </router-link>
@@ -144,7 +144,7 @@
     </div>
 
     <div class="feature">
-      <img src="/img/Prism-3.svg" style="filter: hue-rotate(135deg) saturate(20%); transform: 'rotate(0deg)" alt="" />
+      <img src="/img/Prism-3.svg" style="filter: hue-rotate(135deg) saturate(20%); transform: 'rotate(0deg)" alt="feature" />
       <div class="inner"><h5>Multi-Session Testing</h5>
       Run a test using several browser windows
 

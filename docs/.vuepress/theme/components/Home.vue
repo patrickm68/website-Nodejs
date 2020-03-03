@@ -136,7 +136,7 @@
     </div>
 
     <div class="feature">
-      <img src="/img/Prism-3.svg" style="filter: hue-rotate(105deg) saturate(20%); transform: 'rotate(45deg)" alt="feature" />
+      <img src="/img/Prism-3.svg" style="filter: hue-rotate(105deg) saturate(20%); transform: rotate(45deg)" alt="feature" />
       <div class="inner"><h5>Reduced Flackiness</h5>
       Automatically retry failed steps
       <router-link to="/basics#retries">Learn More </router-link>
@@ -144,7 +144,7 @@
     </div>
 
     <div class="feature">
-      <img src="/img/Prism-3.svg" style="filter: hue-rotate(135deg) saturate(20%); transform: 'rotate(0deg)" alt="feature" />
+      <img src="/img/Prism-3.svg" style="filter: hue-rotate(135deg) saturate(20%); transform: rotate(0deg)" alt="feature" />
       <div class="inner"><h5>Multi-Session Testing</h5>
       Run a test using several browser windows
 

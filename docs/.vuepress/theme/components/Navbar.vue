@@ -139,6 +139,7 @@ $textColor = white
   .navbar
     .links
       padding-left 1.5rem
+      right 1rem
     .site-name
       width calc(100vw - 9.4rem)
       overflow hidden
@@ -147,7 +148,8 @@ $textColor = white
 
 @media (max-width: 838px)
   .navbar
-    padding-left 4rem
+    padding-left 3rem
+    padding-right 1rem
     .can-hide
       display none
 </style>

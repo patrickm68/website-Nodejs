@@ -1,5 +1,5 @@
 <template>
-  <main class="home" aria-labelledby="main-title">
+  <main class="home">
     <div class="hero">
   <div class="mountains">
       <img

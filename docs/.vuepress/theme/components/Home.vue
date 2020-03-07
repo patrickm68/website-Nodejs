@@ -276,6 +276,8 @@ export default {
   .inner {
     max-width: 960px;
     margin: 0 auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
 
     .commercial {
       border: 5px dashed #fff;
@@ -405,7 +407,6 @@ export default {
     .row {
       display: block !important;
     }
-    @apply px-4;
   }
 }
 @media(max-width: 1200px) {

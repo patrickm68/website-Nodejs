@@ -137,9 +137,6 @@ $textColor = white
 
 @media (max-width: $MQMobile)
   .navbar
-    .links
-      padding-left 1.5rem
-      right 1rem
     .site-name
       width calc(100vw - 9.4rem)
       overflow hidden
@@ -152,4 +149,9 @@ $textColor = white
     padding-right 1rem
     .can-hide
       display none
+    .links
+      padding-left 1.5rem
+      right 1rem
+    .search-box
+      margin-right 0
 </style>

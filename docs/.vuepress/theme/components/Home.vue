@@ -503,6 +503,8 @@ export default {
     max-width 1200px
     margin 0 auto
     padding-top 3rem
+    padding-left 1rem
+    padding-right 1rem
 
   .footer
     padding 2.5rem

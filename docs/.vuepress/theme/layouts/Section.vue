@@ -90,7 +90,7 @@
     padding-right: 0 !important;
 
     .content {
-      @apply px-1;
+      @apply px-4;
       margin-top: 0px;
     }
 

@@ -354,6 +354,7 @@ export default {
 }
 .feature {
   @apply w-1/3 flex mb-10 border-white pl-1;
+  align-items: flex-start;
   .inner {
     line-height: 1.75;
     @apply flex-1 pr-4;
@@ -371,6 +372,7 @@ export default {
   }
 }
 .features h5 {
+  margin-top: 0;
   font-size: 100%;
   line-height: 1.5;
 }

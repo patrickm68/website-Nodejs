@@ -32,6 +32,8 @@
   img
     width: 100%
     @apply shadow
+  li
+    word-break break-all
 
 </style>
 
@@ -91,7 +93,7 @@
 
     .content {
       @apply px-4;
-      margin-top: 0px;
+      margin-top: 0;
     }
 
   }

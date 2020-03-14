@@ -373,6 +373,7 @@ export default {
 }
 .features h5 {
   margin-top: 0;
+  margin-bottom: 15px;
   font-size: 100%;
   line-height: 1.5;
 }
@@ -400,7 +401,6 @@ export default {
         width: 48px;
         height: 48px;
         margin-right: 5px;
-        margin-top: 10px;
       }
     }
   }

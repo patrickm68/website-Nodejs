@@ -386,7 +386,7 @@ export default {
 
   .home {
     .content {
-      padding-top: 0;
+      padding-top: 2rem;
       max-width: 100%;
       @apply text-sm px-4;
     }

@@ -124,7 +124,6 @@ export default {
       margin-top -1px
       margin-left 0.4rem
   .nav-dropdown
-    @apply shadow-md
     .dropdown-item
       @apply text-gray-800;
       line-height 1.7rem

@@ -422,7 +422,7 @@ export default {
 
 @media(min-width: 719px) and (max-width: 1023px) {
   .features img {
-    width: 78px;
+    width: 50px;
   }
 }
 

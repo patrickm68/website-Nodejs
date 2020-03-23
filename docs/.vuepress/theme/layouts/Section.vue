@@ -95,11 +95,6 @@
       @apply px-4;
       margin-top: 0;
     }
-
-  }
-  .sidebar {
-    position: relative;
-    width: 100%;
   }
 }
 

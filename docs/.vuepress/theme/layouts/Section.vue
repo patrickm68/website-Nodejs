@@ -108,11 +108,14 @@
     .content {
       margin-top: 0px;
     }
-
   }
+}
+
+@media (max-width: 1550px) {
   .sidebar {
     top: 0;
     left: 0;
+    transform: translateX(-100%);
   }
 }
 

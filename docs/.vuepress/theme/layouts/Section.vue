@@ -39,7 +39,6 @@
 
 <style lang="scss" scoped>
 .theme-container {
-
   @apply bg-gray-100;
 }
 
@@ -62,6 +61,7 @@
   @apply bg-purple-200 border-gray-100;
   background: url(/img/back.png) #805ad5;
 }
+
 .container {
   .content {
     background: rgba(255,255,255,0.9);
@@ -69,6 +69,7 @@
     z-index: 100;
     @apply p-8 rounded-lg;
   }
+
   max-width: 860px;
   margin: 0 auto;
   @apply mt-20 mb-10;
@@ -85,12 +86,12 @@
   .hero {
     display: none;
   }
+
   .container {
     @apply px-0 text-sm;
     width: 100%;
     padding-left: 0 !important;
     padding-right: 0 !important;
-
     .content {
       @apply px-4;
       margin-top: 0;
@@ -104,7 +105,6 @@
   }
   .container {
     @apply px-4;
-
     .content {
       margin-top: 0px;
     }

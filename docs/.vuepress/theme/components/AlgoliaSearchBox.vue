@@ -163,5 +163,4 @@ export default {
       width 5px
       margin -3px 3px 0
       vertical-align middle
-
 </style>

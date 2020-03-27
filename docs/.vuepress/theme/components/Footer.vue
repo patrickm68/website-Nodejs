@@ -90,7 +90,6 @@ export default {
         @apply px-2;
       }
     }
-
   }
 
 @media(max-width: 600px) {

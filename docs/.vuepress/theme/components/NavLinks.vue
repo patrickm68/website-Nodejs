@@ -138,7 +138,6 @@ export default {
     .nav-item, .repo-link
       margin-left 0
 
-@media (min-width: $MQMobile)
   .nav-item > a:not(.external)
     &:hover, &.router-link-active
       margin-bottom -2px

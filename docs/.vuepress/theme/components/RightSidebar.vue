@@ -47,14 +47,12 @@
 
 .sidebar {
   position: fixed;
-  // zoom: 0.75;
   top: 3.6rem;
   left: auto;
   right: 0;
   bottom: 0;
   opacity: 0.7;
   @apply text-sm bg-yellow-100 rounded;
-
   &:hover {
     opacity: 1;
   }

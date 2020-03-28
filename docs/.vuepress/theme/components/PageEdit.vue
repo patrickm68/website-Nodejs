@@ -102,7 +102,6 @@ export default {
   padding-top 1rem
   padding-bottom 1rem
   overflow auto
-
   .edit-link
     display inline-block
     a

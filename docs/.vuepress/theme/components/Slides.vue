@@ -97,6 +97,5 @@ export default {
   & > div {
     @apply flex-1;
   }
-
 }
 </style>

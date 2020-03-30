@@ -22,7 +22,6 @@ export default {
 
 <style lang="scss">
 .sidebar {
-
   @apply bg-gray-100;
 
   .active {

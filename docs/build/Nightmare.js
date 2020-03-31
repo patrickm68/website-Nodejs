@@ -1294,13 +1294,21 @@ class Nightmare extends Helper {
   }
 
   /**
-   * Sets a cookie.
+   * Sets cookie(s).
+   * 
+   * Can be a single cookie object or an array of cookies:
    * 
    * ```js
    * I.setCookie({name: 'auth', value: true});
+   * 
+   * // as array
+   * I.setCookie([
+   *   {name: 'auth', value: true},
+   *   {name: 'agree', value: true}
+   * ]);
    * ```
    * 
-   * @param {object} cookie a cookie object.
+   * @param {object|array} cookie a cookie object or array of cookie objects.
    *
    * Wrapper for `.cookies.set(cookie)`.
    * [See more](https://github.com/segmentio/nightmare/blob/master/Readme.md#cookiessetcookie)

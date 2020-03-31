@@ -167,12 +167,14 @@ class Puppeteer extends Helper {
   constructor(config) {
     super(config);
 
-    puppeteer = requireg(config.browser === 'firefox' ? 'puppeteer-firefox' : 'puppeteer');
+    puppeteer = requireg('puppeteer');
 
     // set defaults
     this.isRemoteBrowser = false;
     this.isRunning = false;
     this.isAuthenticated = false;
+    this.sessionPages = {};
+    this.activeSessionName = '';
 
     // override defaults with config
     this._setConfig(config);
@@ -201,7 +203,7 @@ class Puppeteer extends Helper {
   }
 
   _getOptions(config) {
-    return config.browser === 'firefox' ? this.options.firefox : this.options.chrome;
+    return config.browser === 'firefox' ? Object.assign(this.options.firefox, { product: 'firefox' }) : this.options.chrome;
   }
 
   _setConfig(config) {
@@ -219,6 +221,9 @@ class Puppeteer extends Helper {
       { name: 'url', message: 'Base url of site to be tested', default: 'http://localhost' },
       {
         name: 'show', message: 'Show browser window', default: true, type: 'confirm',
+      },
+      {
+        name: 'windowSize', message: 'Browser viewport size', default: '1200x900',
       },
     ];
   }
@@ -243,6 +248,7 @@ class Puppeteer extends Helper {
 
 
   async _before() {
+    this.sessionPages = {};
     recorder.retry({
       retries: 5,
       when: err => err.message.indexOf('context') > -1, // ignore context errors
@@ -257,12 +263,19 @@ class Puppeteer extends Helper {
 
     // close other sessions
     const contexts = this.browser.browserContexts();
-    contexts.shift();
+    const defaultCtx = contexts.shift();
+
     await Promise.all(contexts.map(c => c.close()));
 
     if (this.options.restart) {
       this.isRunning = false;
       return this._stopBrowser();
+    }
+
+    // ensure this.page is from default context
+    if (this.page) {
+      const existingPages = defaultCtx.targets().filter(t => t.type() === 'page');
+      await this._setPage(await existingPages[0].page());
     }
 
     if (this.options.keepBrowserState) return;
@@ -291,11 +304,13 @@ class Puppeteer extends Helper {
 
   _session() {
     return {
-      start: async () => {
+      start: async (name = '', config) => {
         this.debugSection('Incognito Tab', 'opened');
+        this.activeSessionName = name;
 
         const bc = await this.browser.createIncognitoBrowserContext();
-        await bc.newPage();
+        const page = await bc.newPage();
+
         // Create a new page inside context.
         return bc;
       },
@@ -304,12 +319,21 @@ class Puppeteer extends Helper {
       },
       loadVars: async (context) => {
         const existingPages = context.targets().filter(t => t.type() === 'page');
-        return this._setPage(await existingPages[0].page());
+        this.sessionPages[this.activeSessionName] = await existingPages[0].page();
+        return this._setPage(this.sessionPages[this.activeSessionName]);
       },
-      restoreVars: async () => {
+      restoreVars: async (session) => {
         this.withinLocator = null;
-        const existingPages = await this.browser.targets().filter(t => t.type() === 'page');
+
+        if (!session) {
+          this.activeSessionName = '';
+        } else {
+          this.activeSessionName = session;
+        }
+        const defaultCtx = this.browser.defaultBrowserContext();
+        const existingPages = defaultCtx.targets().filter(t => t.type() === 'page');
         await this._setPage(await existingPages[0].page());
+
         return this._waitForAction();
       },
     };
@@ -363,6 +387,12 @@ class Puppeteer extends Helper {
   /**
    * Checks that the active JavaScript popup, as created by `window.alert|window.confirm|window.prompt`, contains the
    * given string.
+   * 
+   * ```js
+   * I.seeInPopup('Popup text');
+   * ```
+   * @param {string} text value to check.
+   * 
    */
   async seeInPopup(text) {
     popupStore.assertPopupVisible();
@@ -1534,6 +1564,8 @@ class Puppeteer extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
    * @param {string} pathToFile local file path relative to codecept.json config file.
+   *
+   * > ⚠ There is an [issue with file upload in Puppeteer 2.1.0 & 2.1.1](https://github.com/puppeteer/puppeteer/issues/5420), downgrade to 2.0.0 if you face it.
    */
   async attachFile(locator, pathToFile) {
     const file = path.join(global.codecept_dir, pathToFile);
@@ -1832,13 +1864,21 @@ class Puppeteer extends Helper {
   }
 
   /**
-   * Sets a cookie.
+   * Sets cookie(s).
+   * 
+   * Can be a single cookie object or an array of cookies:
    * 
    * ```js
    * I.setCookie({name: 'auth', value: true});
+   * 
+   * // as array
+   * I.setCookie([
+   *   {name: 'auth', value: true},
+   *   {name: 'agree', value: true}
+   * ]);
    * ```
    * 
-   * @param {object} cookie a cookie object.
+   * @param {object|array} cookie a cookie object or array of cookie objects.
    */
   async setCookie(cookie) {
     if (Array.isArray(cookie)) {
@@ -2249,10 +2289,19 @@ class Puppeteer extends Helper {
     const outputFile = screenshotOutputFolder(fileName);
 
     this.debug(`Screenshot is saving to ${outputFile}`);
-    const openSessions = await this.browser.pages();
-    if (openSessions.length > 1) {
-      this.page = await this.browser.targets()[this.browser.targets().length - 1].page();
+
+    if (this.activeSessionName) {
+      const activeSessionPage = this.sessionPages[this.activeSessionName];
+
+      if (activeSessionPage) {
+        return activeSessionPage.screenshot({
+          path: outputFile,
+          fullPage: fullPageOption,
+          type: 'png',
+        });
+      }
     }
+
     return this.page.screenshot({ path: outputFile, fullPage: fullPageOption, type: 'png' });
   }
 

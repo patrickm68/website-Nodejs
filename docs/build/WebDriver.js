@@ -2,6 +2,7 @@ let webdriverio;
 
 const assert = require('assert');
 const path = require('path');
+const fs = require('fs');
 const requireg = require('requireg');
 
 const Helper = require('../helper');
@@ -28,8 +29,10 @@ const ElementNotFound = require('./errors/ElementNotFound');
 const ConnectionRefused = require('./errors/ConnectionRefused');
 const Locator = require('../locator');
 
+const SHADOW = 'shadow';
 const webRoot = 'body';
 
+let version;
 /**
  * WebDriver helper which wraps [webdriverio](http://webdriver.io/) library to
  * manipulate browser using Selenium WebDriver or PhantomJS.
@@ -380,10 +383,22 @@ class WebDriver extends Helper {
     if (webdriverio.VERSION && webdriverio.VERSION.indexOf('4') === 0) {
       throw new Error(`This helper is compatible with "webdriverio@5". Current version: ${webdriverio.VERSION}. Please upgrade webdriverio to v5+ or use WebDriverIO helper instead`);
     }
+    try {
+      version = JSON.parse(fs.readFileSync(path.join(requireg.resolve('webdriverio'), '/../../', 'package.json')).toString()).version;
+    } catch (err) {
+      this.debug('Can\'t detect webdriverio version, assuming webdriverio v6 is used');
+    }
+
+    if (isWebDriver5()) {
+      console.log('DEPRECATION NOTICE:');
+      console.log('You are using webdriverio v5. It is recommended to update to webdriverio@6.\nSupport of webdriverio v5 is deprecated and will be removed in CodeceptJS 3.0\n');
+    }
     // set defaults
     this.root = webRoot;
     this.isWeb = true;
     this.isRunning = false;
+    this.sessionWindows = {};
+    this.activeSessionName = '';
 
     this._setConfig(config);
 
@@ -402,6 +417,7 @@ class WebDriver extends Helper {
   _validateConfig(config) {
     const defaults = {
       logLevel: 'silent',
+      path: '/wd/hub',
       // codeceptjs
       remoteFileUpload: true,
       smartWait: 0,
@@ -563,12 +579,12 @@ class WebDriver extends Helper {
   _session() {
     const defaultSession = this.browser;
     return {
-      start: async (opts) => {
+      start: async (sessionName, opts) => {
         // opts.disableScreenshots = true; // screenshots cant be saved as session will be already closed
         opts = this._validateConfig(Object.assign(this.options, opts));
         this.debugSection('New Browser', JSON.stringify(opts));
         const browser = await webdriverio.remote(opts);
-
+        this.activeSessionName = sessionName;
         if (opts.timeouts && this.isWeb) {
           await this._defineBrowserTimeout(browser, opts.timeouts);
         }
@@ -584,8 +600,12 @@ class WebDriver extends Helper {
         if (this.context !== this.root) throw new Error('Can\'t start session inside within block');
         this.browser = browser;
         this.$$ = this.browser.$$.bind(this.browser);
+        this.sessionWindows[this.activeSessionName] = browser;
       },
-      restoreVars: async () => {
+      restoreVars: async (session) => {
+        if (!session) {
+          this.activeSessionName = '';
+        }
         this.browser = defaultSession;
         this.$$ = this.browser.$$.bind(this.browser);
       },
@@ -627,6 +647,62 @@ class WebDriver extends Helper {
   }
 
   /**
+   * Check if locator is type of "Shadow"
+   *
+   * @param {object} locator
+   */
+  _isShadowLocator(locator) {
+    return locator.type === SHADOW || locator[SHADOW];
+  }
+
+  /**
+   * Locate Element within the Shadow Dom
+   *
+   * @param {object} locator
+   */
+  async _locateShadow(locator) {
+    const shadow = locator.value ? locator.value : locator[SHADOW];
+    const shadowSequence = [];
+    let elements;
+
+    if (!Array.isArray(shadow)) {
+      throw new Error(`Shadow '${shadow}' should be defined as an Array of elements.`);
+    }
+
+    // traverse through the Shadow locators in sequence
+    for (let index = 0; index < shadow.length; index++) {
+      const shadowElement = shadow[index];
+      shadowSequence.push(shadowElement);
+
+      if (!elements) {
+        elements = await (this.browser.$$(shadowElement));
+      } else if (Array.isArray(elements)) {
+        elements = await elements[0].shadow$$(shadowElement);
+      } else if (elements) {
+        elements = await elements.shadow$$(shadowElement);
+      }
+
+      if (!elements || !elements[0]) {
+        throw new Error(`Shadow Element '${shadowElement}' is not found. It is possible the element is incorrect or elements sequence is incorrect. Please verify the sequence '${shadowSequence.join('>')}' is correctly chained.`);
+      }
+    }
+
+    this.debugSection('Elements', `Found ${elements.length} '${SHADOW}' elements`);
+
+    return elements;
+  }
+
+  /**
+   * Smart Wait to locate an element
+   *
+   * @param {object} locator
+   */
+  async _smartWait(locator) {
+    this.debugSection(`SmartWait (${this.options.smartWait}ms)`, `Locating ${locator} in ${this.options.smartWait}`);
+    await this.defineTimeout({ implicit: this.options.smartWait });
+  }
+
+  /**
    * Get elements by different locator types, including strict locator.
    * Should be used in custom helpers:
    *
@@ -640,6 +716,18 @@ class WebDriver extends Helper {
   async _locate(locator, smartWait = false) {
     if (require('../store').debugMode) smartWait = false;
 
+    // special locator type for Shadow DOM
+    if (this._isShadowLocator(locator)) {
+      if (!this.options.smartWait || !smartWait) {
+        const els = await this._locateShadow(locator);
+        return els;
+      }
+
+
+      const els = await this._locateShadow(locator);
+      return els;
+    }
+
     // special locator type for React
     if (locator.react) {
       const els = await this.browser.react$$(locator.react, locator.props || undefined, locator.state || undefined);
@@ -651,9 +739,9 @@ class WebDriver extends Helper {
       const els = await this.$$(withStrictLocator(locator));
       return els;
     }
-    this.debugSection(`SmartWait (${this.options.smartWait}ms)`, `Locating ${locator} in ${this.options.smartWait}`);
 
-    await this.defineTimeout({ implicit: this.options.smartWait });
+    await this._smartWait(locator);
+
     const els = await this.$$(withStrictLocator(locator));
     await this.defineTimeout({ implicit: 0 });
     return els;
@@ -1844,11 +1932,12 @@ class WebDriver extends Helper {
    * 
    *
    */
-  async moveCursorTo(locator, offsetX = 0, offsetY = 0) {
+  async moveCursorTo(locator, xOffset, yOffset) {
     const res = await this._locate(withStrictLocator(locator), true);
     assertElementExists(res, locator);
     const elem = usingFirstElement(res);
-    return elem.moveTo(offsetX, offsetY);
+    if (isWebDriver5()) return elem.moveTo(xOffset, yOffset);
+    return elem.moveTo({ xOffset, yOffset });
   }
 
   /**
@@ -1867,6 +1956,15 @@ class WebDriver extends Helper {
    */
   async saveScreenshot(fileName, fullPage = false) {
     const outputFile = screenshotOutputFolder(fileName);
+
+    if (this.activeSessionName) {
+      const browser = this.sessionWindows[this.activeSessionName];
+
+      if (browser) {
+        this.debug(`Screenshot of ${this.activeSessionName} session has been saved to ${outputFile}`);
+        return browser.saveScreenshot(outputFile);
+      }
+    }
 
     if (!fullPage) {
       this.debug(`Screenshot has been saved to ${outputFile}`);
@@ -1895,13 +1993,21 @@ class WebDriver extends Helper {
 
 
   /**
-   * Sets a cookie.
+   * Sets cookie(s).
+   * 
+   * Can be a single cookie object or an array of cookies:
    * 
    * ```js
    * I.setCookie({name: 'auth', value: true});
+   * 
+   * // as array
+   * I.setCookie([
+   *   {name: 'auth', value: true},
+   *   {name: 'agree', value: true}
+   * ]);
    * ```
    * 
-   * @param {object} cookie a cookie object.
+   * @param {object|array} cookie a cookie object or array of cookie objects.
    *
    *
    * Uses Selenium's JSON [cookie
@@ -2470,13 +2576,27 @@ class WebDriver extends Helper {
     const client = this.browser;
     const aSec = sec || this.options.waitForTimeout;
     let currUrl = '';
+    if (isWebDriver5()) {
+      return client
+        .waitUntil(function () {
+          return this.getUrl().then((res) => {
+            currUrl = decodeUrl(res);
+            return currUrl.indexOf(urlPart) > -1;
+          });
+        }, aSec * 1000).catch((e) => {
+          if (e.message.indexOf('timeout')) {
+            throw new Error(`expected url to include ${urlPart}, but found ${currUrl}`);
+          }
+          throw e;
+        });
+    }
     return client
       .waitUntil(function () {
         return this.getUrl().then((res) => {
           currUrl = decodeUrl(res);
           return currUrl.indexOf(urlPart) > -1;
         });
-      }, aSec * 1000).catch((e) => {
+      }, { timeout: aSec * 1000 }).catch((e) => {
         if (e.message.indexOf('timeout')) {
           throw new Error(`expected url to include ${urlPart}, but found ${currUrl}`);
         }
@@ -2533,6 +2653,21 @@ class WebDriver extends Helper {
   async waitForText(text, sec = null, context = null) {
     const aSec = sec || this.options.waitForTimeout;
     const _context = context || this.root;
+    if (isWebDriver5()) {
+      return this.browser.waitUntil(
+        async () => {
+          const res = await this.$$(withStrictLocator.call(this, _context));
+          if (!res || res.length === 0) return false;
+          const selected = await forEachAsync(res, async el => this.browser.getElementText(getElementId(el)));
+          if (Array.isArray(selected)) {
+            return selected.filter(part => part.indexOf(text) >= 0).length > 0;
+          }
+          return selected.indexOf(text) >= 0;
+        }, aSec * 1000,
+        `element (${_context}) is not in DOM or there is no element(${_context}) with text "${text}" after ${aSec} sec`,
+      );
+    }
+
     return this.browser.waitUntil(
       async () => {
         const res = await this.$$(withStrictLocator.call(this, _context));
@@ -2542,8 +2677,10 @@ class WebDriver extends Helper {
           return selected.filter(part => part.indexOf(text) >= 0).length > 0;
         }
         return selected.indexOf(text) >= 0;
-      }, aSec * 1000,
-      `element (${_context}) is not in DOM or there is no element(${_context}) with text "${text}" after ${aSec} sec`,
+      }, {
+        timeout: aSec * 1000,
+        timeoutMsg: `element (${_context}) is not in DOM or there is no element(${_context}) with text "${text}" after ${aSec} sec`,
+      },
     );
   }
 
@@ -2561,6 +2698,20 @@ class WebDriver extends Helper {
   async waitForValue(field, value, sec = null) {
     const client = this.browser;
     const aSec = sec || this.options.waitForTimeout;
+    if (isWebDriver5()) {
+      return client.waitUntil(
+        async () => {
+          const res = await findFields.call(this, field);
+          if (!res || res.length === 0) return false;
+          const selected = await forEachAsync(res, async el => el.getValue());
+          if (Array.isArray(selected)) {
+            return selected.filter(part => part.indexOf(value) >= 0).length > 0;
+          }
+          return selected.indexOf(value) >= 0;
+        }, aSec * 1000,
+        `element (${field}) is not in DOM or there is no element(${field}) with value "${value}" after ${aSec} sec`,
+      );
+    }
     return client.waitUntil(
       async () => {
         const res = await findFields.call(this, field);
@@ -2570,8 +2721,10 @@ class WebDriver extends Helper {
           return selected.filter(part => part.indexOf(value) >= 0).length > 0;
         }
         return selected.indexOf(value) >= 0;
-      }, aSec * 1000,
-      `element (${field}) is not in DOM or there is no element(${field}) with value "${value}" after ${aSec} sec`,
+      }, {
+        timeout: aSec * 1000,
+        timeoutMsg: `element (${field}) is not in DOM or there is no element(${field}) with value "${value}" after ${aSec} sec`,
+      },
     );
   }
 
@@ -2589,6 +2742,17 @@ class WebDriver extends Helper {
    */
   async waitForVisible(locator, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
+    if (isWebDriver5()) {
+      return this.browser.waitUntil(async () => {
+        const res = await this.$$(withStrictLocator(locator));
+        if (!res || res.length === 0) return false;
+        const selected = await forEachAsync(res, async el => el.isDisplayed());
+        if (Array.isArray(selected)) {
+          return selected.filter(val => val === true).length > 0;
+        }
+        return selected;
+      }, aSec * 1000, `element (${new Locator(locator)}) still not visible after ${aSec} sec`);
+    }
     return this.browser.waitUntil(async () => {
       const res = await this.$$(withStrictLocator(locator));
       if (!res || res.length === 0) return false;
@@ -2597,7 +2761,7 @@ class WebDriver extends Helper {
         return selected.filter(val => val === true).length > 0;
       }
       return selected;
-    }, aSec * 1000, `element (${new Locator(locator)}) still not visible after ${aSec} sec`);
+    }, { timeout: aSec * 1000, timeoutMsg: `element (${new Locator(locator)}) still not visible after ${aSec} sec` });
   }
 
   /**
@@ -2613,6 +2777,16 @@ class WebDriver extends Helper {
    */
   async waitNumberOfVisibleElements(locator, num, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
+    if (isWebDriver5()) {
+      return this.browser.waitUntil(async () => {
+        const res = await this.$$(withStrictLocator(locator));
+        if (!res || res.length === 0) return false;
+        let selected = await forEachAsync(res, async el => el.isDisplayed());
+
+        if (!Array.isArray(selected)) selected = [selected];
+        return selected.length === num;
+      }, aSec * 1000, `The number of elements (${new Locator(locator)}) is not ${num} after ${aSec} sec`);
+    }
     return this.browser.waitUntil(async () => {
       const res = await this.$$(withStrictLocator(locator));
       if (!res || res.length === 0) return false;
@@ -2620,7 +2794,7 @@ class WebDriver extends Helper {
 
       if (!Array.isArray(selected)) selected = [selected];
       return selected.length === num;
-    }, aSec * 1000, `The number of elements (${new Locator(locator)}) is not ${num} after ${aSec} sec`);
+    }, { timeout: aSec * 1000, timeoutMsg: `The number of elements (${new Locator(locator)}) is not ${num} after ${aSec} sec` });
   }
 
   /**
@@ -2637,12 +2811,20 @@ class WebDriver extends Helper {
    */
   async waitForInvisible(locator, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
+    if (isWebDriver5()) {
+      return this.browser.waitUntil(async () => {
+        const res = await this.$$(withStrictLocator(locator));
+        if (!res || res.length === 0) return true;
+        const selected = await forEachAsync(res, async el => el.isDisplayed());
+        return !selected.length;
+      }, aSec * 1000, `element (${new Locator(locator)}) still visible after ${aSec} sec`);
+    }
     return this.browser.waitUntil(async () => {
       const res = await this.$$(withStrictLocator(locator));
       if (!res || res.length === 0) return true;
       const selected = await forEachAsync(res, async el => el.isDisplayed());
       return !selected.length;
-    }, aSec * 1000, `element (${new Locator(locator)}) still visible after ${aSec} sec`);
+    }, { timeout: aSec * 1000, timeoutMsg: `element (${new Locator(locator)}) still visible after ${aSec} sec` });
   }
 
   /**
@@ -2680,13 +2862,22 @@ class WebDriver extends Helper {
    */
   async waitForDetached(locator, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
+    if (isWebDriver5()) {
+      return this.browser.waitUntil(async () => {
+        const res = await this.$$(withStrictLocator(locator));
+        if (!res || res.length === 0) {
+          return true;
+        }
+        return false;
+      }, aSec * 1000, `element (${new Locator(locator)}) still on page after ${aSec} sec`);
+    }
     return this.browser.waitUntil(async () => {
       const res = await this.$$(withStrictLocator(locator));
       if (!res || res.length === 0) {
         return true;
       }
       return false;
-    }, aSec * 1000, `element (${new Locator(locator)}) still on page after ${aSec} sec`);
+    }, { timeout: aSec * 1000, timeoutMsg: `element (${new Locator(locator)}) still on page after ${aSec} sec` });
   }
 
   /**
@@ -2720,7 +2911,10 @@ class WebDriver extends Helper {
     }
 
     const aSec = sec || this.options.waitForTimeout;
-    return this.browser.waitUntil(async () => this.browser.execute(fn, ...args), aSec * 1000);
+    if (isWebDriver5()) {
+      return this.browser.waitUntil(async () => this.browser.execute(fn, ...args), aSec * 1000, '');
+    }
+    return this.browser.waitUntil(async () => this.browser.execute(fn, ...args), { timeout: aSec * 1000, timeoutMsg: '' });
   }
 
   /**
@@ -2740,7 +2934,10 @@ class WebDriver extends Helper {
   async waitUntil(fn, sec = null, timeoutMsg = null, interval = null) {
     const aSec = sec || this.options.waitForTimeout;
     const _interval = typeof interval === 'number' ? interval * 1000 : null;
-    return this.browser.waitUntil(fn, aSec * 1000, timeoutMsg, _interval);
+    if (isWebDriver5()) {
+      return this.browser.waitUntil(fn, aSec * 1000, timeoutMsg, _interval);
+    }
+    return this.browser.waitUntil(fn, { timeout: aSec * 1000, timeoutMsg, interval: _interval });
   }
 
   /**
@@ -2784,6 +2981,19 @@ class WebDriver extends Helper {
     const aSec = sec || this.options.waitForTimeout;
     let target;
     const current = await this.browser.getWindowHandle();
+
+    if (isWebDriver5()) {
+      await this.browser.waitUntil(async () => {
+        await this.browser.getWindowHandles().then((handles) => {
+          if (handles.indexOf(current) + num + 1 <= handles.length) {
+            target = handles[handles.indexOf(current) + num];
+          }
+        });
+        return target;
+      }, aSec * 1000, `There is no ability to switch to next tab with offset ${num}`);
+      return this.browser.switchToWindow(target);
+    }
+
     await this.browser.waitUntil(async () => {
       await this.browser.getWindowHandles().then((handles) => {
         if (handles.indexOf(current) + num + 1 <= handles.length) {
@@ -2791,7 +3001,7 @@ class WebDriver extends Helper {
         }
       });
       return target;
-    }, aSec * 1000, `There is no ability to switch to next tab with offset ${num}`);
+    }, { timeout: aSec * 1000, timeoutMsg: `There is no ability to switch to next tab with offset ${num}` });
     return this.browser.switchToWindow(target);
   }
 
@@ -2810,6 +3020,19 @@ class WebDriver extends Helper {
     const aSec = sec || this.options.waitForTimeout;
     const current = await this.browser.getWindowHandle();
     let target;
+
+    if (isWebDriver5()) {
+      await this.browser.waitUntil(async () => {
+        await this.browser.getWindowHandles().then((handles) => {
+          if (handles.indexOf(current) - num > -1) {
+            target = handles[handles.indexOf(current) - num];
+          }
+        });
+        return target;
+      }, aSec * 1000, `There is no ability to switch to previous tab with offset ${num}`);
+      return this.browser.switchToWindow(target);
+    }
+
     await this.browser.waitUntil(async () => {
       await this.browser.getWindowHandles().then((handles) => {
         if (handles.indexOf(current) - num > -1) {
@@ -2817,7 +3040,7 @@ class WebDriver extends Helper {
         }
       });
       return target;
-    }, aSec * 1000, `There is no ability to switch to previous tab with offset ${num}`);
+    }, { timeout: aSec * 1000, timeoutMsg: `There is no ability to switch to previous tab with offset ${num}` });
     return this.browser.switchToWindow(target);
   }
 
@@ -3115,7 +3338,6 @@ async function filterAsync(array, callback) {
   return values;
 }
 
-
 async function findClickable(locator, locateFn) {
   locator = new Locator(locator);
   if (locator.isAccessibilityId() && !this.isWeb) return locateFn(locator, true);
@@ -3139,6 +3361,7 @@ async function findClickable(locator, locateFn) {
 
 async function findFields(locator) {
   locator = new Locator(locator);
+
   if (locator.isAccessibilityId() && !this.isWeb) return this._locate(locator, true);
   if (!locator.isFuzzy()) return this._locate(locator, true);
 
@@ -3451,6 +3674,10 @@ function prepareLocateFn(context) {
       return res[0].$$(l.simplify());
     });
   };
+}
+
+function isWebDriver5() {
+  return version && version.indexOf('5') === 0;
 }
 
 module.exports = WebDriver;

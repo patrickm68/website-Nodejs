@@ -1339,13 +1339,21 @@ class TestCafe extends Helper {
   // TODO Add url assertions
 
   /**
-   * Sets a cookie.
+   * Sets cookie(s).
+   * 
+   * Can be a single cookie object or an array of cookies:
    * 
    * ```js
    * I.setCookie({name: 'auth', value: true});
+   * 
+   * // as array
+   * I.setCookie([
+   *   {name: 'auth', value: true},
+   *   {name: 'agree', value: true}
+   * ]);
    * ```
    * 
-   * @param {object} cookie a cookie object.
+   * @param {object|array} cookie a cookie object or array of cookie objects.
    */
   async setCookie(cookie) {
     if (Array.isArray(cookie)) {
@@ -1747,7 +1755,7 @@ async function proceedClick(locator, context = null) {
     await assertElementExists(els, locator, 'Clickable element');
   }
 
-  const firstElement = await els.nth(0);
+  const firstElement = await els.filterVisible().nth(0);
 
   return this.t
     .click(firstElement)

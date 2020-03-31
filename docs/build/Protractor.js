@@ -1557,6 +1557,12 @@ class Protractor extends Helper {
   /**
    * Checks that the active JavaScript popup, as created by `window.alert|window.confirm|window.prompt`, contains the
    * given string.
+   * 
+   * ```js
+   * I.seeInPopup('Popup text');
+   * ```
+   * @param {string} text value to check.
+   * 
    */
   async seeInPopup(text) {
     const popupAlert = await this.browser.switchTo().alert();
@@ -2256,13 +2262,21 @@ class Protractor extends Helper {
   }
 
   /**
-   * Sets a cookie.
+   * Sets cookie(s).
+   * 
+   * Can be a single cookie object or an array of cookies:
    * 
    * ```js
    * I.setCookie({name: 'auth', value: true});
+   * 
+   * // as array
+   * I.setCookie([
+   *   {name: 'auth', value: true},
+   *   {name: 'agree', value: true}
+   * ]);
    * ```
    * 
-   * @param {object} cookie a cookie object.
+   * @param {object|array} cookie a cookie object or array of cookie objects.
    */
   setCookie(cookie) {
     return this.browser.manage().addCookie(cookie);

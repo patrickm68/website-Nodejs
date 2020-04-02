@@ -71,10 +71,19 @@ export default {
       @apply list-none list-outside pl-0 ml-0;
     }
 
-    .important:before {
-      margin-left: -20px;
-      content: '⬤';
-      @apply text-red-500 text-xs mr-2;
+    .important {
+      position: relative;
+      &:before {
+        content: '';
+        position: absolute;
+        left: -18px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 10px;
+        height: 10px;
+        border-radius: 100%;
+        background-color: #f56565;
+      }
     }
 
     h5 {

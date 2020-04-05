@@ -594,6 +594,7 @@ class WebDriver extends Helper {
         return browser;
       },
       stop: async (browser) => {
+        if (!browser) return;
         return browser.deleteSession();
       },
       loadVars: async (browser) => {
@@ -2524,10 +2525,16 @@ class WebDriver extends Helper {
    */
   async waitForElement(locator, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
+    if (isWebDriver5()) {
+      return this.browser.waitUntil(async () => {
+        const res = await this.$$(withStrictLocator(locator));
+        return res && res.length;
+      }, aSec * 1000, `element (${locator}) still not present on page after ${aSec} sec`);
+    }
     return this.browser.waitUntil(async () => {
       const res = await this.$$(withStrictLocator(locator));
       return res && res.length;
-    }, aSec * 1000, `element (${locator}) still not present on page after ${aSec} sec`);
+    }, { timeout: aSec * 1000, timeoutMsg: `element (${locator}) still not present on page after ${aSec} sec` });
   }
 
   /**

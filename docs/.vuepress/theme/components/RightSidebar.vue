@@ -52,6 +52,7 @@
   right: 0;
   bottom: 0;
   opacity: 0.7;
+  transition: opacity .2s;
   @apply text-sm bg-yellow-100 rounded;
   &:hover {
     opacity: 1;

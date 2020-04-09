@@ -1,5 +1,5 @@
 <template>
-    <section class="sidebar">
+    <div class="sidebar">
       <div class="sidebar-wrapper">
 
         <h4>More Information</h4>
@@ -40,7 +40,7 @@
           Join Testomat.io while it is in beta and get a huge discount!</small>
         </p>
       </div>
-    </section>
+    </div>
 </template>
 
 <style lang="scss" scoped>

@@ -19,9 +19,9 @@
       </article>
     </section>
 
-    <section class="sidebar" v-if="$frontmatter.sidebar">
+    <div class="sidebar" v-if="$frontmatter.sidebar">
       <Content slot-key="sidebar"></Content>
-    </section>
+    </div>
 
     <Footer />
   </div>

@@ -1,5 +1,5 @@
 <template>
-  <section
+  <div
     class="sidebar-group"
     :class="[
       {
@@ -50,7 +50,7 @@
         :depth="depth + 1"
       />
     </DropdownTransition>
-  </section>
+  </div>
 </template>
 
 <script>

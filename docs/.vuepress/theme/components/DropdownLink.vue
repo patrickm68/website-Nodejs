@@ -26,7 +26,7 @@
           :key="subItem.link || index"
           v-for="(subItem, index) in item.items"
         >
-          <h4 v-if="subItem.type === 'links'">{{ subItem.text }}</h4>
+          <div class="dropdown-item-title" v-if="subItem.type === 'links'">{{ subItem.text }}</div>
 
           <ul
             class="dropdown-subitem-wrapper"
@@ -127,7 +127,8 @@ export default {
     .dropdown-item
       @apply text-gray-800;
       line-height 1.7rem
-      h4
+      h4,
+      .dropdown-item-title
         margin 0.45rem 0 0
         border-top 1px solid #eee
         padding 0.45rem 1.5rem 0 1.25rem
@@ -159,10 +160,12 @@ export default {
             position absolute
             top calc(50% - 2px)
             left 9px
-      &:first-child h4
-        margin-top 0
-        padding-top 0
-        border-top 0
+      &:first-child
+        h4,
+        .dropdown-item-title
+          margin-top 0
+          padding-top 0
+          border-top 0
 
 @media (max-width: $MQMobile)
   .dropdown-wrapper

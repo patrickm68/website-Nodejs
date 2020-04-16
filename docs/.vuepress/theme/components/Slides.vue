@@ -5,6 +5,8 @@
       :autoplayTimeout="10000"
       :autoplay="true"
       :per-page="1"
+      :navigation-next-label="nextLabel"
+      :navigation-prev-label="prevLabel"
       :center-mode="true" >
       <slide :is="slideComp">
         <div class="slide">
@@ -65,6 +67,8 @@ export default {
     return {
       slideComp: null,
       carouselComp: null,
+      nextLabel: "",
+      prevLabel: ""
     }
   },
   mounted () {
@@ -83,6 +87,32 @@ export default {
   margin: 0 auto;
   .VueCarousel-pagination {
     margin-top: -40px;
+  }
+}
+
+.VueCarousel-navigation-prev {
+  width: 15px;
+  height: 15px;
+  border-top: 2px solid #2c3e50 !important;
+  border-right: 2px solid #2c3e50 !important;
+  transform: rotate(-135deg) !important;
+  padding: 0 !important;
+  left: -20px !important;
+}
+
+.VueCarousel-navigation-next {
+  width: 15px;
+  height: 15px;
+  border-top: 2px solid #2c3e50 !important;
+  border-right: 2px solid #2c3e50 !important;
+  transform: rotate(45deg) !important;
+  padding: 0 !important;
+  right: -20px !important;
+}
+
+.VueCarousel-navigation-button {
+  &:focus {
+    outline: none !important;
   }
 }
 

@@ -361,7 +361,7 @@ export default {
     text-align: left;
   }
   a {
-    @apply rounded bg-white px-1;
+    @apply rounded bg-white px-2;
     display: inline-block;
 
   }

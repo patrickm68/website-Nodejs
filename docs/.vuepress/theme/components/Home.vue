@@ -313,6 +313,7 @@ export default {
         }
         .position {
           @apply text-sm flex-1;
+          padding-right: 1rem;
         }
       }
     }

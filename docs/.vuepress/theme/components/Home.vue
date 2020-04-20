@@ -16,7 +16,7 @@
         <router-link to="/playwright" class="badge">Now with <b>Playwright</b> support</router-link>
       </div>
 
-      <img src="/img/code.png" alt="" />
+      <img src="/img/code.png" alt="code" />
 
         <div class="video">
           <a href="#" @click="toggleVideo">📺 Watch a video ▶</a>
@@ -53,7 +53,7 @@
   <div class="features">
 
     <div class="feature">
-      <img src="/img/Checklist.svg" alt="" />
+      <img src="/img/Checklist.svg" alt="checklist" />
       <div class="inner">
       <h5>Scenario Driven</h5>
         Write acceptance tests from user's perspective.
@@ -61,13 +61,13 @@
       </div >
     </div>
     <div class="feature">
-      <img src="/img/Mind-Map-Paper.svg" alt="" />
+      <img src="/img/Mind-Map-Paper.svg" alt="Mind map paper" />
       <div class="inner"><h5>Driver Agnostic</h5>
         Run your tests via <b>WebDriver, Puppeteer, TestCafe, Protractor, Appium</b>. The code is the same.
         <router-link to="/basics#architecture">Learn More</router-link></div>
     </div>
     <div class="feature">
-      <img src="/img/Coding-Html.svg" alt="" />
+      <img src="/img/Coding-Html.svg" alt="Html coding" />
       <div class="inner"><h5>Interactive Debug</h5>
         Control tests as they run. Pause tests at any point and execute commands to try locators.
         <router-link to="/basics#debug">Learn More</router-link></div>

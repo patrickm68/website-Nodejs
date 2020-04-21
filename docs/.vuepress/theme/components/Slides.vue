@@ -10,7 +10,7 @@
       :center-mode="true" >
       <slide :is="slideComp">
         <div class="slide">
-          <img src="/img/pause.gif" alt="">
+          <img src="/img/pause.gif" alt="pause">
           <div>
             <Content slot-key="pause"/>
           </div>
@@ -19,7 +19,7 @@
       <slide :is="slideComp">
 
         <div class="slide" >
-          <img src="/img/test.gif" alt="">
+          <img src="/img/test.gif" alt="test">
           <div>
             <Content slot-key="run"/>
           </div>
@@ -27,7 +27,7 @@
       </slide>
       <slide :is="slideComp">
         <div class="slide" >
-          <img src="/img/edit.gif" alt="">
+          <img src="/img/edit.gif" alt="edit">
           <div>
             <Content slot-key="autocomplete"/>
           </div>
@@ -35,7 +35,7 @@
       </slide>
       <slide :is="slideComp">
         <div class="slide" >
-          <img src="/img/codeceptui.gif" alt="">
+          <img src="/img/codeceptui.gif" alt="codeceptui">
           <div>
             <Content slot-key="ui"/>
             <router-link to="ui" class="button green">Try CodeceptUI &rarr;</router-link>
@@ -44,7 +44,7 @@
       </slide>
       <slide :is="slideComp">
         <div class="slide">
-          <img src="/img/new-test.gif" alt="">
+          <img src="/img/new-test.gif" alt="new-test">
           <div>
             <Content slot-key="write"/>
             <router-link to="ui" class="button green">Try CodeceptUI &rarr;</router-link>

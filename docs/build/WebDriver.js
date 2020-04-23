@@ -516,6 +516,11 @@ class WebDriver extends Helper {
       if (this.options.multiremote) {
         this.browser = await webdriverio.multiremote(this.options.multiremote);
       } else {
+        // remove non w3c capabilities
+        delete this.options.capabilities.protocol;
+        delete this.options.capabilities.hostname;
+        delete this.options.capabilities.port;
+        delete this.options.capabilities.path;
         this.browser = await webdriverio.remote(this.options);
       }
     } catch (err) {
@@ -765,13 +770,15 @@ class WebDriver extends Helper {
    * Find a clickable element by providing human readable text:
    *
    * ```js
-   * this.helpers['WebDriver']._locateClickable('Next page').then // ...
+   * const els = await this.helpers.WebDriver._locateClickable('Next page');
+   * const els = await this.helpers.WebDriver._locateClickable('Next page', '.pages');
    * ```
    *
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    */
-  async _locateClickable(locator) {
-    return findClickable.call(this, locator, this.$$.bind(this)).then(res => res);
+  async _locateClickable(locator, context) {
+    const locateFn = prepareLocateFn.call(this, context);
+    return findClickable.call(this, locator, locateFn);
   }
 
   /**
@@ -873,6 +880,59 @@ class WebDriver extends Helper {
     }
     const elem = usingFirstElement(res);
     return this.browser[clickMethod](getElementId(elem));
+  }
+
+  /**
+   * Perform an emulated click on a link or a button, given by a locator.
+   * Unlike normal click instead of sending native event, emulates a click with JavaScript.
+   * This works on hidden, animated or inactive elements as well.
+   * 
+   * If a fuzzy locator is given, the page will be searched for a button, link, or image matching the locator string.
+   * For buttons, the "value" attribute, "name" attribute, and inner text are searched. For links, the link text is searched.
+   * For images, the "alt" attribute and inner text of any parent links are searched.
+   * 
+   * The second parameter is a context (CSS or XPath locator) to narrow the search.
+   * 
+   * ```js
+   * // simple link
+   * I.forceClick('Logout');
+   * // button of form
+   * I.forceClick('Submit');
+   * // CSS button
+   * I.forceClick('#form input[type=submit]');
+   * // XPath
+   * I.forceClick('//form/*[@type=submit]');
+   * // link in context
+   * I.forceClick('Logout', '#nav');
+   * // using strict locator
+   * I.forceClick({css: 'nav a.login'});
+   * ```
+   * 
+   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * 
+   *
+   * {{ react }}
+   */
+  async forceClick(locator, context = null) {
+    const locateFn = prepareLocateFn.call(this, context);
+
+    const res = await findClickable.call(this, locator, locateFn);
+    if (context) {
+      assertElementExists(res, locator, 'Clickable element', `was not found inside element ${new Locator(context)}`);
+    } else {
+      assertElementExists(res, locator, 'Clickable element');
+    }
+    const elem = usingFirstElement(res);
+
+    return this.executeScript((el) => {
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+      }
+      const event = document.createEvent('MouseEvent');
+      event.initEvent('click', true, true);
+      return el.dispatchEvent(event);
+    }, elem);
   }
 
   /**
@@ -2498,6 +2558,19 @@ class WebDriver extends Helper {
    */
   async waitForEnabled(locator, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
+    if (isWebDriver5()) {
+      return this.browser.waitUntil(async () => {
+        const res = await this.$$(withStrictLocator(locator));
+        if (!res || res.length === 0) {
+          return false;
+        }
+        const selected = await forEachAsync(res, async el => this.browser.isElementEnabled(getElementId(el)));
+        if (Array.isArray(selected)) {
+          return selected.filter(val => val === true).length > 0;
+        }
+        return selected;
+      }, aSec * 1000, `element (${new Locator(locator)}) still not enabled after ${aSec} sec`);
+    }
     return this.browser.waitUntil(async () => {
       const res = await this.$$(withStrictLocator(locator));
       if (!res || res.length === 0) {
@@ -2508,7 +2581,10 @@ class WebDriver extends Helper {
         return selected.filter(val => val === true).length > 0;
       }
       return selected;
-    }, aSec * 1000, `element (${new Locator(locator)}) still not enabled after ${aSec} sec`);
+    }, {
+      timeout: aSec * 1000,
+      timeoutMsg: `element (${new Locator(locator)}) still not enabled after ${aSec} sec`,
+    });
   }
 
   /**

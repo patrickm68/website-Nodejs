@@ -85,11 +85,15 @@ export default {
 .slider {
   max-width: 1200px;
   margin: 0 auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
   .VueCarousel-pagination {
     margin-top: -40px;
   }
   @media(min-width: 768px) {
     max-width: 640px;
+    padding-left: 0;
+    padding-right: 0;
   }
   @media(min-width: 1000px) {
     max-width: 910px;
@@ -97,6 +101,10 @@ export default {
   @media(min-width: 1300px) {
     max-width: 1200px;
   }
+}
+
+.VueCarousel-slide {
+  overflow-x: hidden;
 }
 
 .VueCarousel-navigation-prev {
@@ -153,6 +161,7 @@ export default {
   }
   & > div {
     @apply flex-1;
+    width: 100%;
   }
 }
 </style>

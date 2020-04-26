@@ -88,6 +88,15 @@ export default {
   .VueCarousel-pagination {
     margin-top: -40px;
   }
+  @media(min-width: 768px) {
+    max-width: 640px;
+  }
+  @media(min-width: 1000px) {
+    max-width: 910px;
+  }
+  @media(min-width: 1300px) {
+    max-width: 1200px;
+  }
 }
 
 .VueCarousel-navigation-prev {
@@ -97,7 +106,10 @@ export default {
   border-right: 2px solid #2c3e50 !important;
   transform: rotate(-135deg) !important;
   padding: 0 !important;
-  left: -20px !important;
+  left: -30px !important;
+  @media(min-width: 1000px) {
+    left: -20px !important;
+  }
 }
 
 .VueCarousel-navigation-next {
@@ -107,22 +119,37 @@ export default {
   border-right: 2px solid #2c3e50 !important;
   transform: rotate(45deg) !important;
   padding: 0 !important;
-  right: -20px !important;
+  right: -30px !important;
+  @media(min-width: 1000px) {
+    right: -20px !important;
+  }
 }
 
 .VueCarousel-navigation-button {
+  @media(max-width: 767px) {
+    display: none;
+  }
   &:focus {
     outline: none !important;
   }
 }
 
 .slide {
-  @apply flex items-center;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  @media(min-width: 1000px) {
+    flex-direction: row;
+  }
   img {
     border: 5px solid;
-    width: 50%;
-    height: 50%;
-    @apply mr-4 border-gray-200 shadow-md rounded-lg;
+    width: 100%;
+    @apply border-gray-200 shadow-md rounded-lg;
+    @media(min-width: 1000px) {
+      margin-right: 1rem;
+      width: 50%;
+      height: 50%;
+    }
   }
   & > div {
     @apply flex-1;

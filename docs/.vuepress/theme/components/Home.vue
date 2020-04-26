@@ -413,9 +413,6 @@ export default {
   }
 }
 @media(max-width: 1200px) {
-  .demos {
-    display: none;
-  }
   .feature {
     padding: 0;
   }

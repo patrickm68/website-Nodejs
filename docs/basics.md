@@ -189,9 +189,9 @@ I.checkOption('Accept');
 I.click('Save');
 ```
 
-> ℹ `selectOption` works only with standard <select> HTML elements. If your selectbox is created by React, Vue, or as a component of any other framework, this method potentially won't work with it. Use `click` to manipulate it.
+> ℹ `selectOption` works only with standard `<select>` <select placeholder="select"></select> HTML elements. If your selectbox is created by React, Vue, or as a component of any other framework, this method potentially won't work with it. Use `click` to manipulate it.
 
-> ℹ `checkOption` also works only with standard <input type=checkbox> HTML elements. If your checkbox is created by React, Vue, or as a component of any other framework, this method potentially won't work with it. Use `click` to manipulate it.
+> ℹ `checkOption` also works only with standard `<input type="checkbox">` <input type="checkbox"> HTML elements. If your checkbox is created by React, Vue, or as a component of any other framework, this method potentially won't work with it. Use `click` to manipulate it.
 
 Alternative scenario:
 

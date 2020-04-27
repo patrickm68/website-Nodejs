@@ -1,7 +1,6 @@
 const requireg = require('requireg');
 const path = require('path');
 const fs = require('fs');
-const fsExtra = require('fs-extra');
 
 const Helper = require('../helper');
 const Locator = require('../locator');
@@ -11,7 +10,6 @@ const { urlEquals } = require('../assert/equal');
 const { equals } = require('../assert/equal');
 const { empty } = require('../assert/empty');
 const { truth } = require('../assert/truth');
-const isElementClickable = require('./scripts/isElementClickable');
 const {
   xpathLocator,
   ucfirst,
@@ -369,7 +367,7 @@ class Playwright extends Helper {
         // Create a new page inside context.
         return bc;
       },
-      stop: async (context) => {
+      stop: async () => {
         // is closed by _after
       },
       loadVars: async (context) => {
@@ -1998,10 +1996,11 @@ class Playwright extends Helper {
    * ```js
    * let pin = await I.grabTextFrom('#pin');
    * ```
-   * If multiple elements found returns an array of texts.
+   * If multiple elements found returns first element.
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
-   * @returns {Promise<string|string[]>} attribute value
+   * @returns {Promise<string>} attribute value
+   * 
    *
    */
   async grabTextFrom(locator) {
@@ -2018,12 +2017,14 @@ class Playwright extends Helper {
   /**
    * Retrieves a value from a form element located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async function with `await`** operator.
+   * If more than one element is found - value of first element is returned.
    * 
    * ```js
    * let email = await I.grabValueFrom('input[name=email]');
    * ```
    * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
    * @returns {Promise<string>} attribute value
+   * 
    */
   async grabValueFrom(locator) {
     const els = await findFields.call(this, locator);
@@ -2034,7 +2035,7 @@ class Playwright extends Helper {
   /**
    * Retrieves the innerHTML from an element located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async function with `await`** operator.
-   * If more than one element is found - an array of HTMLs returned.
+   * If more than one element is found - HTML of first element is returned.
    * 
    * ```js
    * let postHTML = await I.grabHTMLFrom('#post');
@@ -2042,6 +2043,7 @@ class Playwright extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} element located by CSS|XPath|strict locator.
    * @returns {Promise<string>} HTML code for an element
+   * 
    */
   async grabHTMLFrom(locator) {
     const els = await this._locate(locator);
@@ -2056,6 +2058,7 @@ class Playwright extends Helper {
   /**
    * Grab CSS property for given locator
    * Resumes test execution, so **should be used inside an async function with `await`** operator.
+   * If more than one element is found - value of first element is returned.
    * 
    * ```js
    * const value = await I.grabCssPropertyFrom('h3', 'font-weight');
@@ -2064,6 +2067,7 @@ class Playwright extends Helper {
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {string} cssProperty CSS property name.
    * @returns {Promise<string>} CSS value
+   * 
    *
    */
   async grabCssPropertyFrom(locator, cssProperty) {
@@ -2191,8 +2195,8 @@ class Playwright extends Helper {
 
   /**
    * Retrieves an attribute from an element located by CSS or XPath and returns it to test.
-   * An array as a result will be returned if there are more than one matched element.
    * Resumes test execution, so **should be used inside async with `await`** operator.
+   * If more than one element is found - attribute of first element is returned.
    * 
    * ```js
    * let hint = await I.grabAttributeFrom('#tooltip', 'title');
@@ -2200,6 +2204,7 @@ class Playwright extends Helper {
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {string} attr attribute name.
    * @returns {Promise<string>} attribute value
+   * 
    *
    */
   async grabAttributeFrom(locator, attr) {
@@ -2249,7 +2254,7 @@ class Playwright extends Helper {
     return this.page.screenshot({ path: outputFile, fullPage: fullPageOption, type: 'png' });
   }
 
-  async _failed(test) {
+  async _failed() {
     await this._withinEnd();
   }
 
@@ -2278,7 +2283,7 @@ class Playwright extends Helper {
   async waitForEnabled(locator, sec) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
     locator = new Locator(locator, 'css');
-    const matcher = await this.context;
+    await this.context;
     let waiter;
     const context = await this._getContext();
     if (!locator.isXPath()) {
@@ -2310,7 +2315,7 @@ class Playwright extends Helper {
   async waitForValue(field, value, sec) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
     const locator = new Locator(field, 'css');
-    const matcher = await this.context;
+    await this.context;
     let waiter;
     const context = await this._getContext();
     if (!locator.isXPath()) {
@@ -2344,7 +2349,7 @@ class Playwright extends Helper {
   async waitNumberOfVisibleElements(locator, num, sec) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
     locator = new Locator(locator, 'css');
-    const matcher = await this.context;
+    await this.context;
     let waiter;
     const context = await this._getContext();
     if (locator.isCSS()) {
@@ -2380,7 +2385,7 @@ class Playwright extends Helper {
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
    */
-  async waitForClickable(locator, waitTimeout) {
+  async waitForClickable() {
     console.log('I.waitForClickable is DEPRECATED: This is no longer needed, Playwright automatically waits for element to be clikable');
     console.log('Remove usage of this function');
   }
@@ -2419,6 +2424,7 @@ class Playwright extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
+   * 
    *
    * This method accepts [React selectors](https://codecept.io/react).
    */
@@ -2964,7 +2970,7 @@ async function findFields(locator) {
   return this._locate({ css: locator });
 }
 
-async function proceedDragAndDrop(sourceLocator, destinationLocator, options = {}) {
+async function proceedDragAndDrop(sourceLocator, destinationLocator) {
   const src = await this._locate(sourceLocator);
   assertElementExists(src, sourceLocator, 'Source Element');
 
@@ -3099,7 +3105,7 @@ function $XPath(element, selector) {
 async function targetCreatedHandler(page) {
   if (!page) return;
   this.withinLocator = null;
-  page.on('load', (frame) => {
+  page.on('load', () => {
     page.$('body')
       .catch(() => null)
       .then(context => this.context = context);

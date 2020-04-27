@@ -304,17 +304,17 @@ class Puppeteer extends Helper {
 
   _session() {
     return {
-      start: async (name = '', config) => {
+      start: async (name = '') => {
         this.debugSection('Incognito Tab', 'opened');
         this.activeSessionName = name;
 
         const bc = await this.browser.createIncognitoBrowserContext();
-        const page = await bc.newPage();
+        await bc.newPage();
 
         // Create a new page inside context.
         return bc;
       },
-      stop: async (context) => {
+      stop: async () => {
         // is closed by _after
       },
       loadVars: async (context) => {
@@ -2048,12 +2048,12 @@ class Puppeteer extends Helper {
    *
    * If a function returns a Promise It will wait for it resolution.
    */
-  async executeScript(fn) {
+  async executeScript(...args) {
     let context = this.page;
     if (this.context && this.context.constructor.name === 'Frame') {
       context = this.context; // switching to iframe context
     }
-    return context.evaluate.apply(context, arguments);
+    return context.evaluate.apply(context, args);
   }
 
   /**
@@ -2085,8 +2085,7 @@ class Puppeteer extends Helper {
    *
    * Asynchronous scripts can also be executed with `executeScript` if a function returns a Promise.
    */
-  async executeAsyncScript(fn) {
-    const args = Array.from(arguments);
+  async executeAsyncScript(...args) {
     const asyncFn = function () {
       const args = Array.from(arguments);
       const fn = eval(`(${args.shift()})`); // eslint-disable-line no-eval
@@ -2100,6 +2099,27 @@ class Puppeteer extends Helper {
     return this.page.evaluate.apply(this.page, args);
   }
 
+  /**
+   * Retrieves all texts from an element located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async with `await`** operator.
+   * 
+   * ```js
+   * let pins = await I.grabTextFromAll('#pin li');
+   * ```
+   * 
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @returns {Promise<string[]>} attribute value
+   * 
+   * {{ react }}
+   */
+  async grabTextFromAll(locator) {
+    const els = await this._locate(locator);
+    const texts = [];
+    for (const el of els) {
+      texts.push(await (await el.getProperty('innerText')).jsonValue());
+    }
+    return texts;
+  }
 
   /**
    * Retrieves a text from an element located by CSS or XPath and returns it to test.
@@ -2108,43 +2128,87 @@ class Puppeteer extends Helper {
    * ```js
    * let pin = await I.grabTextFrom('#pin');
    * ```
-   * If multiple elements found returns an array of texts.
+   * If multiple elements found returns first element.
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
-   * @returns {Promise<string|string[]>} attribute value
+   * @returns {Promise<string>} attribute value
+   * 
    * {{ react }}
    */
   async grabTextFrom(locator) {
-    const els = await this._locate(locator);
-    assertElementExists(els, locator);
-    const texts = [];
-    for (const el of els) {
-      texts.push(await (await el.getProperty('innerText')).jsonValue());
+    const texts = await this.grabTextFromAll(locator);
+    assertElementExists(texts, locator);
+    if (texts.length > 1) {
+      this.debugSection('GrabText', `Using first element out of ${texts.length}`);
     }
-    if (texts.length === 1) return texts[0];
-    return texts;
+
+    return texts[0];
+  }
+
+  /**
+   * Retrieves an array of value from a form located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
+   * 
+   * ```js
+   * let inputs = await I.grabValueFromAll('//form/input');
+   * ```
+   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
+   * @returns {Promise<string[]>} attribute value
+   * 
+   */
+  async grabValueFromAll(locator) {
+    const els = await findFields.call(this, locator);
+    const values = [];
+    for (const el of els) {
+      values.push(await (await el.getProperty('value')).jsonValue());
+    }
+    return values;
   }
 
   /**
    * Retrieves a value from a form element located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async function with `await`** operator.
+   * If more than one element is found - value of first element is returned.
    * 
    * ```js
    * let email = await I.grabValueFrom('input[name=email]');
    * ```
    * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
    * @returns {Promise<string>} attribute value
+   * 
    */
   async grabValueFrom(locator) {
-    const els = await findFields.call(this, locator);
-    assertElementExists(els, locator);
-    return els[0].getProperty('value').then(t => t.jsonValue());
+    const values = await this.grabValueFromAll(locator);
+    assertElementExists(values, locator);
+    if (values.length > 1) {
+      this.debugSection('GrabValue', `Using first element out of ${values.length}`);
+    }
+
+    return values[0];
+  }
+
+  /**
+   * Retrieves all the innerHTML from elements located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
+   * 
+   * ```js
+   * let postHTMLs = await I.grabHTMLFromAll('.post');
+   * ```
+   * 
+   * @param {CodeceptJS.LocatorOrString} element located by CSS|XPath|strict locator.
+   * @returns {Promise<string[]>} HTML code for an element
+   * 
+   */
+  async grabHTMLFromAll(locator) {
+    const els = await this._locate(locator);
+    const values = await Promise.all(els.map(el => el.executionContext().evaluate(element => element.innerHTML, el)));
+    return values;
   }
 
   /**
    * Retrieves the innerHTML from an element located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async function with `await`** operator.
-   * If more than one element is found - an array of HTMLs returned.
+   * If more than one element is found - HTML of first element is returned.
    * 
    * ```js
    * let postHTML = await I.grabHTMLFrom('#post');
@@ -2152,20 +2216,44 @@ class Puppeteer extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} element located by CSS|XPath|strict locator.
    * @returns {Promise<string>} HTML code for an element
+   * 
    */
   async grabHTMLFrom(locator) {
-    const els = await this._locate(locator);
-    assertElementExists(els, locator);
-    const values = await Promise.all(els.map(el => el.executionContext().evaluate(element => element.innerHTML, el)));
-    if (Array.isArray(values) && values.length === 1) {
-      return values[0];
+    const html = await this.grabHTMLFromAll(locator);
+    assertElementExists(html, locator);
+    if (html.length > 1) {
+      this.debugSection('GrabHTML', `Using first element out of ${html.length}`);
     }
-    return values;
+
+    return html[0];
+  }
+
+  /**
+   * Grab array of CSS properties for given locator
+   * Resumes test execution, so **should be used inside an async function with `await`** operator.
+   * 
+   * ```js
+   * const values = await I.grabCssPropertyFromAll('h3', 'font-weight');
+   * ```
+   * 
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string} cssProperty CSS property name.
+   * @returns {Promise<string[]>} CSS value
+   * 
+   * {{ react }}
+   */
+  async grabCssPropertyFromAll(locator, cssProperty) {
+    const els = await this._locate(locator);
+    const res = await Promise.all(els.map(el => el.executionContext().evaluate(el => JSON.parse(JSON.stringify(getComputedStyle(el))), el)));
+    const cssValues = res.map(props => props[toCamelCase(cssProperty)]);
+
+    return cssValues;
   }
 
   /**
    * Grab CSS property for given locator
    * Resumes test execution, so **should be used inside an async function with `await`** operator.
+   * If more than one element is found - value of first element is returned.
    * 
    * ```js
    * const value = await I.grabCssPropertyFrom('h3', 'font-weight');
@@ -2174,16 +2262,17 @@ class Puppeteer extends Helper {
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {string} cssProperty CSS property name.
    * @returns {Promise<string>} CSS value
+   * 
    * {{ react }}
    */
   async grabCssPropertyFrom(locator, cssProperty) {
-    const els = await this._locate(locator);
-    const res = await Promise.all(els.map(el => el.executionContext().evaluate(el => JSON.parse(JSON.stringify(getComputedStyle(el))), el)));
-    const cssValues = res.map(props => props[toCamelCase(cssProperty)]);
+    const cssValues = await this.grabCssPropertyFromAll(locator, cssProperty);
+    assertElementExists(cssValues, locator);
 
-    if (res.length > 0) {
-      return cssValues;
+    if (cssValues.length > 1) {
+      this.debugSection('GrabCSS', `Using first element out of ${cssValues.length}`);
     }
+
     return cssValues[0];
   }
 
@@ -2303,9 +2392,32 @@ class Puppeteer extends Helper {
   }
 
   /**
-   * Retrieves an attribute from an element located by CSS or XPath and returns it to test.
-   * An array as a result will be returned if there are more than one matched element.
+   * Retrieves an array of attributes from elements located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async with `await`** operator.
+   * 
+   * ```js
+   * let hints = await I.grabAttributeFromAll('.tooltip', 'title');
+   * ```
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string} attr attribute name.
+   * @returns {Promise<string[]>} attribute value
+   * 
+   * {{ react }}
+   */
+  async grabAttributeFromAll(locator, attr) {
+    const els = await this._locate(locator);
+    const array = [];
+    for (let index = 0; index < els.length; index++) {
+      const a = await this._evaluateHandeInContext((el, attr) => el[attr] || el.getAttribute(attr), els[index], attr);
+      array.push(await a.jsonValue());
+    }
+    return array;
+  }
+
+  /**
+   * Retrieves an attribute from an element located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async with `await`** operator.
+   * If more than one element is found - attribute of first element is returned.
    * 
    * ```js
    * let hint = await I.grabAttributeFrom('#tooltip', 'title');
@@ -2313,19 +2425,17 @@ class Puppeteer extends Helper {
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {string} attr attribute name.
    * @returns {Promise<string>} attribute value
+   * 
    * {{ react }}
    */
   async grabAttributeFrom(locator, attr) {
-    const els = await this._locate(locator);
-    assertElementExists(els, locator);
-    const array = [];
-
-    for (let index = 0; index < els.length; index++) {
-      const a = await this._evaluateHandeInContext((el, attr) => el[attr] || el.getAttribute(attr), els[index], attr);
-      array.push(await a.jsonValue());
+    const attrs = await this.grabAttributeFromAll(locator, attr);
+    assertElementExists(attrs, locator);
+    if (attrs.length > 1) {
+      this.debugSection('GrabAttribute', `Using first element out of ${attrs.length}`);
     }
 
-    return array.length === 1 ? array[0] : array;
+    return attrs[0];
   }
 
   /**
@@ -2362,7 +2472,7 @@ class Puppeteer extends Helper {
     return this.page.screenshot({ path: outputFile, fullPage: fullPageOption, type: 'png' });
   }
 
-  async _failed(test) {
+  async _failed() {
     await this._withinEnd();
   }
 
@@ -2391,7 +2501,7 @@ class Puppeteer extends Helper {
   async waitForEnabled(locator, sec) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
     locator = new Locator(locator, 'css');
-    const matcher = await this.context;
+    await this.context;
     let waiter;
     const context = await this._getContext();
     if (locator.isCSS()) {
@@ -2429,7 +2539,7 @@ class Puppeteer extends Helper {
   async waitForValue(field, value, sec) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
     const locator = new Locator(field, 'css');
-    const matcher = await this.context;
+    await this.context;
     let waiter;
     const context = await this._getContext();
     if (locator.isCSS()) {
@@ -2469,7 +2579,7 @@ class Puppeteer extends Helper {
   async waitNumberOfVisibleElements(locator, num, sec) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
     locator = new Locator(locator, 'css');
-    const matcher = await this.context;
+    await this.context;
     let waiter;
     const context = await this._getContext();
     if (locator.isCSS()) {
@@ -2557,13 +2667,14 @@ class Puppeteer extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
+   * 
    *
    * This method accepts [React selectors](https://codecept.io/react).
    */
   async waitForVisible(locator, sec) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
     locator = new Locator(locator, 'css');
-    const matcher = await this.context;
+    await this.context;
     let waiter;
     const context = await this._getContext();
     if (locator.isCSS()) {
@@ -2590,7 +2701,7 @@ class Puppeteer extends Helper {
   async waitForInvisible(locator, sec) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
     locator = new Locator(locator, 'css');
-    const matcher = await this.context;
+    await this.context;
     let waiter;
     const context = await this._getContext();
     if (locator.isCSS()) {
@@ -3126,7 +3237,7 @@ async function findFields(locator) {
   return this._locate({ css: locator });
 }
 
-async function proceedDragAndDrop(sourceLocator, destinationLocator, options = {}) {
+async function proceedDragAndDrop(sourceLocator, destinationLocator) {
   const src = await this._locate(sourceLocator);
   assertElementExists(src, sourceLocator, 'Source Element');
 
@@ -3262,7 +3373,7 @@ function $XPath(element, selector) {
 async function targetCreatedHandler(page) {
   if (!page) return;
   this.withinLocator = null;
-  page.on('load', (frame) => {
+  page.on('load', () => {
     page.$('body')
       .catch(() => null)
       .then(context => this.context = context);

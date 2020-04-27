@@ -14,6 +14,7 @@ const {
   xpathLocator,
   fileExists,
   screenshotOutputFolder,
+  toCamelCase,
 } = require('../utils');
 
 const specialKeys = {
@@ -215,7 +216,7 @@ class Nightmare extends Helper {
               win.webContents.debugger.sendCommand('DOM.setFileInputFiles', {
                 nodeId: queryResult.nodeId,
                 files: pathsToUpload,
-              }, (err, setFileResult) => {
+              }, (err) => {
                 if (Object.keys(err)
                   .length > 0) {
                   parent.emit('log', 'problem setting input', err);
@@ -857,8 +858,8 @@ class Nightmare extends Helper {
    *
    * Wrapper for synchronous [evaluate](https://github.com/segmentio/nightmare#evaluatefn-arg1-arg2)
    */
-  async executeScript(fn) {
-    return this.browser.evaluate.apply(this.browser, arguments)
+  async executeScript(...args) {
+    return this.browser.evaluate.apply(this.browser, args)
       .catch(err => err); // Nightmare's first argument is error :(
   }
 
@@ -892,8 +893,8 @@ class Nightmare extends Helper {
    * Wrapper for asynchronous [evaluate](https://github.com/segmentio/nightmare#evaluatefn-arg1-arg2).
    * Unlike NightmareJS implementation calling `done` will return its first argument.
    */
-  async executeAsyncScript(fn) {
-    return this.browser.evaluate.apply(this.browser, arguments)
+  async executeAsyncScript(...args) {
+    return this.browser.evaluate.apply(this.browser, args)
       .catch(err => err); // Nightmare's first argument is error :(
   }
 
@@ -1133,50 +1134,129 @@ class Nightmare extends Helper {
   }
 
   /**
+   * Retrieves all texts from an element located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async with `await`** operator.
+   * 
+   * ```js
+   * let pins = await I.grabTextFromAll('#pin li');
+   * ```
+   * 
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @returns {Promise<string[]>} attribute value
+   * 
+   */
+  async grabTextFromAll(locator) {
+    locator = new Locator(locator, 'css');
+    const els = await this.browser.findElements(locator.toStrict());
+    const texts = [];
+    const getText = el => window.codeceptjs.fetchElement(el).innerText;
+    for (const el of els) {
+      texts.push(await this.browser.evaluate(getText, el));
+    }
+    return texts;
+  }
+
+  /**
    * Retrieves a text from an element located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async with `await`** operator.
    * 
    * ```js
    * let pin = await I.grabTextFrom('#pin');
    * ```
-   * If multiple elements found returns an array of texts.
+   * If multiple elements found returns first element.
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
-   * @returns {Promise<string|string[]>} attribute value
+   * @returns {Promise<string>} attribute value
+   * 
    */
   async grabTextFrom(locator) {
     locator = new Locator(locator, 'css');
-    const els = await this.browser.findElements(locator.toStrict());
-    assertElementExists(els[0], locator);
-    const texts = [];
-    const getText = el => window.codeceptjs.fetchElement(el).innerText;
-    for (const el of els) {
-      texts.push(await this.browser.evaluate(getText, el));
+    const els = await this.browser.findElement(locator.toStrict());
+    assertElementExists(els, locator);
+    const texts = await this.grabTextFromAll(locator);
+    if (texts.length > 1) {
+      this.debugSection('GrabText', `Using first element out of ${texts.length}`);
     }
-    if (texts.length === 1) return texts[0];
-    return texts;
+
+    return texts[0];
   }
 
   /**
    * Retrieves a value from a form element located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async function with `await`** operator.
+   * If more than one element is found - value of first element is returned.
    * 
    * ```js
    * let email = await I.grabValueFrom('input[name=email]');
    * ```
    * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
    * @returns {Promise<string>} attribute value
+   * 
+   */
+  async grabValueFromAll(locator) {
+    locator = new Locator(locator, 'css');
+    const els = await this.browser.findElements(locator.toStrict());
+    const values = [];
+    const getValues = el => window.codeceptjs.fetchElement(el).value;
+    for (const el of els) {
+      values.push(await this.browser.evaluate(getValues, el));
+    }
+
+    return values;
+  }
+
+  /**
+   * Retrieves a value from a form element located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
+   * If more than one element is found - value of first element is returned.
+   * 
+   * ```js
+   * let email = await I.grabValueFrom('input[name=email]');
+   * ```
+   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
+   * @returns {Promise<string>} attribute value
+   * 
    */
   async grabValueFrom(locator) {
     const el = await findField.call(this, locator);
     assertElementExists(el, locator, 'Field');
-    return this.browser.evaluate(el => window.codeceptjs.fetchElement(el).value, el);
+    const values = await this.grabValueFromAll(locator);
+    if (values.length > 1) {
+      this.debugSection('GrabValue', `Using first element out of ${values.length}`);
+    }
+
+    return values[0];
+  }
+
+  /**
+   * Retrieves an array of attributes from elements located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async with `await`** operator.
+   * 
+   * ```js
+   * let hints = await I.grabAttributeFromAll('.tooltip', 'title');
+   * ```
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string} attr attribute name.
+   * @returns {Promise<string[]>} attribute value
+   * 
+   */
+  async grabAttributeFromAll(locator, attr) {
+    locator = new Locator(locator, 'css');
+    const els = await this.browser.findElements(locator.toStrict());
+    const array = [];
+
+    for (let index = 0; index < els.length; index++) {
+      const el = els[index];
+      array.push(await this.browser.evaluate((el, attr) => window.codeceptjs.fetchElement(el).getAttribute(attr), el, attr));
+    }
+
+    return array;
   }
 
   /**
    * Retrieves an attribute from an element located by CSS or XPath and returns it to test.
-   * An array as a result will be returned if there are more than one matched element.
    * Resumes test execution, so **should be used inside async with `await`** operator.
+   * If more than one element is found - attribute of first element is returned.
    * 
    * ```js
    * let hint = await I.grabAttributeFrom('#tooltip', 'title');
@@ -1184,25 +1264,51 @@ class Nightmare extends Helper {
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {string} attr attribute name.
    * @returns {Promise<string>} attribute value
+   * 
    */
   async grabAttributeFrom(locator, attr) {
+    locator = new Locator(locator, 'css');
+    const els = await this.browser.findElement(locator.toStrict());
+    assertElementExists(els, locator);
+
+    const attrs = await this.grabAttributeFromAll(locator, attr);
+    if (attrs.length > 1) {
+      this.debugSection('GrabAttribute', `Using first element out of ${attrs.length}`);
+    }
+
+    return attrs[0];
+  }
+
+  /**
+   * Retrieves all the innerHTML from elements located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
+   * 
+   * ```js
+   * let postHTMLs = await I.grabHTMLFromAll('.post');
+   * ```
+   * 
+   * @param {CodeceptJS.LocatorOrString} element located by CSS|XPath|strict locator.
+   * @returns {Promise<string[]>} HTML code for an element
+   * 
+   */
+  async grabHTMLFromAll(locator) {
     locator = new Locator(locator, 'css');
     const els = await this.browser.findElements(locator.toStrict());
     const array = [];
 
     for (let index = 0; index < els.length; index++) {
       const el = els[index];
-      assertElementExists(el, locator);
-      array.push(await this.browser.evaluate((el, attr) => window.codeceptjs.fetchElement(el).getAttribute(attr), el, attr));
+      array.push(await this.browser.evaluate(el => window.codeceptjs.fetchElement(el).innerHTML, el));
     }
+    this.debugSection('GrabHTML', array);
 
-    return array.length === 1 ? array[0] : array;
+    return array;
   }
 
   /**
    * Retrieves the innerHTML from an element located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async function with `await`** operator.
-   * If more than one element is found - an array of HTMLs returned.
+   * If more than one element is found - HTML of first element is returned.
    * 
    * ```js
    * let postHTML = await I.grabHTMLFrom('#post');
@@ -1210,20 +1316,53 @@ class Nightmare extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} element located by CSS|XPath|strict locator.
    * @returns {Promise<string>} HTML code for an element
+   * 
    */
   async grabHTMLFrom(locator) {
+    locator = new Locator(locator, 'css');
+    const els = await this.browser.findElement(locator.toStrict());
+    assertElementExists(els, locator);
+    const html = await this.grabHTMLFromAll(locator);
+    if (html.length > 1) {
+      this.debugSection('GrabHTML', `Using first element out of ${html.length}`);
+    }
+
+    return html[0];
+  }
+
+  /**
+   * Grab CSS property for given locator
+   * Resumes test execution, so **should be used inside an async function with `await`** operator.
+   * If more than one element is found - value of first element is returned.
+   * 
+   * ```js
+   * const value = await I.grabCssPropertyFrom('h3', 'font-weight');
+   * ```
+   * 
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string} cssProperty CSS property name.
+   * @returns {Promise<string>} CSS value
+   * 
+   */
+  async grabCssPropertyFrom(locator, cssProperty) {
     locator = new Locator(locator, 'css');
     const els = await this.browser.findElements(locator.toStrict());
     const array = [];
 
-    for (let index = 0; index < els.length; index++) {
-      const el = els[index];
+    const getCssPropForElement = async (el, prop) => {
+      return (await this.browser.evaluate((el) => {
+        return window.getComputedStyle(window.codeceptjs.fetchElement(el));
+      }, el))[toCamelCase(prop)];
+    };
+
+    for (const el of els) {
       assertElementExists(el, locator);
-      array.push(await this.browser.evaluate(el => window.codeceptjs.fetchElement(el).innerHTML, el));
+      const cssValue = await getCssPropForElement(el, cssProperty);
+      array.push(cssValue);
     }
     this.debugSection('HTML', array);
 
-    return array.length === 1 ? array[0] : array;
+    return array.length > 1 ? array : array[0];
   }
 
 
@@ -1280,7 +1419,6 @@ class Nightmare extends Helper {
     if (!Array.isArray(option)) {
       option = [option];
     }
-    const promises = [];
 
     for (const key in option) {
       const opt = xpathLocator.literal(option[key]);
@@ -1474,6 +1612,7 @@ class Nightmare extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
+   * 
    */
   waitForVisible(locator, sec) {
     this.browser.options.waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
@@ -1621,7 +1760,6 @@ class Nightmare extends Helper {
     const outputFile = screenshotOutputFolder(fileName);
 
     this.debug(`Screenshot is saving to ${outputFile}`);
-    const recorder = require('../recorder');
 
     if (!fullPage) {
       return this.browser.screenshot(outputFile);
@@ -1633,7 +1771,7 @@ class Nightmare extends Helper {
     return this.browser.screenshot(outputFile);
   }
 
-  async _failed(test) {
+  async _failed() {
     if (withinStatus !== false) await this._withinEnd();
   }
 

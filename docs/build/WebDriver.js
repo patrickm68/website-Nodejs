@@ -380,9 +380,7 @@ class WebDriver extends Helper {
   constructor(config) {
     super(config);
     webdriverio = requireg('webdriverio');
-    if (webdriverio.VERSION && webdriverio.VERSION.indexOf('4') === 0) {
-      throw new Error(`This helper is compatible with "webdriverio@5". Current version: ${webdriverio.VERSION}. Please upgrade webdriverio to v5+ or use WebDriverIO helper instead`);
-    }
+
     try {
       version = JSON.parse(fs.readFileSync(path.join(requireg.resolve('webdriverio'), '/../../', 'package.json')).toString()).version;
     } catch (err) {
@@ -431,9 +429,6 @@ class WebDriver extends Helper {
       keepCookies: false,
       keepBrowserState: false,
       deprecationWarnings: false,
-      timeouts: {
-        script: 1000, // ms
-      },
     };
 
 
@@ -618,7 +613,7 @@ class WebDriver extends Helper {
     };
   }
 
-  async _failed(test) {
+  async _failed() {
     if (this.context !== this.root) await this._withinEnd();
   }
 
@@ -1223,35 +1218,73 @@ class WebDriver extends Helper {
   }
 
   /**
+   * Retrieves all texts from an element located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async with `await`** operator.
+   * 
+   * ```js
+   * let pins = await I.grabTextFromAll('#pin li');
+   * ```
+   * 
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @returns {Promise<string[]>} attribute value
+   * 
+   *
+   */
+  async grabTextFromAll(locator) {
+    const res = await this._locate(locator, true);
+    const val = await forEachAsync(res, el => this.browser.getElementText(getElementId(el)));
+    this.debugSection('GrabText', String(val));
+    return val;
+  }
+
+  /**
    * Retrieves a text from an element located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async with `await`** operator.
    * 
    * ```js
    * let pin = await I.grabTextFrom('#pin');
    * ```
-   * If multiple elements found returns an array of texts.
+   * If multiple elements found returns first element.
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
-   * @returns {Promise<string|string[]>} attribute value
+   * @returns {Promise<string>} attribute value
+   * 
    *
    */
   async grabTextFrom(locator) {
-    const res = await this._locate(locator, true);
-    assertElementExists(res, locator);
-    let val;
-    if (res.length > 1) {
-      val = await forEachAsync(res, async el => this.browser.getElementText(getElementId(el)));
-    } else {
-      val = await this.browser.getElementText(getElementId(res[0]));
+    const texts = await this.grabTextFromAll(locator);
+    assertElementExists(texts, locator);
+    if (texts.length > 1) {
+      this.debugSection('GrabText', `Using first element out of ${texts.length}`);
     }
-    this.debugSection('Grab', val);
-    return val;
+
+    return texts[0];
+  }
+
+  /**
+   * Retrieves all the innerHTML from elements located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
+   * 
+   * ```js
+   * let postHTMLs = await I.grabHTMLFromAll('.post');
+   * ```
+   * 
+   * @param {CodeceptJS.LocatorOrString} element located by CSS|XPath|strict locator.
+   * @returns {Promise<string[]>} HTML code for an element
+   * 
+   *
+   */
+  async grabHTMLFromAll(locator) {
+    const elems = await this._locate(locator, true);
+    const html = await forEachAsync(elems, elem => elem.getHTML(false));
+    this.debugSection('GrabHTML', String(html));
+    return html;
   }
 
   /**
    * Retrieves the innerHTML from an element located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async function with `await`** operator.
-   * If more than one element is found - an array of HTMLs returned.
+   * If more than one element is found - HTML of first element is returned.
    * 
    * ```js
    * let postHTML = await I.grabHTMLFrom('#post');
@@ -1259,40 +1292,86 @@ class WebDriver extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} element located by CSS|XPath|strict locator.
    * @returns {Promise<string>} HTML code for an element
+   * 
    *
    */
   async grabHTMLFrom(locator) {
-    const elems = await this._locate(locator, true);
-    assertElementExists(elems, locator);
-    const values = await Promise.all(elems.map(elem => elem.getHTML(false)));
-    this.debugSection('Grab', values);
-    if (Array.isArray(values) && values.length === 1) {
-      return values[0];
+    const html = await this.grabHTMLFromAll(locator);
+    assertElementExists(html);
+    if (html.length > 1) {
+      this.debugSection('GrabHTML', `Using first element out of ${html.length}`);
     }
-    return values;
+
+    return html[0];
+  }
+
+  /**
+   * Retrieves an array of value from a form located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
+   * 
+   * ```js
+   * let inputs = await I.grabValueFromAll('//form/input');
+   * ```
+   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
+   * @returns {Promise<string[]>} attribute value
+   * 
+   *
+   */
+  async grabValueFromAll(locator) {
+    const res = await this._locate(locator, true);
+    const val = await forEachAsync(res, el => el.getValue());
+    this.debugSection('GrabValue', String(val));
+
+    return val;
   }
 
   /**
    * Retrieves a value from a form element located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async function with `await`** operator.
+   * If more than one element is found - value of first element is returned.
    * 
    * ```js
    * let email = await I.grabValueFrom('input[name=email]');
    * ```
    * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
    * @returns {Promise<string>} attribute value
+   * 
    *
    */
   async grabValueFrom(locator) {
-    const res = await this._locate(locator, true);
-    assertElementExists(res, locator);
+    const values = await this.grabValueFromAll(locator);
+    assertElementExists(values, locator);
+    if (values.length > 1) {
+      this.debugSection('GrabValue', `Using first element out of ${values.length}`);
+    }
 
-    return forEachAsync(res, async el => el.getValue());
+    return values[0];
+  }
+
+  /**
+   * Grab array of CSS properties for given locator
+   * Resumes test execution, so **should be used inside an async function with `await`** operator.
+   * 
+   * ```js
+   * const values = await I.grabCssPropertyFromAll('h3', 'font-weight');
+   * ```
+   * 
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string} cssProperty CSS property name.
+   * @returns {Promise<string[]>} CSS value
+   * 
+   */
+  async grabCssPropertyFromAll(locator, cssProperty) {
+    const res = await this._locate(locator, true);
+    const val = await forEachAsync(res, async el => this.browser.getElementCSSValue(getElementId(el), cssProperty));
+    this.debugSection('Grab', String(val));
+    return val;
   }
 
   /**
    * Grab CSS property for given locator
    * Resumes test execution, so **should be used inside an async function with `await`** operator.
+   * If more than one element is found - value of first element is returned.
    * 
    * ```js
    * const value = await I.grabCssPropertyFrom('h3', 'font-weight');
@@ -1301,17 +1380,43 @@ class WebDriver extends Helper {
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {string} cssProperty CSS property name.
    * @returns {Promise<string>} CSS value
+   * 
    */
   async grabCssPropertyFrom(locator, cssProperty) {
+    const cssValues = await this.grabCssPropertyFromAll(locator, cssProperty);
+    assertElementExists(cssValues, locator);
+
+    if (cssValues.length > 1) {
+      this.debugSection('GrabCSS', `Using first element out of ${cssValues.length}`);
+    }
+
+    return cssValues[0];
+  }
+
+  /**
+   * Retrieves an array of attributes from elements located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async with `await`** operator.
+   * 
+   * ```js
+   * let hints = await I.grabAttributeFromAll('.tooltip', 'title');
+   * ```
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string} attr attribute name.
+   * @returns {Promise<string[]>} attribute value
+   * 
+   * Appium: can be used for apps only with several values ("contentDescription", "text", "className", "resourceId")
+   */
+  async grabAttributeFromAll(locator, attr) {
     const res = await this._locate(locator, true);
-    assertElementExists(res, locator);
-    return forEachAsync(res, async el => this.browser.getElementCSSValue(getElementId(el), cssProperty));
+    const val = await forEachAsync(res, async el => el.getAttribute(attr));
+    this.debugSection('GrabAttribute', String(val));
+    return val;
   }
 
   /**
    * Retrieves an attribute from an element located by CSS or XPath and returns it to test.
-   * An array as a result will be returned if there are more than one matched element.
    * Resumes test execution, so **should be used inside async with `await`** operator.
+   * If more than one element is found - attribute of first element is returned.
    * 
    * ```js
    * let hint = await I.grabAttributeFrom('#tooltip', 'title');
@@ -1319,12 +1424,16 @@ class WebDriver extends Helper {
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {string} attr attribute name.
    * @returns {Promise<string>} attribute value
+   * 
    * Appium: can be used for apps only with several values ("contentDescription", "text", "className", "resourceId")
    */
   async grabAttributeFrom(locator, attr) {
-    const res = await this._locate(locator, true);
-    assertElementExists(res, locator);
-    return forEachAsync(res, async el => el.getAttribute(attr));
+    const attrs = await this.grabAttributeFromAll(locator, attr);
+    assertElementExists(attrs, locator);
+    if (attrs.length > 1) {
+      this.debugSection('GrabAttribute', `Using first element out of ${attrs.length}`);
+    }
+    return attrs[0];
   }
 
   /**
@@ -1880,8 +1989,8 @@ class WebDriver extends Helper {
    *
    * Wraps [execute](http://webdriver.io/api/protocol/execute.html) command.
    */
-  executeScript(fn) {
-    return this.browser.execute.apply(this.browser, arguments);
+  executeScript(...args) {
+    return this.browser.execute.apply(this.browser, args);
   }
 
   /**
@@ -1912,8 +2021,8 @@ class WebDriver extends Helper {
    * 
    *
    */
-  executeAsyncScript(fn) {
-    return this.browser.executeAsync.apply(this.browser, arguments);
+  executeAsyncScript(...args) {
+    return this.browser.executeAsync.apply(this.browser, args);
   }
 
   /**
@@ -2821,6 +2930,7 @@ class WebDriver extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
+   * 
    *
    */
   async waitForVisible(locator, sec = null) {
@@ -3318,6 +3428,7 @@ class WebDriver extends Helper {
   /**
    * Placeholder for ~ locator only test case write once run on both Appium and WebDriver.
    */
+  /* eslint-disable */
   runOnIOS(caps, fn) {
   }
 
@@ -3326,6 +3437,7 @@ class WebDriver extends Helper {
    */
   runOnAndroid(caps, fn) {
   }
+  /* eslint-enable */
 
   /**
    * Placeholder for ~ locator only test case write once run on both Appium and WebDriver.

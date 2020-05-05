@@ -10,7 +10,7 @@
       @toggle-sidebar="toggleSidebar"
     />
 
-    <section class="hero"></section>
+    <div class="hero"></div>
 
 
     <section class="container post">

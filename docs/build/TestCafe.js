@@ -397,7 +397,6 @@ class TestCafe extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * 
    *
    */
   async waitForVisible(locator, sec) {
@@ -1062,8 +1061,10 @@ class TestCafe extends Helper {
    * @param {string} fileName file name to save.
    * @param {boolean} [fullPage=false] (optional, `false` by default) flag to enable fullscreen screenshot mode.
    */
-  // TODO Implement full page screenshots
-  async saveScreenshot(fileName) {
+  async saveScreenshot(fileName, fullPage) {
+    // TODO Implement full page screenshots
+    const fullPageOption = fullPage || this.options.fullPageScreenshots;
+
     const outputFile = path.join(global.output_dir, fileName);
     this.debug(`Screenshot is saving to ${outputFile}`);
 
@@ -1124,56 +1125,36 @@ class TestCafe extends Helper {
   }
 
   /**
-   * Retrieves all texts from an element located by CSS or XPath and returns it to test.
-   * Resumes test execution, so **should be used inside async with `await`** operator.
-   * 
-   * ```js
-   * let pins = await I.grabTextFromAll('#pin li');
-   * ```
-   * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
-   * @returns {Promise<string[]>} attribute value
-   * 
-   */
-  async grabTextFromAll(locator) {
-    const sel = await findElements.call(this, this.context, locator);
-    const length = await sel.count;
-    const texts = [];
-    for (let i = 0; i < length; i++) {
-      texts.push(await sel.nth(i).innerText);
-    }
-
-    return texts;
-  }
-
-  /**
    * Retrieves a text from an element located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async with `await`** operator.
    * 
    * ```js
    * let pin = await I.grabTextFrom('#pin');
    * ```
-   * If multiple elements found returns first element.
+   * If multiple elements found returns an array of texts.
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
-   * @returns {Promise<string>} attribute value
-   * 
+   * @returns {Promise<string|string[]>} attribute value
    */
   async grabTextFrom(locator) {
     const sel = await findElements.call(this, this.context, locator);
     assertElementExists(sel);
-    const texts = await this.grabTextFromAll(locator);
-    if (texts.length > 1) {
-      this.debugSection('GrabText', `Using first element out of ${texts.length}`);
+    const num = await sel.count;
+    if (num) {
+      const res = [];
+      for (let i = 0; i < num; i++) {
+        res.push(await sel.nth(i).innerText);
+      }
+      return res;
     }
 
-    return texts[0];
+    return sel.nth(0).innerText;
   }
 
   /**
    * Retrieves an attribute from an element located by CSS or XPath and returns it to test.
+   * An array as a result will be returned if there are more than one matched element.
    * Resumes test execution, so **should be used inside async with `await`** operator.
-   * If more than one element is found - attribute of first element is returned.
    * 
    * ```js
    * let hint = await I.grabAttributeFrom('#tooltip', 'title');
@@ -1181,86 +1162,27 @@ class TestCafe extends Helper {
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {string} attr attribute name.
    * @returns {Promise<string>} attribute value
-   * 
-   */
-  async grabAttributeFromAll(locator, attr) {
-    const sel = await findElements.call(this, this.context, locator);
-    const length = await sel.count;
-    const attrs = [];
-    for (let i = 0; i < length; i++) {
-      attrs.push(await (await sel.nth(i)).getAttribute(attr));
-    }
-
-    return attrs;
-  }
-
-  /**
-   * Retrieves an attribute from an element located by CSS or XPath and returns it to test.
-   * Resumes test execution, so **should be used inside async with `await`** operator.
-   * If more than one element is found - attribute of first element is returned.
-   * 
-   * ```js
-   * let hint = await I.grabAttributeFrom('#tooltip', 'title');
-   * ```
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
-   * @param {string} attr attribute name.
-   * @returns {Promise<string>} attribute value
-   * 
    */
   async grabAttributeFrom(locator, attr) {
     const sel = await findElements.call(this, this.context, locator);
     assertElementExists(sel);
-    const attrs = await this.grabAttributeFromAll(locator, attr);
-    if (attrs.length > 1) {
-      this.debugSelection('GrabAttribute', `Using first element out of ${attrs.length}`);
-    }
-
-    return attrs[0];
-  }
-
-  /**
-   * Retrieves an array of value from a form located by CSS or XPath and returns it to test.
-   * Resumes test execution, so **should be used inside async function with `await`** operator.
-   * 
-   * ```js
-   * let inputs = await I.grabValueFromAll('//form/input');
-   * ```
-   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
-   * @returns {Promise<string[]>} attribute value
-   * 
-   */
-  async grabValueFromAll(locator) {
-    const sel = await findElements.call(this, this.context, locator);
-    const length = await sel.count;
-    const values = [];
-    for (let i = 0; i < length; i++) {
-      values.push(await (await sel.nth(i)).value);
-    }
-
-    return values;
+    return (await sel.nth(0)).getAttribute(attr);
   }
 
   /**
    * Retrieves a value from a form element located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async function with `await`** operator.
-   * If more than one element is found - value of first element is returned.
    * 
    * ```js
    * let email = await I.grabValueFrom('input[name=email]');
    * ```
    * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
    * @returns {Promise<string>} attribute value
-   * 
    */
   async grabValueFrom(locator) {
     const sel = await findElements.call(this, this.context, locator);
     assertElementExists(sel);
-    const values = await this.grabValueFromAll(locator);
-    if (values.length > 1) {
-      this.debugSection('GrabValue', `Using first element out of ${values.length}`);
-    }
-
-    return values[0];
+    return (await sel.nth(0)).value;
   }
 
   /**
@@ -1556,7 +1478,7 @@ class TestCafe extends Helper {
       return currUrl.indexOf(urlPart) > -1;
     }, [urlPart]).with({ boundTestRun: this.t });
 
-    return waitForFunction(clientFn, waitTimeout).catch(async () => {
+    return waitForFunction(clientFn, waitTimeout).catch(async (err) => {
       const currUrl = await this.grabCurrentUrl();
       throw new Error(`expected url to include ${urlPart}, but found ${currUrl}`);
     });
@@ -1586,7 +1508,7 @@ class TestCafe extends Helper {
       return currUrl === urlPart;
     }, [urlPart]).with({ boundTestRun: this.t });
 
-    return waitForFunction(clientFn, waitTimeout).catch(async () => {
+    return waitForFunction(clientFn, waitTimeout).catch(async (err) => {
       const currUrl = await this.grabCurrentUrl();
       throw new Error(`expected url to be ${urlPart}, but found ${currUrl}`);
     });

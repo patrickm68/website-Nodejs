@@ -55,7 +55,7 @@ let Runner;
  * * `waitForTimeout`: (optional) sets default wait time in _ms_ for all `wait*` functions. 1000 by default.
  * * `scriptsTimeout`: (optional) timeout in milliseconds for each script run on the browser, 10000 by default.
  * * `windowSize`: (optional) default window size. Set to `maximize` or a dimension in the format `640x480`.
- * * `manualStart` (optional, default: false) - do not start browser before a test, start it manually inside a helper with `this.helpers.WebDriver._startBrowser()`
+ * * `manualStart` (optional, default: false) - do not start browser before a test, start it manually inside a helper with `this.helpers["WebDriverIO"]._startBrowser()`
  * * `capabilities`: {} - list of [Desired Capabilities](https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities)
  * * `proxy`: set proxy settings
  *
@@ -271,7 +271,7 @@ class Protractor extends Helper {
     return this.closeOtherTabs();
   }
 
-  async _failed() {
+  async _failed(test, err) {
     await this._withinEnd();
   }
 
@@ -926,75 +926,32 @@ class Protractor extends Helper {
   }
 
   /**
-   * Retrieves all texts from an element located by CSS or XPath and returns it to test.
-   * Resumes test execution, so **should be used inside async with `await`** operator.
-   * 
-   * ```js
-   * let pins = await I.grabTextFromAll('#pin li');
-   * ```
-   * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
-   * @returns {Promise<string[]>} attribute value
-   * 
-   */
-  async grabTextFromAll(locator) {
-    const els = await this._locate(locator);
-    const texts = [];
-    for (const el of els) {
-      texts.push(await el.getText());
-    }
-    return texts;
-  }
-
-  /**
    * Retrieves a text from an element located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async with `await`** operator.
    * 
    * ```js
    * let pin = await I.grabTextFrom('#pin');
    * ```
-   * If multiple elements found returns first element.
+   * If multiple elements found returns an array of texts.
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
-   * @returns {Promise<string>} attribute value
-   * 
+   * @returns {Promise<string|string[]>} attribute value
    */
   async grabTextFrom(locator) {
-    const texts = await this.grabTextFromAll(locator);
-    assertElementExists(texts);
-    if (texts.length > 1) {
-      this.debugSection('GrabText', `Using first element out of ${texts.length}`);
-    }
-
-    return texts[0];
-  }
-
-  /**
-   * Retrieves all the innerHTML from elements located by CSS or XPath and returns it to test.
-   * Resumes test execution, so **should be used inside async function with `await`** operator.
-   * 
-   * ```js
-   * let postHTMLs = await I.grabHTMLFromAll('.post');
-   * ```
-   * 
-   * @param {CodeceptJS.LocatorOrString} element located by CSS|XPath|strict locator.
-   * @returns {Promise<string[]>} HTML code for an element
-   * 
-   */
-  async grabHTMLFromAll(locator) {
     const els = await this._locate(locator);
-
-    const html = await Promise.all(els.map((el) => {
-      return this.browser.executeScript('return arguments[0].innerHTML;', el);
-    }));
-
-    return html;
+    assertElementExists(els);
+    const texts = [];
+    for (const el of els) {
+      texts.push(await el.getText());
+    }
+    if (texts.length === 1) return texts[0];
+    return texts;
   }
 
   /**
    * Retrieves the innerHTML from an element located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async function with `await`** operator.
-   * If more than one element is found - HTML of first element is returned.
+   * If more than one element is found - an array of HTMLs returned.
    * 
    * ```js
    * let postHTML = await I.grabHTMLFrom('#post');
@@ -1002,82 +959,40 @@ class Protractor extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} element located by CSS|XPath|strict locator.
    * @returns {Promise<string>} HTML code for an element
-   * 
    */
   async grabHTMLFrom(locator) {
-    const html = await this.grabHTMLFromAll(locator);
-    assertElementExists(html);
-    if (html.length > 1) {
-      this.debugSection('GrabHTMl', `Using first element out of ${html.length}`);
+    const els = await this._locate(locator);
+    assertElementExists(els);
+
+    const html = await Promise.all(els.map((el) => {
+      return this.browser.executeScript('return arguments[0].innerHTML;', el);
+    }));
+
+    if (html.length === 1) {
+      return html[0];
     }
-
-    return html[0];
-  }
-
-  /**
-   * Retrieves an array of value from a form located by CSS or XPath and returns it to test.
-   * Resumes test execution, so **should be used inside async function with `await`** operator.
-   * 
-   * ```js
-   * let inputs = await I.grabValueFromAll('//form/input');
-   * ```
-   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
-   * @returns {Promise<string[]>} attribute value
-   * 
-   */
-  async grabValueFromAll(locator) {
-    const els = await findFields(this.browser, locator);
-    const values = await Promise.all(els.map(el => el.getAttribute('value')));
-
-    return values;
+    return html;
   }
 
   /**
    * Retrieves a value from a form element located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async function with `await`** operator.
-   * If more than one element is found - value of first element is returned.
    * 
    * ```js
    * let email = await I.grabValueFrom('input[name=email]');
    * ```
    * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
    * @returns {Promise<string>} attribute value
-   * 
    */
   async grabValueFrom(locator) {
-    const values = await this.grabValueFromAll(locator);
-    assertElementExists(values, locator, 'Field');
-    if (values.length > 1) {
-      this.debugSection('GrabValue', `Using first element out of ${values.length}`);
-    }
-
-    return values[0];
-  }
-
-  /**
-   * Grab array of CSS properties for given locator
-   * Resumes test execution, so **should be used inside an async function with `await`** operator.
-   * 
-   * ```js
-   * const values = await I.grabCssPropertyFromAll('h3', 'font-weight');
-   * ```
-   * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
-   * @param {string} cssProperty CSS property name.
-   * @returns {Promise<string[]>} CSS value
-   * 
-   */
-  async grabCssPropertyFromAll(locator, cssProperty) {
-    const els = await this._locate(locator, true);
-    const values = await Promise.all(els.map(el => el.getCssValue(cssProperty)));
-
-    return values;
+    const els = await findFields(this.browser, locator);
+    assertElementExists(els, locator, 'Field');
+    return els[0].getAttribute('value');
   }
 
   /**
    * Grab CSS property for given locator
    * Resumes test execution, so **should be used inside an async function with `await`** operator.
-   * If more than one element is found - value of first element is returned.
    * 
    * ```js
    * const value = await I.grabCssPropertyFrom('h3', 'font-weight');
@@ -1086,46 +1001,22 @@ class Protractor extends Helper {
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {string} cssProperty CSS property name.
    * @returns {Promise<string>} CSS value
-   * 
    */
   async grabCssPropertyFrom(locator, cssProperty) {
-    const cssValues = await this.grabCssPropertyFromAll(locator, cssProperty);
-    assertElementExists(cssValues, locator);
+    const els = await this._locate(locator, true);
+    assertElementExists(els, locator);
+    const values = await Promise.all(els.map(el => el.getCssValue(cssProperty)));
 
-    if (cssValues.length > 1) {
-      this.debugSection('GrabCSS', `Using first element out of ${cssValues.length}`);
+    if (Array.isArray(values) && values.length === 1) {
+      return values[0];
     }
-
-    return cssValues[0];
-  }
-
-  /**
-   * Retrieves an array of attributes from elements located by CSS or XPath and returns it to test.
-   * Resumes test execution, so **should be used inside async with `await`** operator.
-   * 
-   * ```js
-   * let hints = await I.grabAttributeFromAll('.tooltip', 'title');
-   * ```
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
-   * @param {string} attr attribute name.
-   * @returns {Promise<string[]>} attribute value
-   * 
-   */
-  async grabAttributeFromAll(locator, attr) {
-    const els = await this._locate(locator);
-    const array = [];
-
-    for (let index = 0; index < els.length; index++) {
-      const el = els[index];
-      array.push(await el.getAttribute(attr));
-    }
-    return array;
+    return values;
   }
 
   /**
    * Retrieves an attribute from an element located by CSS or XPath and returns it to test.
+   * An array as a result will be returned if there are more than one matched element.
    * Resumes test execution, so **should be used inside async with `await`** operator.
-   * If more than one element is found - attribute of first element is returned.
    * 
    * ```js
    * let hint = await I.grabAttributeFrom('#tooltip', 'title');
@@ -1133,16 +1024,17 @@ class Protractor extends Helper {
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {string} attr attribute name.
    * @returns {Promise<string>} attribute value
-   * 
    */
   async grabAttributeFrom(locator, attr) {
-    const attrs = await this.grabAttributeFromAll(locator, attr);
-    assertElementExists(attrs, locator);
-    if (attrs.length > 1) {
-      this.debugSection('GrabAttribute', `Using first element out of ${attrs.length}`);
-    }
+    const els = await this._locate(locator);
+    assertElementExists(els);
+    const array = [];
 
-    return attrs[0];
+    for (let index = 0; index < els.length; index++) {
+      const el = els[index];
+      array.push(await el.getAttribute(attr));
+    }
+    return array.length === 1 ? array[0] : array;
   }
 
   /**
@@ -1449,7 +1341,7 @@ class Protractor extends Helper {
    * @return {Promise<any>}
    * 
    */
-  async executeScript() {
+  async executeScript(fn) {
     return this.browser.executeScript.apply(this.browser, arguments);
   }
 
@@ -1480,7 +1372,7 @@ class Protractor extends Helper {
    * @return {Promise<any>}
    * 
    */
-  async executeAsyncScript() {
+  async executeAsyncScript(fn) {
     this.browser.manage().timeouts().setScriptTimeout(this.options.scriptTimeout);
     return this.browser.executeAsyncScript.apply(this.browser, arguments);
   }
@@ -1965,7 +1857,6 @@ class Protractor extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * 
    */
   async waitForVisible(locator, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
@@ -2037,7 +1928,7 @@ class Protractor extends Helper {
     const guessLoc = guessLocator(locator) || global.by.css(locator);
 
     return this.browser.wait(visibilityCountOf(guessLoc, num), aSec * 1000)
-      .catch(() => {
+      .catch((err) => {
         throw Error(`The number of elements (${locator}) is not ${num} after ${aSec} sec`);
       });
   }
@@ -2054,7 +1945,7 @@ class Protractor extends Helper {
     const el = global.element(guessLocator(locator) || global.by.css(locator));
 
     return this.browser.wait(EC.elementToBeClickable(el), aSec * 1000)
-      .catch(() => {
+      .catch((err) => {
         throw Error(`element (${locator}) still not enabled after ${aSec} sec`);
       });
   }
@@ -2073,7 +1964,7 @@ class Protractor extends Helper {
   async waitForValue(field, value, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
 
-    const valueToBeInElementValue = (loc) => {
+    const valueToBeInElementValue = (loc, expectedCount) => {
       return async () => {
         const els = await findFields(this.browser, loc);
 
@@ -2086,7 +1977,7 @@ class Protractor extends Helper {
     };
 
     return this.browser.wait(valueToBeInElementValue(field, value), aSec * 1000)
-      .catch(() => {
+      .catch((err) => {
         throw Error(`element (${field}) is not in DOM or there is no element(${field}) with value "${value}" after ${aSec} sec`);
       });
   }

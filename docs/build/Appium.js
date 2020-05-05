@@ -1,5 +1,6 @@
 let webdriverio;
 let wdioV4;
+let SCREEN_SIZE;
 
 const fs = require('fs');
 const requireg = require('requireg');
@@ -10,6 +11,7 @@ const truth = require('../assert/truth').truth;
 const recorder = require('../recorder');
 const Locator = require('../locator');
 const ConnectionRefused = require('./errors/ConnectionRefused');
+const ElementNotFound = require('./errors/ElementNotFound');
 
 const axios = requireg('axios');
 
@@ -396,15 +398,15 @@ class Appium extends Webdriver {
    *
    * @param {*} fn
    */
-  /* eslint-disable */
   async runInWeb(fn) {
     if (!this.isWeb) return;
     recorder.session.start('Web-only actions');
 
+    const res = fn();
+
     recorder.add('restore from Web session', () => recorder.session.restore(), true);
     return recorder.promise();
   }
-  /* eslint-enable */
 
   async _runWithCaps(caps, fn) {
     if (typeof caps === 'object') {
@@ -922,14 +924,12 @@ class Appium extends Webdriver {
    *
    * Appium: support Android and iOS
    */
-  /* eslint-disable */
   async swipe(locator, xoffset, yoffset, speed = 1000) {
     onlyForApps.call(this);
     const res = await this.browser.$(parseLocator.call(this, locator));
     // if (!res.length) throw new ElementNotFound(locator, 'was not found in UI');
     return this.performSwipe(await res.getLocation(), { x: await res.getLocation().x + xoffset, y: await res.getLocation().y + yoffset });
   }
-  /* eslint-enable */
 
   /**
    * Perform a swipe on the screen.
@@ -1430,35 +1430,16 @@ class Appium extends Webdriver {
   }
 
   /**
-   * Retrieves all texts from an element located by CSS or XPath and returns it to test.
-   * Resumes test execution, so **should be used inside async with `await`** operator.
-   * 
-   * ```js
-   * let pins = await I.grabTextFromAll('#pin li');
-   * ```
-   * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
-   * @returns {Promise<string[]>} attribute value
-   * 
-   *
-   */
-  async grabTextFromAll(locator) {
-    if (this.isWeb) return super.grabTextFromAll(locator);
-    return super.grabTextFromAll(parseLocator.call(this, locator));
-  }
-
-  /**
    * Retrieves a text from an element located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async with `await`** operator.
    * 
    * ```js
    * let pin = await I.grabTextFrom('#pin');
    * ```
-   * If multiple elements found returns first element.
+   * If multiple elements found returns an array of texts.
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
-   * @returns {Promise<string>} attribute value
-   * 
+   * @returns {Promise<string|string[]>} attribute value
    *
    */
   async grabTextFrom(locator) {
@@ -1467,33 +1448,14 @@ class Appium extends Webdriver {
   }
 
   /**
-   * Retrieves an array of value from a form located by CSS or XPath and returns it to test.
-   * Resumes test execution, so **should be used inside async function with `await`** operator.
-   * 
-   * ```js
-   * let inputs = await I.grabValueFromAll('//form/input');
-   * ```
-   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
-   * @returns {Promise<string[]>} attribute value
-   * 
-   *
-   */
-  async grabValueFromAll(locator) {
-    if (this.isWeb) return super.grabValueFromAll(locator);
-    return super.grabValueFromAll(parseLocator.call(this, locator));
-  }
-
-  /**
    * Retrieves a value from a form element located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async function with `await`** operator.
-   * If more than one element is found - value of first element is returned.
    * 
    * ```js
    * let email = await I.grabValueFrom('input[name=email]');
    * ```
    * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
    * @returns {Promise<string>} attribute value
-   * 
    *
    */
   async grabValueFrom(locator) {
@@ -1648,7 +1610,6 @@ class Appium extends Webdriver {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * 
    *
    */
   async waitForVisible(locator, sec = null) {

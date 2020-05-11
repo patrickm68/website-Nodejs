@@ -13,11 +13,11 @@
     <div class="hero"></div>
 
 
-    <section class="container post">
+    <div class="container post">
       <article class="content">
         <Content ></Content>
       </article>
-    </section>
+    </div>
 
     <div class="sidebar" v-if="$frontmatter.sidebar">
       <Content slot-key="sidebar"></Content>

@@ -905,7 +905,7 @@ class WebDriverIO extends Helper {
   /**
    * Retrieves an attribute from an element located by CSS or XPath and returns it to test.
    * An array as a result will be returned if there are more than one matched element.
-   * Resumes test execution, so **should be used inside async with `await`** operator.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
    * 
    * ```js
    * let hint = await I.grabAttributeFrom('#tooltip', 'title');
@@ -1181,7 +1181,7 @@ class WebDriverIO extends Helper {
 
   /**
    * Retrieves page source and returns it to test.
-   * Resumes test execution, so should be used inside an async function.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
    * 
    * ```js
    * let pageSource = await I.grabSource();
@@ -1356,6 +1356,7 @@ class WebDriverIO extends Helper {
 
   /**
    * Grab number of visible elements by locator.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
    * 
    * ```js
    * let numOfElements = await I.grabNumberOfVisibleElements('p');
@@ -1693,7 +1694,7 @@ class WebDriverIO extends Helper {
   /**
    * Gets a cookie object by name.
    * If none provided gets all cookies.
-   * Resumes test execution, so **should be used inside async with `await`** operator.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
    * 
    * ```js
    * let cookie = await I.grabCookie('auth');
@@ -2385,6 +2386,7 @@ class WebDriverIO extends Helper {
 
   /**
    * Grab number of open tabs.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
    * 
    * ```js
    * let tabs = await I.grabNumberOfOpenTabs();

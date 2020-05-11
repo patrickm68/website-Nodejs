@@ -703,6 +703,7 @@ class Nightmare extends Helper {
 
   /**
    * Grab number of visible elements by locator.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
    * 
    * ```js
    * let numOfElements = await I.grabNumberOfVisibleElements('p');
@@ -1176,7 +1177,7 @@ class Nightmare extends Helper {
   /**
    * Retrieves an attribute from an element located by CSS or XPath and returns it to test.
    * An array as a result will be returned if there are more than one matched element.
-   * Resumes test execution, so **should be used inside async with `await`** operator.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
    * 
    * ```js
    * let hint = await I.grabAttributeFrom('#tooltip', 'title');
@@ -1350,7 +1351,7 @@ class Nightmare extends Helper {
   /**
    * Gets a cookie object by name.
    * If none provided gets all cookies.
-   * Resumes test execution, so **should be used inside async with `await`** operator.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
    * 
    * ```js
    * let cookie = await I.grabCookie('auth');

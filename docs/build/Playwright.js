@@ -50,10 +50,10 @@ const { createValueEngine, createDisabledEngine } = require('./extras/Playwright
  *
  * This helper works with a browser out of the box with no additional tools required to install.
  *
- * Requires `playwright` package version ^0.12.1 to be installed:
+ * Requires `playwright` package version ^1 to be installed:
  *
  * ```
- * npm i playwright@^0.12.1 --save
+ * npm i playwright@^1 --save
  * ```
  *
  * ## Configuration
@@ -71,7 +71,7 @@ const { createValueEngine, createDisabledEngine } = require('./extras/Playwright
  * * `keepBrowserState`: (optional, default: false) - keep browser state between tests when `restart` is set to false.
  * * `keepCookies`: (optional, default: false) - keep cookies between tests when `restart` is set to false.
  * * `waitForAction`: (optional) how long to wait after click, doubleClick or PressKey actions in ms. Default: 100.
- * * `waitForNavigation`: (optional, default: 'load'). When to consider navigation succeeded. Possible options: `load`, `domcontentloaded`, `networkidle0`, `networkidle2`. Choose one of those options is possible. See [Playwright API](https://github.com/microsoft/playwright/blob/master/docs/api.md#pagewaitfornavigationoptions).
+ * * `waitForNavigation`: (optional, default: 'load'). When to consider navigation succeeded. Possible options: `load`, `domcontentloaded`, `networkidle`. Choose one of those options is possible. See [Playwright API](https://github.com/microsoft/playwright/blob/master/docs/api.md#pagewaitfornavigationoptions).
  * * `pressKeyDelay`: (optional, default: '10'). Delay between key presses in ms. Used when calling Playwrights page.type(...) in fillField/appendField
  * * `getPageTimeout` (optional, default: '0') config option to set maximum navigation time in milliseconds.
  * * `waitForTimeout`: (optional) default wait* timeout in ms. Default: 1000.
@@ -277,7 +277,7 @@ class Playwright extends Helper {
     try {
       requireg('playwright');
     } catch (e) {
-      return ['playwright@^0.12.1'];
+      return ['playwright@^1'];
     }
   }
 
@@ -1028,7 +1028,7 @@ class Playwright extends Helper {
    * I.openNewTab();
    * ```
    *
-   * You can pass in [page options](https://github.com/microsoft/playwright/blob/v0.12.1/docs/api.md#browsernewpageoptions) to emulate device on this page
+   * You can pass in [page options](https://github.com/microsoft/playwright/blob/master/docs/api.md#browsernewpageoptions) to emulate device on this page
    *
    * ```js
    * // enable mobile
@@ -1042,6 +1042,7 @@ class Playwright extends Helper {
 
   /**
    * Grab number of open tabs.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
    * 
    * ```js
    * let tabs = await I.grabNumberOfOpenTabs();
@@ -1639,6 +1640,7 @@ class Playwright extends Helper {
 
   /**
    * Grab number of visible elements by locator.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
    * 
    * ```js
    * let numOfElements = await I.grabNumberOfVisibleElements('p');
@@ -1760,7 +1762,7 @@ class Playwright extends Helper {
 
   /**
    * Retrieves page source and returns it to test.
-   * Resumes test execution, so should be used inside an async function.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
    * 
    * ```js
    * let pageSource = await I.grabSource();
@@ -1927,7 +1929,7 @@ class Playwright extends Helper {
   /**
    * Gets a cookie object by name.
    * If none provided gets all cookies.
-   * Resumes test execution, so **should be used inside async with `await`** operator.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
    * 
    * ```js
    * let cookie = await I.grabCookie('auth');
@@ -2192,7 +2194,7 @@ class Playwright extends Helper {
   /**
    * Retrieves an attribute from an element located by CSS or XPath and returns it to test.
    * An array as a result will be returned if there are more than one matched element.
-   * Resumes test execution, so **should be used inside async with `await`** operator.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
    * 
    * ```js
    * let hint = await I.grabAttributeFrom('#tooltip', 'title');
@@ -2315,7 +2317,7 @@ class Playwright extends Helper {
     const context = await this._getContext();
     if (!locator.isXPath()) {
       // uses a custom selector engine for finding value properties on elements
-      waiter = context.waitForSelector(`${locator.isCustom() ? `${locator.type}=${locator.value}` : locator.simplify()} >> __value=${value}`, { timeout: waitTimeout, waitFor: 'visible' });
+      waiter = context.waitForSelector(`${locator.isCustom() ? `${locator.type}=${locator.value}` : locator.simplify()} >> __value=${value}`, { timeout: waitTimeout, state: 'visible' });
     } else {
       const valueFn = function ([locator, $XPath, value]) {
         eval($XPath); // eslint-disable-line no-eval
@@ -2403,7 +2405,7 @@ class Playwright extends Helper {
     locator = new Locator(locator, 'css');
 
     const context = await this._getContext();
-    const waiter = context.waitForSelector(`${locator.isCustom() ? `${locator.type}=${locator.value}` : locator.simplify()}`, { timeout: waitTimeout });
+    const waiter = context.waitForSelector(`${locator.isCustom() ? `${locator.type}=${locator.value}` : locator.simplify()}`, { timeout: waitTimeout, state: 'attached' });
     return waiter.catch((err) => {
       throw new Error(`element (${locator.toString()}) still not present on page after ${waitTimeout / 1000} sec\n${err.message}`);
     });
@@ -2426,7 +2428,7 @@ class Playwright extends Helper {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
     locator = new Locator(locator, 'css');
     const context = await this._getContext();
-    const waiter = context.waitForSelector(`${locator.isCustom() ? `${locator.type}=${locator.value}` : locator.simplify()}`, { timeout: waitTimeout, waitFor: 'visible' });
+    const waiter = context.waitForSelector(`${locator.isCustom() ? `${locator.type}=${locator.value}` : locator.simplify()}`, { timeout: waitTimeout, state: 'visible' });
     return waiter.catch((err) => {
       throw new Error(`element (${locator.toString()}) still not visible after ${waitTimeout / 1000} sec\n${err.message}`);
     });
@@ -2447,7 +2449,7 @@ class Playwright extends Helper {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
     locator = new Locator(locator, 'css');
     const context = await this._getContext();
-    const waiter = context.waitForSelector(`${locator.isCustom() ? `${locator.type}=${locator.value}` : locator.simplify()}`, { timeout: waitTimeout, waitFor: 'hidden' });
+    const waiter = context.waitForSelector(`${locator.isCustom() ? `${locator.type}=${locator.value}` : locator.simplify()}`, { timeout: waitTimeout, state: 'hidden' });
     return waiter.catch((err) => {
       throw new Error(`element (${locator.toString()}) still visible after ${waitTimeout / 1000} sec\n${err.message}`);
     });
@@ -2468,7 +2470,7 @@ class Playwright extends Helper {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
     locator = new Locator(locator, 'css');
     const context = await this._getContext();
-    return context.waitForSelector(`${locator.isCustom() ? `${locator.type}=${locator.value}` : locator.simplify()}`, { timeout: waitTimeout, waitFor: 'hidden' }).catch((err) => {
+    return context.waitForSelector(`${locator.isCustom() ? `${locator.type}=${locator.value}` : locator.simplify()}`, { timeout: waitTimeout, state: 'hidden' }).catch((err) => {
       throw new Error(`element (${locator.toString()}) still not hidden after ${waitTimeout / 1000} sec\n${err.message}`);
     });
   }
@@ -2561,7 +2563,7 @@ class Playwright extends Helper {
     if (context) {
       const locator = new Locator(context, 'css');
       if (!locator.isXPath()) {
-        waiter = contextObject.waitFor(`${locator.isCustom() ? `${locator.type}=${locator.value}` : locator.simplify()} >> text=${text}`, { timeout: waitTimeout, waitFor: 'visible' });
+        waiter = contextObject.waitForSelector(`${locator.isCustom() ? `${locator.type}=${locator.value}` : locator.simplify()} >> text=${text}`, { timeout: waitTimeout, state: 'visible' });
       }
 
       if (locator.isXPath()) {
@@ -2751,7 +2753,7 @@ class Playwright extends Helper {
     let waiter;
     const context = await this._getContext();
     if (!locator.isXPath()) {
-      waiter = context.waitForSelector(`${locator.isCustom() ? `${locator.type}=${locator.value}` : locator.simplify()}`, { timeout: waitTimeout, waitFor: 'detached' });
+      waiter = context.waitForSelector(`${locator.isCustom() ? `${locator.type}=${locator.value}` : locator.simplify()}`, { timeout: waitTimeout, state: 'detached' });
     } else {
       const visibleFn = function ([locator, $XPath]) {
         eval($XPath); // eslint-disable-line no-eval

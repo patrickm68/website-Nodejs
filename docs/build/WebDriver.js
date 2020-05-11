@@ -37,7 +37,7 @@ let version;
  * WebDriver helper which wraps [webdriverio](http://webdriver.io/) library to
  * manipulate browser using Selenium WebDriver or PhantomJS.
  *
- * WebDriver requires [Selenium Server and ChromeDriver/GeckoDriver to be installed](http://codecept.io/quickstart/#prepare-selenium-server).
+ * WebDriver requires Selenium Server and ChromeDriver/GeckoDriver to be installed. Those tools can be easily installed via NPM. Please check [Testing with WebDriver](https://codecept.io/webdriver/#testing-with-webdriver) for more details.
  *
  * ### Configuration
  *
@@ -1311,7 +1311,7 @@ class WebDriver extends Helper {
   /**
    * Retrieves an attribute from an element located by CSS or XPath and returns it to test.
    * An array as a result will be returned if there are more than one matched element.
-   * Resumes test execution, so **should be used inside async with `await`** operator.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
    * 
    * ```js
    * let hint = await I.grabAttributeFrom('#tooltip', 'title');
@@ -1593,7 +1593,7 @@ class WebDriver extends Helper {
 
   /**
    * Retrieves page source and returns it to test.
-   * Resumes test execution, so should be used inside an async function.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
    * 
    * ```js
    * let pageSource = await I.grabSource();
@@ -1770,6 +1770,7 @@ class WebDriver extends Helper {
 
   /**
    * Grab number of visible elements by locator.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
    * 
    * ```js
    * let numOfElements = await I.grabNumberOfVisibleElements('p');
@@ -2128,7 +2129,7 @@ class WebDriver extends Helper {
   /**
    * Gets a cookie object by name.
    * If none provided gets all cookies.
-   * Resumes test execution, so **should be used inside async with `await`** operator.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
    * 
    * ```js
    * let cookie = await I.grabCookie('auth');
@@ -3158,6 +3159,7 @@ class WebDriver extends Helper {
 
   /**
    * Grab number of open tabs.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
    * 
    * ```js
    * let tabs = await I.grabNumberOfOpenTabs();
@@ -3268,12 +3270,13 @@ class WebDriver extends Helper {
 
   /**
    * Return the current geo location 
-   * 
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
    * 
    * ```js
    * let geoLocation = await I.grabGeoLocation();
    * ```
    * 
+   * @returns {Promise<{ latitude: number, longitude: number, altitude: number }>}
    *
    */
   async grabGeoLocation() {

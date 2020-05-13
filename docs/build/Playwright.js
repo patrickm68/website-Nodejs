@@ -2280,19 +2280,9 @@ class Playwright extends Helper {
   async waitForEnabled(locator, sec) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
     locator = new Locator(locator, 'css');
-    const matcher = await this.context;
-    let waiter;
     const context = await this._getContext();
-    if (!locator.isXPath()) {
-      // playwright combined selectors
-      waiter = context.waitForSelector(`${locator.isCustom() ? `${locator.type}=${locator.value}` : locator.simplify()} >> __disabled=false`, { timeout: waitTimeout });
-    } else {
-      const enabledFn = function ([locator, $XPath]) {
-        eval($XPath); // eslint-disable-line no-eval
-        return $XPath(null, locator).filter(el => !el.disabled).length > 0;
-      };
-      waiter = context.waitForFunction(enabledFn, [locator.value, $XPath.toString()], { timeout: waitTimeout });
-    }
+    // playwright combined selectors
+    const waiter = context.waitForSelector(`${buildLocatorString(locator)} >> __disabled=false`, { timeout: waitTimeout });
     return waiter.catch((err) => {
       throw new Error(`element (${locator.toString()}) still not enabled after ${waitTimeout / 1000} sec\n${err.message}`);
     });
@@ -2312,19 +2302,9 @@ class Playwright extends Helper {
   async waitForValue(field, value, sec) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
     const locator = new Locator(field, 'css');
-    const matcher = await this.context;
-    let waiter;
     const context = await this._getContext();
-    if (!locator.isXPath()) {
-      // uses a custom selector engine for finding value properties on elements
-      waiter = context.waitForSelector(`${locator.isCustom() ? `${locator.type}=${locator.value}` : locator.simplify()} >> __value=${value}`, { timeout: waitTimeout, state: 'visible' });
-    } else {
-      const valueFn = function ([locator, $XPath, value]) {
-        eval($XPath); // eslint-disable-line no-eval
-        return $XPath(null, locator).filter(el => (el.value || '').indexOf(value) !== -1).length > 0;
-      };
-      waiter = context.waitForFunction(valueFn, [locator.value, $XPath.toString(), value], { timeout: waitTimeout });
-    }
+    // uses a custom selector engine for finding value properties on elements
+    const waiter = context.waitForSelector(`${buildLocatorString(locator)} >> __value=${value}`, { timeout: waitTimeout, state: 'visible' });
     return waiter.catch((err) => {
       const loc = locator.toString();
       throw new Error(`element (${loc}) is not in DOM or there is no element(${loc}) with value "${value}" after ${waitTimeout / 1000} sec\n${err.message}`);
@@ -2383,7 +2363,7 @@ class Playwright extends Helper {
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
    */
   async waitForClickable(locator, waitTimeout) {
-    console.log('I.waitForClickable is DEPRECATED: This is no longer needed, Playwright automatically waits for element to be clikable');
+    console.log('I.waitForClickable is DEPRECATED: This is no longer needed, Playwright automatically waits for element to be clickable');
     console.log('Remove usage of this function');
   }
 
@@ -2405,7 +2385,7 @@ class Playwright extends Helper {
     locator = new Locator(locator, 'css');
 
     const context = await this._getContext();
-    const waiter = context.waitForSelector(`${locator.isCustom() ? `${locator.type}=${locator.value}` : locator.simplify()}`, { timeout: waitTimeout, state: 'attached' });
+    const waiter = context.waitForSelector(buildLocatorString(locator), { timeout: waitTimeout, state: 'attached' });
     return waiter.catch((err) => {
       throw new Error(`element (${locator.toString()}) still not present on page after ${waitTimeout / 1000} sec\n${err.message}`);
     });
@@ -2428,7 +2408,7 @@ class Playwright extends Helper {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
     locator = new Locator(locator, 'css');
     const context = await this._getContext();
-    const waiter = context.waitForSelector(`${locator.isCustom() ? `${locator.type}=${locator.value}` : locator.simplify()}`, { timeout: waitTimeout, state: 'visible' });
+    const waiter = context.waitForSelector(buildLocatorString(locator), { timeout: waitTimeout, state: 'visible' });
     return waiter.catch((err) => {
       throw new Error(`element (${locator.toString()}) still not visible after ${waitTimeout / 1000} sec\n${err.message}`);
     });
@@ -2449,7 +2429,7 @@ class Playwright extends Helper {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
     locator = new Locator(locator, 'css');
     const context = await this._getContext();
-    const waiter = context.waitForSelector(`${locator.isCustom() ? `${locator.type}=${locator.value}` : locator.simplify()}`, { timeout: waitTimeout, state: 'hidden' });
+    const waiter = context.waitForSelector(buildLocatorString(locator), { timeout: waitTimeout, state: 'hidden' });
     return waiter.catch((err) => {
       throw new Error(`element (${locator.toString()}) still visible after ${waitTimeout / 1000} sec\n${err.message}`);
     });
@@ -2470,7 +2450,7 @@ class Playwright extends Helper {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
     locator = new Locator(locator, 'css');
     const context = await this._getContext();
-    return context.waitForSelector(`${locator.isCustom() ? `${locator.type}=${locator.value}` : locator.simplify()}`, { timeout: waitTimeout, state: 'hidden' }).catch((err) => {
+    return context.waitForSelector(buildLocatorString(locator), { timeout: waitTimeout, state: 'hidden' }).catch((err) => {
       throw new Error(`element (${locator.toString()}) still not hidden after ${waitTimeout / 1000} sec\n${err.message}`);
     });
   }
@@ -2828,14 +2808,19 @@ class Playwright extends Helper {
 
 module.exports = Playwright;
 
+function buildLocatorString(locator) {
+  if (locator.isCustom()) {
+    return `${locator.type}=${locator.value}`;
+  } if (locator.isXPath()) {
+    // dont rely on heuristics of playwright for figuring out xpath
+    return `xpath=${locator.value}`;
+  }
+  return locator.simplify();
+}
+
 async function findElements(matcher, locator) {
   locator = new Locator(locator, 'css');
-  if (locator.isCustom()) {
-    return matcher.$$(`${locator.type}=${locator.value}`);
-  } if (!locator.isXPath()) {
-    return matcher.$$(locator.simplify());
-  }
-  return matcher.$$(`xpath=${locator.value}`);
+  return matcher.$$(buildLocatorString(locator));
 }
 
 async function proceedClick(locator, context = null, options = {}) {

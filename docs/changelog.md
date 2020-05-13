@@ -7,6 +7,11 @@ layout: Section
 
 # Releases
 
+## 2.6.5
+
+* Added `test.skipped` event to run-workers, fixing allure reports with skipped tests in workers [#2391](https://github.com/Codeception/CodeceptJS/issues/2391). Fix [#2387](https://github.com/Codeception/CodeceptJS/issues/2387) by **[koushikmohan1996](https://github.com/koushikmohan1996)**
+* **[Playwright]** Fixed calling `waitFor*` methods with custom locators [#2314](https://github.com/Codeception/CodeceptJS/issues/2314). Fix [#2389](https://github.com/Codeception/CodeceptJS/issues/2389) by **[Georgegriff](https://github.com/Georgegriff)**
+
 ## 2.6.4
 
 * **[Playwright]** **Playwright 1.0 support** by **[Georgegriff](https://github.com/Georgegriff)**.

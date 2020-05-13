@@ -9,7 +9,7 @@ Please **add your own** by editing this page.
 
 * [codeceptjs-httpmock](https://github.com/testphony/codeceptjs-httpMock) -  a helper which wraps mockttp library to manage http mock in tests.
 * [codeceptjs-http](https://github.com/testphony/codeceptjs-http) - a helper which wraps then-request library to process HTTP requests. It's alternative helper that provides more flexible request management.
-* [codeceptjs-dbhelper](https://www.npmjs.com/package/codeceptjs-dbhelper) - allows you to execute queries or commands to databases using database-js. 
+* [codeceptjs-dbhelper](https://github.com/thiagodp/codeceptjs-dbhelper) - allows you to execute queries or commands to databases using database-js. 
 
 ## Cloud Providers
 * [codeceptjs-saucehelper](https://github.com/puneet0191/codeceptjs-saucehelper/) - a helper which updates `Test Names` & `Test Results` on Saucelabs 
@@ -38,4 +38,5 @@ Please **add your own** by editing this page.
 
 ## Other
 
+* [codeceptjs-cmdhelper](https://github.com/thiagodp/codeceptjs-cmdhelper) allows you to run commands in the terminal/console
 * [eslint-plugin-codeceptjs](https://www.npmjs.com/package/eslint-plugin-codeceptjs) Eslint rules for CodeceptJS.

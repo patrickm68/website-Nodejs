@@ -21,7 +21,7 @@
     width 1.25rem
     height 1.25rem
 
-@media (max-width: 838px)
+@media (max-width: 1150px)
   .sidebar-button
     display block
 </style>

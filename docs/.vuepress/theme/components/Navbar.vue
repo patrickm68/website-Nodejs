@@ -134,6 +134,16 @@ $textColor = white
     .search-box
       flex: 0 0 auto
       vertical-align top
+      input
+        @media (max-width: 959px)
+          width: 10rem
+        @media (max-width: 768px)
+          width: 0
+          &:focus
+            width: 10rem
+        @media (max-width: 419px)
+          &:focus
+            width: 8rem
 
 @media (max-width: $MQMobile)
   .navbar
@@ -143,7 +153,7 @@ $textColor = white
       white-space nowrap
       text-overflow ellipsis
 
-@media (max-width: 838px)
+@media (max-width: 1150px)
   .navbar
     padding-left 3rem
     padding-right 1rem
@@ -154,4 +164,15 @@ $textColor = white
       right 1rem
     .search-box
       margin-right 0
+
+@media (max-width: 1150px)
+  .navbar
+    .site-name
+      display inline-block
+
+@media (max-width: 767px)
+  .navbar
+    .site-name
+      display none
+
 </style>

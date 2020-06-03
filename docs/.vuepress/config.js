@@ -2,7 +2,13 @@ module.exports = {
   title: 'CodeceptJS', // Title for your website.
   description: 'SuperCharged End 2 End Testing with WebDriver & Puppeteer',
   head: [
-    ['link', { rel: 'icon', href: '/favicon/favicon.png' }],
+    ['link', { rel: 'apple-touch-icon', sizes: '180x180', href: '/favicon/apple-touch-icon.png' }],
+    ['link', { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon/favicon-32x32.png' }],
+    ['link', { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon/favicon-16x16.png' }],
+    ['meta', { rel: 'manifest', href: '/favicon/site.webmanifest' }],
+    ['meta', { name: 'manifest', content: '#805ad5' }],
+    ['meta', { name: 'theme-color', content: '#805ad5' }],
+    ['meta', { name: 'msapplication-config', content: '/favicon/browserconfig.xml' }],
   ],
 
   themeConfig: {

@@ -23,6 +23,25 @@
       <Content slot-key="sidebar"></Content>
     </div>
 
+    <Sidebar
+      :items="sidebarItems"
+      @toggle-sidebar="toggleSidebar"
+    >
+      <slot
+        name="sidebar-top"
+        #top
+      />
+      <slot
+        name="sidebar-bottom"
+        #bottom
+      />
+    </Sidebar>
+
+    <div
+      class="sidebar-mask"
+      @click="toggleSidebar(false)"
+    ></div>
+
     <Footer />
   </div>
 </template>

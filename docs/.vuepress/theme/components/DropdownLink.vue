@@ -119,6 +119,8 @@ export default {
     @apply text-gray-200
     &:hover
       border-color transparent
+    &:focus
+      outline none
     .arrow
       vertical-align middle
       margin-top -1px

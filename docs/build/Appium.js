@@ -301,7 +301,6 @@ class Appium extends Webdriver {
     return `${protocol}://${hostname}:${port}${path}`;
   }
 
-
   /**
    * Execute code only on iOS
    *
@@ -429,7 +428,6 @@ class Appium extends Webdriver {
 
     fn();
   }
-
 
   /**
    * Check if an app is installed.
@@ -1385,7 +1383,6 @@ class Appium extends Webdriver {
     return super.dontSeeInField(parseLocator.call(this, field), value);
   }
 
-
   /**
    * Opposite to `see`. Checks that a text is not present on a page.
    * Use context parameter to narrow down the search.
@@ -1664,7 +1661,11 @@ function parseLocator(locator) {
     }
 
     if (locator.android && this.platform === 'android') {
-      return parseLocator.call(this, locator.android);
+      if (typeof locator.android === 'string') {
+        return parseLocator.call(this, locator.android);
+      }
+      // The locator is an Android DataMatcher or ViewMatcher locator so return as is
+      return locator.android;
     }
 
     if (locator.ios && this.platform === 'ios') {
@@ -1679,8 +1680,12 @@ function parseLocator(locator) {
       // hook before webdriverio supports native # locators
       return parseLocator.call(this, { id: locator.slice(1) });
     }
+
     if (this.platform === 'android' && !this.isWeb) {
-      return `android=new UiSelector().text("${locator}")`;
+      const isNativeLocator = /^\-?android=?/.exec(locator);
+      return isNativeLocator
+        ? locator
+        : `android=new UiSelector().text("${locator}")`;
     }
   }
 

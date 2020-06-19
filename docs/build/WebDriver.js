@@ -436,10 +436,8 @@ class WebDriver extends Helper {
       },
     };
 
-
     // override defaults with config
     config = Object.assign(defaults, config);
-
 
     if (typeof config.host !== 'undefined') config.hostname = config.host; // webdriverio spec
     config.baseUrl = config.url || config.baseUrl;
@@ -728,7 +726,6 @@ class WebDriver extends Helper {
         const els = await this._locateShadow(locator);
         return els;
       }
-
 
       const els = await this._locateShadow(locator);
       return els;
@@ -1053,7 +1050,6 @@ class WebDriver extends Helper {
     return elem.addValue(value);
   }
 
-
   /**
    * Clears a `<textarea>` or text `<input>` element's value.
    * 
@@ -1071,7 +1067,6 @@ class WebDriver extends Helper {
     const elem = usingFirstElement(res);
     return elem.clearValue(getElementId(elem));
   }
-
 
   /**
    * Selects an option in a drop-down select.
@@ -2053,7 +2048,6 @@ class WebDriver extends Helper {
     return buffer;
   }
 
-
   /**
    * Sets cookie(s).
    * 
@@ -2514,7 +2508,6 @@ class WebDriver extends Helper {
     await this.browser.switchToWindow(window);
   }
 
-
   /**
    * Close all tabs except for the current one.
    *
@@ -2644,7 +2637,6 @@ class WebDriver extends Helper {
     * use 'waitForDetached to wait for element to be removed'`);
     return this.waitForStalenessOf(locator, sec);
   }
-
 
   /**
    * Waiting for the part of the URL to match the expected. Useful for SPA to understand that page was changed.
@@ -2868,6 +2860,7 @@ class WebDriver extends Helper {
         let selected = await forEachAsync(res, async el => el.isDisplayed());
 
         if (!Array.isArray(selected)) selected = [selected];
+        selected = selected.filter(val => val === true);
         return selected.length === num;
       }, aSec * 1000, `The number of elements (${new Locator(locator)}) is not ${num} after ${aSec} sec`);
     }
@@ -2877,6 +2870,7 @@ class WebDriver extends Helper {
       let selected = await forEachAsync(res, async el => el.isDisplayed());
 
       if (!Array.isArray(selected)) selected = [selected];
+      selected = selected.filter(val => val === true);
       return selected.length === num;
     }, { timeout: aSec * 1000, timeoutMsg: `The number of elements (${new Locator(locator)}) is not ${num} after ${aSec} sec` });
   }
@@ -3443,7 +3437,6 @@ async function findClickable(locator, locateFn) {
 
   return locateFn(locator.value); // by css or xpath
 }
-
 
 async function findFields(locator) {
   locator = new Locator(locator);

@@ -111,7 +111,6 @@ class TestCafe extends Helper {
     // Inside _withinBegin we should define that all next element calls should be started from a specific element (this.context).
     this.context = undefined; // TODO Not sure if this applies to testcafe
 
-
     this.options = {
       url: 'http://localhost',
       show: false,
@@ -220,7 +219,6 @@ class TestCafe extends Helper {
     });
   }
 
-
   async _stopBrowser() {
     this.debugSection('_after', 'Stopping testcafe browser...');
 
@@ -244,7 +242,6 @@ class TestCafe extends Helper {
       return this._configureAndStartBrowser();
     }
   }
-
 
   async _before() {
     if (this.options.restart && !this.options.manualStart) return this._configureAndStartBrowser();
@@ -325,7 +322,6 @@ class TestCafe extends Helper {
       .catch(mapError);
   }
 
-
   /**
    * Resize the current window to provided width and height.
    * First parameter can be set to `maximize`.
@@ -372,7 +368,6 @@ class TestCafe extends Helper {
   async click(locator, context = null) {
     return proceedClick.call(this, locator, context);
   }
-
 
   /**
    * Reload the current page.
@@ -1048,7 +1043,6 @@ class TestCafe extends Helper {
     stringIncludes('HTML source of a page').negate(text, source);
   }
 
-
   /**
    * Saves a screenshot to ouput folder (set in codecept.json or codecept.conf.js).
    * Filename is relative to output folder.
@@ -1087,7 +1081,6 @@ class TestCafe extends Helper {
       setTimeout(done, sec * 1000);
     }));
   }
-
 
   /**
    * Executes sync script on a page.

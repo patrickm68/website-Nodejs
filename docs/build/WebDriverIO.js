@@ -25,7 +25,6 @@ const {
 const ElementNotFound = require('./errors/ElementNotFound');
 const ConnectionRefused = require('./errors/ConnectionRefused');
 
-
 const webRoot = 'body';
 const Locator = require('../locator');
 
@@ -697,7 +696,6 @@ class WebDriverIO extends Helper {
     return this.browser.elementIdValue(elem.ELEMENT, value);
   }
 
-
   /**
    * {{> clearField}}
    * Appium: support
@@ -708,7 +706,6 @@ class WebDriverIO extends Helper {
     const elem = res.value[0];
     return this.browser.elementIdClear(elem.ELEMENT);
   }
-
 
   /**
    * {{> selectOption}}
@@ -1632,7 +1629,6 @@ class WebDriverIO extends Helper {
     return this.browser.saveScreenshot(outputFile);
   }
 
-
   /**
    * {{> setCookie}}
    * Appium: support only web testing
@@ -1903,7 +1899,6 @@ class WebDriverIO extends Helper {
     );
   }
 
-
   /**
    * Close all tabs except for the current one.
    * Appium: support web test
@@ -1990,7 +1985,6 @@ class WebDriverIO extends Helper {
     * use 'waitForDetached to wait for element to be removed'`);
     return this.waitForStalenessOf(locator, sec);
   }
-
 
   /**
    * Waiting for the part of the URL to match the expected. Useful for SPA to understand that page was changed.
@@ -2157,6 +2151,7 @@ class WebDriverIO extends Helper {
       let selected = await forEachAsync(res.value, async el => this.browser.elementIdDisplayed(el.ELEMENT));
 
       if (!Array.isArray(selected)) selected = [selected];
+      selected = selected.filter(val => val === true);
       return selected.length === num;
     }, aSec * 1000, `The number of elements (${JSON.stringify(locator)}) is not ${num} after ${aSec} sec`);
   }
@@ -2572,7 +2567,6 @@ async function filterAsync(array, callback, option = {}) {
   return values;
 }
 
-
 // Internal helper method to handle command results (similar behaviour as the unify function from WebDriverIO
 // except it does not resolve promises)
 //
@@ -2618,7 +2612,6 @@ async function findClickable(locator, locateFn) {
 
   return locateFn(locator.value); // by css or xpath
 }
-
 
 async function findFields(locator) {
   locator = new Locator(locator);

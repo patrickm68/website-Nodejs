@@ -246,12 +246,17 @@ class Puppeteer extends Helper {
     }
   }
 
-
   async _before() {
     this.sessionPages = {};
     recorder.retry({
       retries: 5,
-      when: err => err.message.indexOf('context') > -1, // ignore context errors
+      when: err => {
+        if (!err || typeof (err.message) !== 'string') {
+          return false;
+        }
+        // ignore context errors
+        return err.message.includes('context');
+      },
     });
     if (this.options.restart && !this.options.manualStart) return this._startBrowser();
     if (!this.isRunning && !this.options.manualStart) return this._startBrowser();
@@ -339,7 +344,6 @@ class Puppeteer extends Helper {
     };
   }
 
-
   /**
    * Set the automatic popup response to Accept.
    * This must be set before a popup is triggered.
@@ -407,6 +411,7 @@ class Puppeteer extends Helper {
   async _setPage(page) {
     page = await page;
     this._addPopupListener(page);
+    this._addErrorListener(page);
     this.page = page;
     if (!page) return;
     page.setDefaultNavigationTimeout(this.options.getPageTimeout);
@@ -414,6 +419,15 @@ class Puppeteer extends Helper {
     if (this.config.browser === 'chrome') {
       await page.bringToFront();
     }
+  }
+
+  async _addErrorListener(page) {
+    if (!page) {
+      return;
+    }
+    page.on('error', async (error) => {
+      console.error('Puppeteer page error', error);
+    });
   }
 
   /**
@@ -524,7 +538,6 @@ class Puppeteer extends Helper {
 
     return context.evaluateHandle(...args);
   }
-
 
   async _withinBegin(locator) {
     if (this.withinLocator) {
@@ -1540,7 +1553,6 @@ class Puppeteer extends Helper {
     return this._waitForAction();
   }
 
-
   /**
    * Clears a `<textarea>` or text `<input>` element's value.
    * 
@@ -1608,7 +1620,6 @@ class Puppeteer extends Helper {
   async dontSeeInField(field, value) {
     return proceedSeeInField.call(this, 'negate', field, value);
   }
-
 
   /**
    * Attaches a file to element located by label, name, CSS or XPath
@@ -1882,7 +1893,6 @@ class Puppeteer extends Helper {
     stringIncludes('HTML source of a page').negate(text, source);
   }
 
-
   /**
    * Asserts that an element appears a given number of times in the DOM.
    * Element is located by label or name or CSS or XPath.
@@ -2101,7 +2111,6 @@ class Puppeteer extends Helper {
     args.unshift(asyncFn);
     return this.page.evaluate.apply(this.page, args);
   }
-
 
   /**
    * Retrieves a text from an element located by CSS or XPath and returns it to test.
@@ -3243,7 +3252,6 @@ function isFrameLocator(locator) {
   if (locator.isFrame()) return locator.value;
   return false;
 }
-
 
 function assertElementExists(res, locator, prefix, suffix) {
   if (!res || res.length === 0) {

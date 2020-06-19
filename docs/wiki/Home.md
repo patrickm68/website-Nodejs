@@ -7,6 +7,5 @@ Some useful links:
 * [Community Helpers](https://github.com/Codeception/CodeceptJS/wiki/Community-Helpers)
 * [Code on Github](https://github.com/Codeception/CodeceptJS)
 * [Change log](https://github.com/Codeception/CodeceptJS/blob/master/CHANGELOG.md)
-* [GSoC](https://github.com/Codeception/CodeceptJS/wiki/Google-Summer-of-Code-(GSoC)-2020)
 
 

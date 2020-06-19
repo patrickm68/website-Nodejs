@@ -207,7 +207,6 @@ class Protractor extends Helper {
     }
   }
 
-
   async _startBrowser() {
     try {
       const runner = new Runner(this.options);
@@ -278,7 +277,6 @@ class Protractor extends Helper {
   async _finishTest() {
     if (!this.options.restart && this.isRunning) return this.browser.quit();
   }
-
 
   async _withinBegin(locator) {
     withinStore.elFn = this.browser.findElement;
@@ -365,7 +363,6 @@ class Protractor extends Helper {
     await this.browser.waitForAngularEnabled(true);
     return Promise.resolve(this.insideAngular = true);
   }
-
 
   /**
    * Get elements by different locator types, including strict locator
@@ -1789,7 +1786,6 @@ class Protractor extends Helper {
     return this.browser.sleep(sec * 1000);
   }
 
-
   /**
    * Waits for element to be present on page (by default waits for 1sec).
    * Element can be located by CSS or XPath.
@@ -2121,7 +2117,6 @@ class Protractor extends Helper {
   moveTo(path) {
     return this.browser.setLocation(path);
   }
-
 
   /**
    * Reload the current page.

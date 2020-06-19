@@ -7,6 +7,15 @@ layout: Section
 
 # Releases
 
+## 2.6.6
+
+* Puppeteer 4.0 support. Important: MockRequest helper won't work with Puppeter > 3.3
+* Added `xFeature` and `Feature.skip` to skip all tests in a suite. By **[Georgegriff](https://github.com/Georgegriff)**
+* **[Appium]** Fixed [#2428](https://github.com/Codeception/CodeceptJS/issues/2428) Android native locator support by **[idxn](https://github.com/idxn)**
+* **[WebDriver]** Fixed `waitNumberOfVisibleElements` to actually filter visible elements. By **[ilangv](https://github.com/ilangv)**
+* **[Puppeteer]** Fixed handling error which is not an Error object. Fixes `cannot read property indexOf of undefined` error. Fix [#2436](https://github.com/Codeception/CodeceptJS/issues/2436) by **[Georgegriff](https://github.com/Georgegriff)**
+* **[Puppeteer]** Print error on page crash by **[Georgegriff](https://github.com/Georgegriff)**
+
 ## 2.6.5
 
 * Added `test.skipped` event to run-workers, fixing allure reports with skipped tests in workers [#2391](https://github.com/Codeception/CodeceptJS/issues/2391). Fix [#2387](https://github.com/Codeception/CodeceptJS/issues/2387) by **[koushikmohan1996](https://github.com/koushikmohan1996)**

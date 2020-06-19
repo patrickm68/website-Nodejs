@@ -382,7 +382,6 @@ class Nightmare extends Helper {
     }, locator.type, locator.value);
   }
 
-
   /**
    * Add a header override for all HTTP requests. If header is undefined, the header overrides will be reset.
    *
@@ -779,7 +778,6 @@ class Nightmare extends Helper {
       .wait(this.options.waitForAction);
   }
 
-
   /**
    * Performs right click on a clickable element matched by semantic locator, CSS or XPath.
    * 
@@ -803,7 +801,6 @@ class Nightmare extends Helper {
       .wait(this.options.waitForAction);
   }
 
-
   /**
    * Moves cursor to element matched by locator.
    * Extra shift can be set with offsetX and offsetY options.
@@ -825,7 +822,6 @@ class Nightmare extends Helper {
     return this.browser.evaluate((el, x, y) => window.codeceptjs.hoverEl(el, x, y), el, offsetX, offsetY)
       .wait(this.options.waitForAction); // wait for hover event to happen
   }
-
 
   /**
    * Executes sync script on a page.
@@ -1226,7 +1222,6 @@ class Nightmare extends Helper {
 
     return array.length === 1 ? array[0] : array;
   }
-
 
   _injectClientScripts() {
     return this.browser.inject('js', path.join(__dirname, 'clientscripts', 'nightmare.js'));
@@ -1774,7 +1769,6 @@ async function proceedIsChecked(assertType, option) {
   }, els);
   return truth(`checkable ${option}`, 'to be checked')[assertType](selected);
 }
-
 
 async function findCheckable(locator, context) {
   let contextEl = null;

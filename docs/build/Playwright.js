@@ -300,11 +300,16 @@ class Playwright extends Helper {
     }
   }
 
-
   async _before() {
     recorder.retry({
       retries: 5,
-      when: err => err.message.indexOf('context') > -1, // ignore context errors
+      when: err => {
+        if (!err || typeof (err.message) !== 'string') {
+          return false;
+        }
+        // ignore context errors
+        return err.message.includes('context');
+      },
     });
     if (this.options.restart && !this.options.manualStart) return this._startBrowser();
     if (!this.isRunning && !this.options.manualStart) return this._startBrowser();
@@ -394,7 +399,6 @@ class Playwright extends Helper {
       },
     };
   }
-
 
   /**
    * Set the automatic popup response to Accept.
@@ -572,7 +576,6 @@ class Playwright extends Helper {
     const context = await this._getContext();
     return context.evaluateHandle(...args);
   }
-
 
   async _withinBegin(locator) {
     if (this.withinLocator) {
@@ -1202,7 +1205,6 @@ class Playwright extends Helper {
     return proceedClick.call(this, locator, context, { force: true });
   }
 
-
   /**
    * Performs a double-click on an element matched by link|button|label|CSS or XPath.
    * Context can be specified as second parameter to narrow search.
@@ -1491,7 +1493,6 @@ class Playwright extends Helper {
     return this._waitForAction();
   }
 
-
   /**
    * Clears a `<textarea>` or text `<input>` element's value.
    * 
@@ -1559,7 +1560,6 @@ class Playwright extends Helper {
   async dontSeeInField(field, value) {
     return proceedSeeInField.call(this, 'negate', field, value);
   }
-
 
   /**
    * Attaches a file to element located by label, name, CSS or XPath
@@ -1831,7 +1831,6 @@ class Playwright extends Helper {
     const source = await this.page.content();
     stringIncludes('HTML source of a page').negate(text, source);
   }
-
 
   /**
    * Asserts that an element appears a given number of times in the DOM.
@@ -2480,7 +2479,7 @@ class Playwright extends Helper {
       return currUrl.indexOf(urlPart) > -1;
     }, urlPart, { timeout: waitTimeout }).catch(async (e) => {
       const currUrl = await this._getPageUrl(); // Required because the waitForFunction can't return data.
-      if (/failed: timeout/i.test(e.message)) {
+      if (/Timeout/i.test(e.message)) {
         throw new Error(`expected url to include ${urlPart}, but found ${currUrl}`);
       } else {
         throw e;
@@ -2512,7 +2511,7 @@ class Playwright extends Helper {
       return currUrl.indexOf(urlPart) > -1;
     }, urlPart, { timeout: waitTimeout }).catch(async (e) => {
       const currUrl = await this._getPageUrl(); // Required because the waitForFunction can't return data.
-      if (/failed: timeout/i.test(e.message)) {
+      if (/Timeout/i.test(e.message)) {
         throw new Error(`expected url to be ${urlPart}, but found ${currUrl}`);
       } else {
         throw e;
@@ -3065,7 +3064,6 @@ function isFrameLocator(locator) {
   if (locator.isFrame()) return locator.value;
   return false;
 }
-
 
 function assertElementExists(res, locator, prefix, suffix) {
   if (!res || res.length === 0) {

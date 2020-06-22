@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "autoprefixer": "^9.8.0",
+    "autoprefixer": "^9.8.2",
     "tailwindcss": "^1.4.6",
     "vue-carousel": "^0.18.0",
     "runio.js": "^1.0",

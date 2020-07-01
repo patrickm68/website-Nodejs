@@ -23,7 +23,7 @@
       <span
         class="arrow"
         v-if="collapsable"
-        :class="open ? 'down' : 'right'">
+        :class="open ? 'open' : ''">
       </span>
     </router-link>
 
@@ -37,7 +37,7 @@
       <span
         class="arrow"
         v-if="collapsable"
-        :class="open ? 'down' : 'right'">
+        :class="open ? 'open' : ''">
       </span>
     </p>
 
@@ -113,6 +113,14 @@ export default {
     position relative
     top -0.12em
     left 0.5em
+    border-left 6px solid #ccc
+    border-top 4px solid transparent
+    border-bottom 4px solid transparent
+    transition all .2s ease
+    transform rotate(0)
+    &.open
+      transform rotate(90deg)
+      top -0.05em
   &.clickable
     &.active
       font-weight 600

@@ -144,6 +144,15 @@ h1, h2, h3, h4, h5, h6
       + p, + pre, + .custom-block
         margin-top 2rem
 
+  .content__default > &
+    margin-top (0.5rem - $navbarHeight)
+    padding-top ($navbarHeight + 1rem)
+    margin-bottom 0
+
+    &:first-child
+      margin-top -1.5rem
+      margin-bottom 1rem
+
   &:hover .header-anchor
     opacity: 1
 

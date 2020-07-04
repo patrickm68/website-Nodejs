@@ -56,7 +56,7 @@
 
 </style>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .theme-container {
   @apply bg-gray-100;
 }
@@ -71,6 +71,10 @@
   div {
     @apply px-8 py-4;
   }
+}
+
+h1 {
+  margin-top: -4.6rem !important;
 }
 
 
@@ -88,6 +92,7 @@
     z-index: 100;
     @apply p-8 rounded-lg;
   }
+
 
   max-width: 860px;
   margin: 0 auto;

@@ -56,7 +56,7 @@
 
 </style>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .theme-container {
   @apply bg-gray-100;
 }
@@ -72,11 +72,6 @@
     @apply px-8 py-4;
   }
 }
-
-h1 {
-  margin-top: -4.6rem !important;
-}
-
 
 .hero {
   height: 400px;

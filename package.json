@@ -19,7 +19,7 @@
     "npm": "^6.14.5",
     "sass-loader": "^9.0.1",
     "vue-slider-component": "^3.1.5",
-    "vueperslides": "^2.10.1",
+    "vueperslides": "^2.10.2",
     "vuepress": "^1.5.2",
     "vuepress-plugin-sitemap": "^2.3.1"
   },

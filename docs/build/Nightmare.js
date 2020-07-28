@@ -548,7 +548,7 @@ class Nightmare extends Helper {
    * I.see('Register', {css: 'form.register'}); // use strict locator
    * ```
    * @param {string} text expected on page.
-   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS|Xpath|strict locator in which to search for text.
+   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|Xpath|strict locator in which to search for text.
    */
   async see(text, context = null) {
     return proceedSee.call(this, 'assert', text, context);
@@ -564,7 +564,7 @@ class Nightmare extends Helper {
    * ```
    * 
    * @param {string} text which is not present.
-   * @param {string | object} [context] (optional) element located by CSS|XPath|strict locator in which to perfrom search.
+   * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator in which to perfrom search.
    * 
    */
   dontSee(text, context = null) {
@@ -578,7 +578,7 @@ class Nightmare extends Helper {
    * ```js
    * I.seeElement('#modal');
    * ```
-   * @param {string | object} locator located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
    */
   async seeElement(locator) {
     locator = new Locator(locator, 'css');
@@ -595,7 +595,7 @@ class Nightmare extends Helper {
    * I.dontSeeElement('.modal'); // modal is not shown
    * ```
    * 
-   * @param {string | object} locator located by CSS|XPath|Strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
    */
   async dontSeeElement(locator) {
     locator = new Locator(locator, 'css');
@@ -613,7 +613,7 @@ class Nightmare extends Helper {
    * ```js
    * I.seeElementInDOM('#modal');
    * ```
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * 
    */
   async seeElementInDOM(locator) {
@@ -629,7 +629,7 @@ class Nightmare extends Helper {
    * I.dontSeeElementInDOM('.nav'); // checks that element is not on page visible or not
    * ```
    * 
-   * @param {string | object} locator located by CSS|XPath|Strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
    */
   async dontSeeElementInDOM(locator) {
     locator = new Locator(locator, 'css');
@@ -674,7 +674,7 @@ class Nightmare extends Helper {
    * I.seeNumberOfElements('#submitBtn', 1);
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * 
    */
@@ -691,7 +691,7 @@ class Nightmare extends Helper {
    * I.seeNumberOfVisibleElements('.buttons', 3);
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * 
    */
@@ -708,7 +708,7 @@ class Nightmare extends Helper {
    * let numOfElements = await I.grabNumberOfVisibleElements('p');
    * ```
    * 
-   * @param {string | object} locator located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
    * @returns {Promise<number>} number of visible elements
    */
   async grabNumberOfVisibleElements(locator) {
@@ -745,8 +745,8 @@ class Nightmare extends Helper {
    * I.click({css: 'nav a.login'});
    * ```
    * 
-   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
    * 
    */
   async click(locator, context = null) {
@@ -767,8 +767,8 @@ class Nightmare extends Helper {
    * I.doubleClick('.btn.edit');
    * ```
    * 
-   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
    * 
    */
   async doubleClick(locator, context = null) {
@@ -790,8 +790,8 @@ class Nightmare extends Helper {
    * I.rightClick('Click me', '.context');
    * ```
    * 
-   * @param {string | object} locator clickable element located by CSS|XPath|strict locator.
-   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator clickable element located by CSS|XPath|strict locator.
+   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
    * 
    */
   async rightClick(locator, context = null) {
@@ -810,7 +810,7 @@ class Nightmare extends Helper {
    * I.moveCursorTo('#submit', 5,5);
    * ```
    * 
-   * @param {string | object} locator located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
    * 
@@ -919,8 +919,8 @@ class Nightmare extends Helper {
    * I.checkOption('I Agree to Terms and Conditions');
    * I.checkOption('agree', '//form');
    * ```
-   * @param {string | object} field checkbox located by label | name | CSS | XPath | strict locator.
-   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
+   * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
+   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
    */
   async checkOption(field, context = null) {
     const els = await findCheckable.call(this, field, context);
@@ -940,8 +940,8 @@ class Nightmare extends Helper {
    * I.uncheckOption('I Agree to Terms and Conditions');
    * I.uncheckOption('agree', '//form');
    * ```
-   * @param {string | object} field checkbox located by label | name | CSS | XPath | strict locator.
-   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
+   * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
+   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
    */
   async uncheckOption(field, context = null) {
     const els = await findCheckable.call(this, field, context);
@@ -964,7 +964,7 @@ class Nightmare extends Helper {
    * // or by strict locator
    * I.fillField({css: 'form#login input[name=username]'}, 'John');
    * ```
-   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value text value to fill.
    * 
    */
@@ -996,7 +996,7 @@ class Nightmare extends Helper {
    * ```js
    * I.appendField('#myTextField', 'appended');
    * ```
-   * @param {string | object} field located by label|name|CSS|XPath|strict locator
+   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator
    * @param {string} value text value to append.
    */
   async appendField(field, value) {
@@ -1016,7 +1016,7 @@ class Nightmare extends Helper {
    * I.seeInField('form input[type=hidden]','hidden_value');
    * I.seeInField('#searchform input','Search');
    * ```
-   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
    * 
    */
@@ -1033,7 +1033,7 @@ class Nightmare extends Helper {
    * I.dontSeeInField({ css: 'form input.email' }, 'user@user.com'); // field by CSS
    * ```
    * 
-   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
    */
   async dontSeeInField(field, value) {
@@ -1077,7 +1077,7 @@ class Nightmare extends Helper {
    * I.seeCheckboxIsChecked({css: '#signup_form input[type=checkbox]'});
    * ```
    * 
-   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * 
    */
   async seeCheckboxIsChecked(field) {
@@ -1093,7 +1093,7 @@ class Nightmare extends Helper {
    * I.dontSeeCheckboxIsChecked('agree'); // located by name
    * ```
    * 
-   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * 
    */
   async dontSeeCheckboxIsChecked(field) {
@@ -1110,7 +1110,7 @@ class Nightmare extends Helper {
    * I.attachFile('form input[name=avatar]', 'data/avatar.jpg');
    * ```
    * 
-   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
    * @param {string} pathToFile local file path relative to codecept.json config file.
    *
    * Doesn't work if the Chromium DevTools panel is open (as Chromium allows only one attachment to the debugger at a time. [See more](https://github.com/rosshinkley/nightmare-upload#important-note-about-setting-file-upload-inputs))
@@ -1138,7 +1138,7 @@ class Nightmare extends Helper {
    * ```
    * If multiple elements found returns an array of texts.
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @returns {Promise<string|string[]>} attribute value
    */
   async grabTextFrom(locator) {
@@ -1161,7 +1161,7 @@ class Nightmare extends Helper {
    * ```js
    * let email = await I.grabValueFrom('input[name=email]');
    * ```
-   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
    * @returns {Promise<string>} attribute value
    */
   async grabValueFrom(locator) {
@@ -1178,7 +1178,7 @@ class Nightmare extends Helper {
    * ```js
    * let hint = await I.grabAttributeFrom('#tooltip', 'title');
    * ```
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {string} attr attribute name.
    * @returns {Promise<string>} attribute value
    */
@@ -1205,7 +1205,7 @@ class Nightmare extends Helper {
    * let postHTML = await I.grabHTMLFrom('#post');
    * ```
    * 
-   * @param {string | object} element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} element located by CSS|XPath|strict locator.
    * @returns {Promise<string>} HTML code for an element
    */
   async grabHTMLFrom(locator) {
@@ -1246,7 +1246,7 @@ class Nightmare extends Helper {
    * ```js
    * I.selectOption('Which OS do you use?', ['Android', 'iOS']);
    * ```
-   * @param {string | object} select field located by label|name|CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} select field located by label|name|CSS|XPath|strict locator.
    * @param {string|Array<*>} option visible text or value of option.
    */
   async selectOption(select, option) {
@@ -1441,7 +1441,7 @@ class Nightmare extends Helper {
    * 
    * @param {string }text to wait for.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @param {string | object} [context] (optional) element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator.
    */
   async waitForText(text, sec, context = null) {
     if (!context) {
@@ -1468,7 +1468,7 @@ class Nightmare extends Helper {
    * I.waitForVisible('#popup');
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    */
   waitForVisible(locator, sec) {
@@ -1494,7 +1494,7 @@ class Nightmare extends Helper {
    * I.waitToHide('#popup');
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    */
   async waitToHide(locator, sec = null) {
@@ -1509,7 +1509,7 @@ class Nightmare extends Helper {
    * I.waitForInvisible('#popup');
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    */
   waitForInvisible(locator, sec) {
@@ -1536,7 +1536,7 @@ class Nightmare extends Helper {
    * I.waitForElement('.btn.continue', 5); // wait for 5 secs
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
    */
   async waitForElement(locator, sec) {
@@ -1565,7 +1565,7 @@ class Nightmare extends Helper {
    * I.waitForDetached('#popup');
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    */
   async waitForDetached(locator, sec) {
@@ -1642,7 +1642,7 @@ class Nightmare extends Helper {
    * I.scrollTo('#submit', 5, 5);
    * ```
    * 
-   * @param {string | object} locator located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
    */

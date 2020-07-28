@@ -360,8 +360,8 @@ class TestCafe extends Helper {
    * I.click({css: 'nav a.login'});
    * ```
    * 
-   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
    * 
    *
    */
@@ -390,7 +390,7 @@ class TestCafe extends Helper {
    * I.waitForVisible('#popup');
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    *
    */
@@ -416,7 +416,7 @@ class TestCafe extends Helper {
    * // or by strict locator
    * I.fillField({css: 'form#login input[name=username]'}, 'John');
    * ```
-   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value text value to fill.
    * 
    */
@@ -457,7 +457,7 @@ class TestCafe extends Helper {
    * ```js
    * I.appendField('#myTextField', 'appended');
    * ```
-   * @param {string | object} field located by label|name|CSS|XPath|strict locator
+   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator
    * @param {string} value text value to append.
    *
    */
@@ -481,7 +481,7 @@ class TestCafe extends Helper {
    * I.attachFile('form input[name=avatar]', 'data/avatar.jpg');
    * ```
    * 
-   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
    * @param {string} pathToFile local file path relative to codecept.json config file.
    *
    */
@@ -528,7 +528,7 @@ class TestCafe extends Helper {
    * I.moveCursorTo('#submit', 5,5);
    * ```
    * 
-   * @param {string | object} locator located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
    * 
@@ -554,8 +554,8 @@ class TestCafe extends Helper {
    * I.doubleClick('.btn.edit');
    * ```
    * 
-   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
    * 
    *
    */
@@ -585,8 +585,8 @@ class TestCafe extends Helper {
    * I.rightClick('Click me', '.context');
    * ```
    * 
-   * @param {string | object} locator clickable element located by CSS|XPath|strict locator.
-   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator clickable element located by CSS|XPath|strict locator.
+   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
    * 
    *
    */
@@ -615,8 +615,8 @@ class TestCafe extends Helper {
    * I.checkOption('I Agree to Terms and Conditions');
    * I.checkOption('agree', '//form');
    * ```
-   * @param {string | object} field checkbox located by label | name | CSS | XPath | strict locator.
-   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
+   * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
+   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
    */
   async checkOption(field, context = null) {
     const el = await findCheckable.call(this, field, context);
@@ -637,8 +637,8 @@ class TestCafe extends Helper {
    * I.uncheckOption('I Agree to Terms and Conditions');
    * I.uncheckOption('agree', '//form');
    * ```
-   * @param {string | object} field checkbox located by label | name | CSS | XPath | strict locator.
-   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
+   * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
+   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
    */
   async uncheckOption(field, context = null) {
     const el = await findCheckable.call(this, field, context);
@@ -659,7 +659,7 @@ class TestCafe extends Helper {
    * I.seeCheckboxIsChecked({css: '#signup_form input[type=checkbox]'});
    * ```
    * 
-   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * 
    */
   async seeCheckboxIsChecked(field) {
@@ -675,7 +675,7 @@ class TestCafe extends Helper {
    * I.dontSeeCheckboxIsChecked('agree'); // located by name
    * ```
    * 
-   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * 
    */
   async dontSeeCheckboxIsChecked(field) {
@@ -701,7 +701,7 @@ class TestCafe extends Helper {
    * ```js
    * I.selectOption('Which OS do you use?', ['Android', 'iOS']);
    * ```
-   * @param {string | object} select field located by label|name|CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} select field located by label|name|CSS|XPath|strict locator.
    * @param {string|Array<*>} option visible text or value of option.
    */
   async selectOption(select, option) {
@@ -809,7 +809,7 @@ class TestCafe extends Helper {
    * I.see('Register', {css: 'form.register'}); // use strict locator
    * ```
    * @param {string} text expected on page.
-   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS|Xpath|strict locator in which to search for text.
+   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|Xpath|strict locator in which to search for text.
    *
    */
   async see(text, context = null) {
@@ -835,7 +835,7 @@ class TestCafe extends Helper {
    * ```
    * 
    * @param {string} text which is not present.
-   * @param {string | object} [context] (optional) element located by CSS|XPath|strict locator in which to perfrom search.
+   * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator in which to perfrom search.
    * 
    *
    */
@@ -859,7 +859,7 @@ class TestCafe extends Helper {
    * ```js
    * I.seeElement('#modal');
    * ```
-   * @param {string | object} locator located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
    */
   async seeElement(locator) {
     const exists = (await findElements.call(this, this.context, locator)).filterVisible().exists;
@@ -875,7 +875,7 @@ class TestCafe extends Helper {
    * I.dontSeeElement('.modal'); // modal is not shown
    * ```
    * 
-   * @param {string | object} locator located by CSS|XPath|Strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
    */
   async dontSeeElement(locator) {
     const exists = (await findElements.call(this, this.context, locator)).filterVisible().exists;
@@ -891,7 +891,7 @@ class TestCafe extends Helper {
    * ```js
    * I.seeElementInDOM('#modal');
    * ```
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * 
    */
   async seeElementInDOM(locator) {
@@ -908,7 +908,7 @@ class TestCafe extends Helper {
    * I.dontSeeElementInDOM('.nav'); // checks that element is not on page visible or not
    * ```
    * 
-   * @param {string | object} locator located by CSS|XPath|Strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
    */
   async dontSeeElementInDOM(locator) {
     const exists = (await findElements.call(this, this.context, locator)).exists;
@@ -925,7 +925,7 @@ class TestCafe extends Helper {
    * I.seeNumberOfVisibleElements('.buttons', 3);
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * 
    *
@@ -945,7 +945,7 @@ class TestCafe extends Helper {
    * let numOfElements = await I.grabNumberOfVisibleElements('p');
    * ```
    * 
-   * @param {string | object} locator located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
    * @returns {Promise<number>} number of visible elements
    */
   async grabNumberOfVisibleElements(locator) {
@@ -963,7 +963,7 @@ class TestCafe extends Helper {
    * I.seeInField('form input[type=hidden]','hidden_value');
    * I.seeInField('#searchform input','Search');
    * ```
-   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
    * 
    */
@@ -987,7 +987,7 @@ class TestCafe extends Helper {
    * I.dontSeeInField({ css: 'form input.email' }, 'user@user.com'); // field by CSS
    * ```
    * 
-   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
    */
   async dontSeeInField(field, value) {
@@ -1127,7 +1127,7 @@ class TestCafe extends Helper {
    * ```
    * If multiple elements found returns an array of texts.
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @returns {Promise<string|string[]>} attribute value
    */
   async grabTextFrom(locator) {
@@ -1153,7 +1153,7 @@ class TestCafe extends Helper {
    * ```js
    * let hint = await I.grabAttributeFrom('#tooltip', 'title');
    * ```
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {string} attr attribute name.
    * @returns {Promise<string>} attribute value
    */
@@ -1170,7 +1170,7 @@ class TestCafe extends Helper {
    * ```js
    * let email = await I.grabValueFrom('input[name=email]');
    * ```
-   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
    * @returns {Promise<string>} attribute value
    */
   async grabValueFrom(locator) {
@@ -1275,7 +1275,7 @@ class TestCafe extends Helper {
    * I.scrollTo('#submit', 5, 5);
    * ```
    * 
-   * @param {string | object} locator located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
    */
@@ -1315,7 +1315,7 @@ class TestCafe extends Helper {
    * I.switchTo(); // switch back to main page
    * ```
    * 
-   * @param {?string | object} [locator=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
+   * @param {?CodeceptJS.LocatorOrString} [locator=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
    */
   async switchTo(locator) {
     if (Number.isInteger(locator)) {
@@ -1550,7 +1550,7 @@ class TestCafe extends Helper {
    * I.waitNumberOfVisibleElements('a', 3);
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    */
@@ -1572,7 +1572,7 @@ class TestCafe extends Helper {
    * I.waitForElement('.btn.continue', 5); // wait for 5 secs
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
    */
   async waitForElement(locator, sec) {
@@ -1591,7 +1591,7 @@ class TestCafe extends Helper {
    * I.waitToHide('#popup');
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    */
   async waitToHide(locator, sec) {
@@ -1610,7 +1610,7 @@ class TestCafe extends Helper {
    * I.waitForInvisible('#popup');
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    */
   async waitForInvisible(locator, sec) {
@@ -1633,7 +1633,7 @@ class TestCafe extends Helper {
    * 
    * @param {string }text to wait for.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @param {string | object} [context] (optional) element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator.
    *
    */
   async waitForText(text, sec = null, context = null) {

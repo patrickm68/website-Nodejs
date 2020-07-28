@@ -715,7 +715,7 @@ class WebDriver extends Helper {
    * ```
    *
    *
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    */
   async _locate(locator, smartWait = false) {
     if (require('../store').debugMode) smartWait = false;
@@ -757,7 +757,7 @@ class WebDriver extends Helper {
    * this.helpers['WebDriver']._locateCheckable('I agree with terms and conditions').then // ...
    * ```
    *
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    */
   async _locateCheckable(locator) {
     return findCheckable.call(this, locator, this.$$.bind(this)).then(res => res);
@@ -771,7 +771,7 @@ class WebDriver extends Helper {
    * const els = await this.helpers.WebDriver._locateClickable('Next page', '.pages');
    * ```
    *
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    */
   async _locateClickable(locator, context) {
     const locateFn = prepareLocateFn.call(this, context);
@@ -785,7 +785,7 @@ class WebDriver extends Helper {
    * this.helpers['WebDriver']._locateFields('Your email').then // ...
    * ```
    *
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    */
   async _locateFields(locator) {
     return findFields.call(this, locator).then(res => res);
@@ -859,8 +859,8 @@ class WebDriver extends Helper {
    * I.click({css: 'nav a.login'});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
    * 
    *
    * {{ react }}
@@ -905,8 +905,8 @@ class WebDriver extends Helper {
    * I.forceClick({css: 'nav a.login'});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
    * 
    *
    * {{ react }}
@@ -943,8 +943,8 @@ class WebDriver extends Helper {
    * I.doubleClick('.btn.edit');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
    * 
    *
    * {{ react }}
@@ -975,8 +975,8 @@ class WebDriver extends Helper {
    * I.rightClick('Click me', '.context');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator clickable element located by CSS|XPath|strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
+   * @param {string | object} locator clickable element located by CSS|XPath|strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
    * 
    *
    * {{ react }}
@@ -1003,7 +1003,24 @@ class WebDriver extends Helper {
   }
 
   /**
-   * {{> forceRightClick }}
+   * Emulates right click on an element.
+   * Unlike normal click instead of sending native event, emulates a click with JavaScript.
+   * This works on hidden, animated or inactive elements as well.
+   * 
+   * If a fuzzy locator is given, the page will be searched for a button, link, or image matching the locator string.
+   * For buttons, the "value" attribute, "name" attribute, and inner text are searched. For links, the link text is searched.
+   * For images, the "alt" attribute and inner text of any parent links are searched.
+   * 
+   * The second parameter is a context (CSS or XPath locator) to narrow the search.
+   * 
+   * ```js
+   * // simple link
+   * I.forceRightClick('Menu');
+   * ```
+   * 
+   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * 
    *
    * {{ react }}
    */
@@ -1042,7 +1059,7 @@ class WebDriver extends Helper {
    * // or by strict locator
    * I.fillField({css: 'form#login input[name=username]'}, 'John');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value text value to fill.
    * 
    * {{ react }}
@@ -1062,7 +1079,7 @@ class WebDriver extends Helper {
    * ```js
    * I.appendField('#myTextField', 'appended');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator
    * @param {string} value text value to append.
    * {{ react }}
    */
@@ -1110,7 +1127,7 @@ class WebDriver extends Helper {
    * ```js
    * I.selectOption('Which OS do you use?', ['Android', 'iOS']);
    * ```
-   * @param {CodeceptJS.LocatorOrString} select field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} select field located by label|name|CSS|XPath|strict locator.
    * @param {string|Array<*>} option visible text or value of option.
    */
   async selectOption(select, option) {
@@ -1152,7 +1169,7 @@ class WebDriver extends Helper {
    * I.attachFile('form input[name=avatar]', 'data/avatar.jpg');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
    * @param {string} pathToFile local file path relative to codecept.json config file.
    * Appium: not tested
    */
@@ -1191,8 +1208,8 @@ class WebDriver extends Helper {
    * I.checkOption('I Agree to Terms and Conditions');
    * I.checkOption('agree', '//form');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
+   * @param {string | object} field checkbox located by label | name | CSS | XPath | strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
    * Appium: not tested
    */
   async checkOption(field, context = null) {
@@ -1221,8 +1238,8 @@ class WebDriver extends Helper {
    * I.uncheckOption('I Agree to Terms and Conditions');
    * I.uncheckOption('agree', '//form');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
+   * @param {string | object} field checkbox located by label | name | CSS | XPath | strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
    * Appium: not tested
    */
   async uncheckOption(field, context = null) {
@@ -1249,7 +1266,7 @@ class WebDriver extends Helper {
    * ```
    * If multiple elements found returns an array of texts.
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @returns {Promise<string|string[]>} attribute value
    *
    */
@@ -1275,7 +1292,7 @@ class WebDriver extends Helper {
    * let postHTML = await I.grabHTMLFrom('#post');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} element located by CSS|XPath|strict locator.
+   * @param {string | object} element located by CSS|XPath|strict locator.
    * @returns {Promise<string>} HTML code for an element
    *
    */
@@ -1297,7 +1314,7 @@ class WebDriver extends Helper {
    * ```js
    * let email = await I.grabValueFrom('input[name=email]');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
    * @returns {Promise<string>} attribute value
    *
    */
@@ -1316,7 +1333,7 @@ class WebDriver extends Helper {
    * const value = await I.grabCssPropertyFrom('h3', 'font-weight');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {string} cssProperty CSS property name.
    * @returns {Promise<string>} CSS value
    */
@@ -1334,7 +1351,7 @@ class WebDriver extends Helper {
    * ```js
    * let hint = await I.grabAttributeFrom('#tooltip', 'title');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {string} attr attribute name.
    * @returns {Promise<string>} attribute value
    * Appium: can be used for apps only with several values ("contentDescription", "text", "className", "resourceId")
@@ -1416,7 +1433,7 @@ class WebDriver extends Helper {
    * I.see('Register', {css: 'form.register'}); // use strict locator
    * ```
    * @param {string} text expected on page.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|Xpath|strict locator in which to search for text.
+   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS|Xpath|strict locator in which to search for text.
    *
    * {{ react }}
    */
@@ -1432,7 +1449,7 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {string} text element value to check.
-   * @param {CodeceptJS.LocatorOrString?} [context=null]  element located by CSS|XPath|strict locator.
+   * @param {string | object?} [context=null]  element located by CSS|XPath|strict locator.
    */
   async seeTextEquals(text, context = null) {
     return proceedSee.call(this, 'assert', text, context, true);
@@ -1448,7 +1465,7 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {string} text which is not present.
-   * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator in which to perfrom search.
+   * @param {string | object} [context] (optional) element located by CSS|XPath|strict locator in which to perfrom search.
    * 
    *
    * {{ react }}
@@ -1467,7 +1484,7 @@ class WebDriver extends Helper {
    * I.seeInField('form input[type=hidden]','hidden_value');
    * I.seeInField('#searchform input','Search');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
    * 
    *
@@ -1485,7 +1502,7 @@ class WebDriver extends Helper {
    * I.dontSeeInField({ css: 'form input.email' }, 'user@user.com'); // field by CSS
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
    *
    */
@@ -1502,7 +1519,7 @@ class WebDriver extends Helper {
    * I.seeCheckboxIsChecked({css: '#signup_form input[type=checkbox]'});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * 
    * Appium: not tested
    */
@@ -1519,7 +1536,7 @@ class WebDriver extends Helper {
    * I.dontSeeCheckboxIsChecked('agree'); // located by name
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * 
    * Appium: not tested
    */
@@ -1534,7 +1551,7 @@ class WebDriver extends Helper {
    * ```js
    * I.seeElement('#modal');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * {{ react }}
    *
    */
@@ -1552,7 +1569,7 @@ class WebDriver extends Helper {
    * I.dontSeeElement('.modal'); // modal is not shown
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
+   * @param {string | object} locator located by CSS|XPath|Strict locator.
    * {{ react }}
    */
   async dontSeeElement(locator) {
@@ -1571,7 +1588,7 @@ class WebDriver extends Helper {
    * ```js
    * I.seeElementInDOM('#modal');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * 
    *
    */
@@ -1587,7 +1604,7 @@ class WebDriver extends Helper {
    * I.dontSeeElementInDOM('.nav'); // checks that element is not on page visible or not
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
+   * @param {string | object} locator located by CSS|XPath|Strict locator.
    *
    */
   async dontSeeElementInDOM(locator) {
@@ -1682,7 +1699,7 @@ class WebDriver extends Helper {
    * I.seeNumberOfElements('#submitBtn', 1);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * 
    * {{ react }}
@@ -1700,7 +1717,7 @@ class WebDriver extends Helper {
    * I.seeNumberOfVisibleElements('.buttons', 3);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * 
    * {{ react }}
@@ -1717,7 +1734,7 @@ class WebDriver extends Helper {
    * I.seeCssPropertiesOnElements('h3', { 'font-weight': "bold"});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @param {object} cssProperties object with CSS properties and their values to check.
    */
   async seeCssPropertiesOnElements(locator, cssProperties) {
@@ -1759,7 +1776,7 @@ class WebDriver extends Helper {
    * I.seeAttributesOnElements('//form', { method: "post"});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @param {object} attributes attributes and their values to check.
    */
   async seeAttributesOnElements(locator, attributes) {
@@ -1794,7 +1811,7 @@ class WebDriver extends Helper {
    * let numOfElements = await I.grabNumberOfVisibleElements('p');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @returns {Promise<number>} number of visible elements
    */
   async grabNumberOfVisibleElements(locator) {
@@ -1965,7 +1982,7 @@ class WebDriver extends Helper {
    * I.scrollTo('#submit', 5, 5);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
    *
@@ -2006,7 +2023,7 @@ class WebDriver extends Helper {
    * I.moveCursorTo('#submit', 5,5);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
    * 
@@ -2467,7 +2484,7 @@ class WebDriver extends Helper {
    * I.dragSlider('#slider', -70);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} locator located by label|name|CSS|XPath|strict locator.
    * @param {number} offsetX position to drag.
    */
   async dragSlider(locator, offsetX = 0) {
@@ -2569,7 +2586,7 @@ class WebDriver extends Helper {
    * Waits for element to become enabled (by default waits for 1sec).
    * Element can be located by CSS or XPath.
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional) time in seconds to wait, 1 by default.
    *
    */
@@ -2613,7 +2630,7 @@ class WebDriver extends Helper {
    * I.waitForElement('.btn.continue', 5); // wait for 5 secs
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
    */
   async waitForElement(locator, sec = null) {
@@ -2639,7 +2656,7 @@ class WebDriver extends Helper {
    * I.waitForClickable('.btn.continue', 5); // wait for 5 secs
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
    */
   async waitForClickable(locator, waitTimeout) {
@@ -2746,7 +2763,7 @@ class WebDriver extends Helper {
    * 
    * @param {string }text to wait for.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator.
+   * @param {string | object} [context] (optional) element located by CSS|XPath|strict locator.
    *
    */
   async waitForText(text, sec = null, context = null) {
@@ -2835,7 +2852,7 @@ class WebDriver extends Helper {
    * I.waitForVisible('#popup');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    *
    */
@@ -2870,7 +2887,7 @@ class WebDriver extends Helper {
    * I.waitNumberOfVisibleElements('a', 3);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    */
@@ -2906,7 +2923,7 @@ class WebDriver extends Helper {
    * I.waitForInvisible('#popup');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    *
    */
@@ -2936,7 +2953,7 @@ class WebDriver extends Helper {
    * I.waitToHide('#popup');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    *
    */
@@ -2957,7 +2974,7 @@ class WebDriver extends Helper {
    * I.waitForDetached('#popup');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    *
    */
@@ -3049,7 +3066,7 @@ class WebDriver extends Helper {
    * I.switchTo(); // switch back to main page
    * ```
    * 
-   * @param {?CodeceptJS.LocatorOrString} [locator=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
+   * @param {?string | object} [locator=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
    *
    */
   async switchTo(locator) {

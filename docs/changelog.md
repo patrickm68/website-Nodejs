@@ -7,6 +7,15 @@ layout: Section
 
 # Releases
 
+## 2.6.7
+
+* Add REST helper into `standardActingHelpers` array [#2474](https://github.com/Codeception/CodeceptJS/issues/2474) by **[PeterNgTr](https://github.com/PeterNgTr)**
+* Add missing `--invert` option for `run-workers` command [#2504](https://github.com/Codeception/CodeceptJS/issues/2504) by **[pablopaul](https://github.com/pablopaul)**
+* **[WebDriver]** Introduce `forceRightClick` method [#2485](https://github.com/Codeception/CodeceptJS/issues/2485) bylsuniljaiswal01
+* **[Playwright]** Fix `setCookie` method [#2491](https://github.com/Codeception/CodeceptJS/issues/2491) by **[bmbarker90](https://github.com/bmbarker90)**
+* **[TypeScript]** Update compilerOptions.target to es2017 [#2483](https://github.com/Codeception/CodeceptJS/issues/2483) by **[shanplourde](https://github.com/shanplourde)**
+* **[Mocha]** Honor reporter configuration [#2465](https://github.com/Codeception/CodeceptJS/issues/2465) by **[trinhpham](https://github.com/trinhpham)**
+
 ## 2.6.6
 
 * Puppeteer 4.0 support. Important: MockRequest helper won't work with Puppeter > 3.3

@@ -1890,7 +1890,7 @@ class Playwright extends Helper {
    */
   async setCookie(cookie) {
     if (Array.isArray(cookie)) {
-      return this.browserContext.addCookies(...cookie);
+      return this.browserContext.addCookies(cookie);
     }
     return this.browserContext.addCookies([cookie]);
   }

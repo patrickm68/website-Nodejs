@@ -911,6 +911,21 @@ I.forceClick({css: 'nav a.login'});
 This action supports [React locators](https://codecept.io/react#locators)
  
 
+### forceRightClick
+
+{{> forceRightClick }}
+
+
+
+
+This action supports [React locators](https://codecept.io/react#locators)
+
+
+#### Parameters
+
+-   `locator`  
+-   `context`   
+
 ### grabAllWindowHandles
 
 Get all Window Handles.

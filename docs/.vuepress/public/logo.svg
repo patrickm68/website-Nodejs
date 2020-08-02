@@ -9,26 +9,29 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   sodipodi:docname="cjs-base.svg"
-   inkscape:version="0.91 r13725"
+   sodipodi:docname="logo.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
    version="1.1"
    id="svg2"
    viewBox="0 0 332.97198 316.89079"
    height="89.433624mm"
-   width="93.972092mm">
+   width="93.972092mm"
+   inkscape:export-filename="/home/davert/Pictures/codeceptjs.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <sodipodi:namedview
      inkscape:window-maximized="1"
-     inkscape:window-y="-8"
-     inkscape:window-x="-8"
-     inkscape:window-height="1017"
-     inkscape:window-width="1920"
+     inkscape:window-y="27"
+     inkscape:window-x="0"
+     inkscape:window-height="873"
+     inkscape:window-width="1600"
      showguides="false"
      showgrid="false"
      inkscape:current-layer="layer2"
      inkscape:document-units="px"
-     inkscape:cy="86.576429"
-     inkscape:cx="1285.092"
-     inkscape:zoom="0.35355339"
+     inkscape:cy="285.10343"
+     inkscape:cx="187.13803"
+     inkscape:zoom="1"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
@@ -74,7 +77,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -84,34 +87,25 @@
      inkscape:groupmode="layer"
      transform="translate(-290.50076,-325.71241)">
     <ellipse
-       ry="150.49866"
-       rx="155.89406"
-       style="fill:#607d8b;fill-opacity:1;stroke:none"
+       ry="150.06299"
+       rx="147.98407"
+       style="fill:#607d8b;fill-opacity:1;stroke:none;stroke-width:0.97288871"
        id="ellipse6113-0-4"
-       cx="467.57867"
-       cy="492.10455"
-       inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90" />
+       cx="458.60373"
+       cy="491.61282"
+       inkscape:export-xdpi="142.43877"
+       inkscape:export-ydpi="142.43877"
+       inkscape:export-filename="/home/davert/Pictures/codeceptjs-logo.png" />
     <ellipse
-       ry="150.49866"
-       rx="155.89406"
-       style="fill:#ffe680;fill-opacity:1;stroke:none"
+       ry="150.06299"
+       rx="147.98407"
+       style="fill:#ffe680;fill-opacity:1;stroke:none;stroke-width:0.97288871"
        id="ellipse6113-0"
-       cx="446.73749"
-       cy="479.04749"
-       inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90" />
-    <ellipse
-       cy="363.99484"
-       cx="329.51837"
-       id="path4164"
-       style="fill:#000000;fill-opacity:0.2988167;stroke:none"
-       rx="39.012981"
-       ry="37.662766"
-       clip-path="url(#clipPath6150)"
-       inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90"
-       transform="matrix(3.9959534,0,0,3.9959534,-870.32671,-975.81895)" />
+       cx="438.82004"
+       cy="478.59357"
+       inkscape:export-xdpi="142.43877"
+       inkscape:export-ydpi="142.43877"
+       inkscape:export-filename="/home/davert/Pictures/codeceptjs-logo.png" />
     <g
        transform="translate(-12.75,10.75)"
        id="g4721">
@@ -131,26 +125,27 @@
      inkscape:label="Layer 1"
      transform="translate(-290.50076,-325.71241)">
     <text
-       transform="scale(1.0197746,0.98060885)"
-       sodipodi:linespacing="125%"
+       transform="scale(0.99500762,1.0050174)"
        id="text3336-9"
-       y="535.34344"
-       x="464.83542"
-       style="font-style:normal;font-weight:normal;font-size:82.42398834px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#607d8b;fill-opacity:1;stroke:#ffffff;stroke-width:3.99595332;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       y="521.75775"
+       x="467.05695"
+       style="font-style:normal;font-weight:normal;font-size:11.6746645px;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#607d8b;fill-opacity:1;stroke:#ffffff;stroke-width:3.88761783;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        xml:space="preserve"
-       inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:144.24197388px;font-family:Corbel;-inkscape-font-specification:'Corbel Bold';fill:#607d8b;fill-opacity:1;stroke:#ffffff;stroke-width:3.99595332;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         y="535.34344"
-         x="464.83542"
+       inkscape:export-xdpi="142.43877"
+       inkscape:export-ydpi="142.43877"
+       inkscape:export-filename="/home/davert/Pictures/codeceptjs-logo.png"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:140.33139038px;line-height:1.25;font-family:Corbel;-inkscape-font-specification:'Corbel Bold';fill:#607d8b;fill-opacity:1;stroke:#ffffff;stroke-width:3.88761783;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         y="521.75775"
+         x="467.05695"
          id="tspan3338-2"
          sodipodi:role="line">S</tspan></text>
     <g
        id="text3336"
        style="font-style:normal;font-weight:normal;font-size:34.28156662px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#607d8b;fill-opacity:1;stroke:#ffffff;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       transform="matrix(3.9271216,-0.08931639,0.10415317,4.0636229,-871.2547,-977.23173)"
-       inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90">
+       transform="matrix(3.7278611,-0.08905783,0.09886849,4.0518592,-812.29779,-973.46992)"
+       inkscape:export-xdpi="142.43877"
+       inkscape:export-ydpi="142.43877"
+       inkscape:export-filename="/home/davert/Pictures/codeceptjs-logo.png">
       <path
          sodipodi:nodetypes="ccccc"
          inkscape:connector-curvature="0"
@@ -162,9 +157,10 @@
        sodipodi:nodetypes="ccccccc"
        inkscape:connector-curvature="0"
        id="path3340"
-       d="m 359.55023,413.09969 -2.3483,14.0845 79.41578,103.60636 93.61388,-203.04722 -47.70393,0.49938 -59.76352,156.78746 z"
-       style="fill:#607d8b;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.99595332;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90" />
+       d="m 356.05661,412.83666 -2.22915,14.04373 75.38627,103.30644 88.86395,-202.45943 -45.28346,0.49794 -56.73114,156.33357 z"
+       style="fill:#607d8b;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.88761783;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-xdpi="142.43877"
+       inkscape:export-ydpi="142.43877"
+       inkscape:export-filename="/home/davert/Pictures/codeceptjs-logo.png" />
   </g>
 </svg>

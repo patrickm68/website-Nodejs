@@ -9,7 +9,7 @@ module.exports = {
     const dir = 'website';
     if (!fs.existsSync(dir)) {
       await git((fn) => {
-        fn.cloneShallow('git@github.com:codecept-js/website.git', dir);
+        fn.cloneShallow('git@github.com:codeceptjs/website.git', dir);
       });
     }
     await chdir(dir, async () => {
@@ -54,7 +54,7 @@ module.exports = {
       writeToFile('CNAME', cfg => cfg.line('codecept.io'));
       stopOnFail(false);
       await exec('git init');
-      await exec('git remote add origin git@github.com:codecept-js/codecept-js.github.io.git');
+      await exec('git remote add origin git@github.com:codeceptjs/codeceptjs.github.io.git');
       await exec('git checkout -b deploy');
       await exec('git reset --soft HEAD~$(git rev-list --count HEAD ^master)');
       await exec('git add -A');

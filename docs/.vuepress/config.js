@@ -176,7 +176,7 @@ module.exports = {
         {
           group: 'links',
           items: [
-            { text: "GitHub", link: "https://github.com/codecept-js/CodeceptJS" },
+            { text: "GitHub", link: "https://github.com/codeceptjs/CodeceptJS" },
             { text: "Slack Chat", link: "http://bit.ly/chat-codeceptjs" },
             { text: "Forum", link: "https://codecept.discourse.group/" },
             { text: "Twitter", link: "https://twitter.com/codeceptjs" },

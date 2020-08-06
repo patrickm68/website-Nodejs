@@ -1,7 +1,7 @@
 🚀 CodeceptJS 3 is in beta now. Install it:
 
 ```
-npm i codeceptjs@3.0.0-beta.2
+npm i codeceptjs@3.0.0-beta.3
 ```
 
 * [COMPLETE CHANGELOG](https://github.com/Codeception/CodeceptJS/blob/codeceptjs-v3.0/CHANGELOG.md#300-beta)
@@ -70,14 +70,44 @@ Please update parts in your project where you rely on grab* methods to return an
 
 > Single-value `grab*From` will throw error when no data was matched, while `grab*FromAll` will return array.
 
-### 3️⃣ Locator Detection Heuristic Change
+### 3️⃣ Bootstrap / Teardown Changed
+
+`async/await` paradigm changed the way we write asynchronous code in NodeJS. 
+However, bootstrap functions were created to use old-style methods of passing `done` callback inside.
+
+In 3.0 we decided to completely change the way async bootstrap is performed and replace all it with async/await functions:
+
+```js
+// before
+bootstrap: (done) {
+  server.start().then(done);
+},
+
+// after
+bootstrap: async () {
+  await server.start();
+}
+```
+Passing a string as bootstrap function (to require a function from external file) is also not supported:
+
+```js
+// before
+bootstrap: './server_start.js',
+
+// after
+bootstrap: require('./server_start.js'),
+```
+
+The same rules are applied to teardown, bootstrapAll, teardownAll.
+
+### 4️⃣ Locator Detection Heuristic Change
 
 In 3.0 we added a new rule to auto-detect CSS locator. If a locator starts with `[` parser will use it as a CSS locator, without trying to match value by text.
 
 * Previous behavior: I.click('[user]') - will try to search for a link with `[user]` text, if no found - take `[user]` as CSS locator
 * Current behavior: I.click('[user]') - will check only for CSS locator `[user]`
 
-### 4️⃣ Improved Parallel Execution with Workers
+### 5️⃣ Improved Parallel Execution with Workers
 
 CodeceptJS has two parallel execution modes:
 

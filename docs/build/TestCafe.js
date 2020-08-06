@@ -1044,6 +1044,29 @@ class TestCafe extends Helper {
   }
 
   /**
+   * Saves screenshot of the specified locator to ouput folder (set in codecept.json or codecept.conf.js).
+   * Filename is relative to output folder.
+   * 
+   * ```js
+   * I.saveElementScreenshot(`#submit`,'debug.png');
+   * ```
+   * 
+   * @param {string|object} locator element located by CSS|XPath|strict locator.  
+   * @param {string} fileName file name to save.
+   *
+   */
+  async saveElementScreenshot(locator, fileName) {
+    const outputFile = path.join(global.output_dir, fileName);
+
+    const sel = await findElements.call(this, this.context, locator);
+    assertElementExists(sel);
+    const firstElement = await sel.filterVisible().nth(0);
+
+    this.debug(`Screenshot of ${locator} element has been saved to ${outputFile}`);
+    return this.t.takeElementScreenshot(firstElement, fileName);
+  }
+
+  /**
    * Saves a screenshot to ouput folder (set in codecept.json or codecept.conf.js).
    * Filename is relative to output folder.
    * Optionally resize the window to the full available page `scrollHeight` and `scrollWidth` to capture the entire page by passing `true` in as the second argument.

@@ -2038,6 +2038,29 @@ class WebDriver extends Helper {
   }
 
   /**
+   * Saves screenshot of the specified locator to ouput folder (set in codecept.json or codecept.conf.js).
+   * Filename is relative to output folder.
+   * 
+   * ```js
+   * I.saveElementScreenshot(`#submit`,'debug.png');
+   * ```
+   * 
+   * @param {string|object} locator element located by CSS|XPath|strict locator.  
+   * @param {string} fileName file name to save.
+   *
+   */
+  async saveElementScreenshot(locator, fileName) {
+    const outputFile = screenshotOutputFolder(fileName);
+
+    const res = await this._locate(withStrictLocator(locator), true);
+    assertElementExists(res, locator);
+    const elem = usingFirstElement(res);
+
+    this.debug(`Screenshot of ${locator} element has been saved to ${outputFile}`);
+    return elem.saveScreenshot(outputFile);
+  }
+
+  /**
    * Saves a screenshot to ouput folder (set in codecept.json or codecept.conf.js).
    * Filename is relative to output folder.
    * Optionally resize the window to the full available page `scrollHeight` and `scrollWidth` to capture the entire page by passing `true` in as the second argument.
@@ -2397,26 +2420,37 @@ class WebDriver extends Helper {
   }
 
   /**
-   * 
-   * Types out the given string or the array of keys provided.
-   * _Note:_ Should only be used when using [`fillField`](#fillfield) is not an option.
+   * Types out the given text into an active field.
+   * To slow down typing use a second parameter, to set interval between key presses.
+   * _Note:_ Should be used when [`fillField`](#fillfield) is not an option.
    * 
    * ```js
-   * // When passing in a string
+   * // passing in a string
    * I.type('Type this out.');
-   * // When passing in an array
+   * 
+   * // typing values with a 100ms interval
+   * I.type('4141555311111111', 100);
+   * 
+   * // passing in an array
    * I.type(['T', 'E', 'X', 'T']);
    * ```
    * 
    * @param {string|string[]} key or array of keys to type.
-   * Type out given array of keys or a string of text
+   * @param {?number} [delay=null] (optional) delay in ms between key presses
+   * 
    */
-  async type(keys) {
-    if (Array.isArray(keys)) {
-      await this.browser.keys(keys);
+  async type(keys, delay = null) {
+    if (!Array.isArray(keys)) {
+      keys = keys.split('');
+    }
+    if (delay) {
+      for (const key of keys) {
+        await this.browser.keys(key);
+        await this.wait(delay / 1000);
+      }
       return;
     }
-    await this.browser.keys(keys.split(''));
+    await this.browser.keys(keys);
   }
 
   /**

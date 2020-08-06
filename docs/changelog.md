@@ -7,6 +7,16 @@ layout: Section
 
 # Releases
 
+## 2.6.8
+
+* [WebDriver][Protractor][Playwright][Puppeteer][Nightmare] `saveElementScreenshot` method added to make screenshot of an element. By **[suniljaiswal01](https://github.com/suniljaiswal01)**
+* [Playwright][Puppeteer] Added `type` method to type a text using keyboard with an optional delay.
+* **[WebDriver]** Added optional `delay` argument to `type` method to slow down typing.
+* **[Puppeteer]** Fixed `amOnPage` freeze when `getPageTimeout` is 0"; set 30 sec as default timeout by **[Vorobeyko](https://github.com/Vorobeyko)**.
+* Fixed printing step with null argument in custom helper by **[sjana-aj](https://github.com/sjana-aj)**. See [#2494](https://github.com/Codeception/CodeceptJS/issues/2494)
+* Fix missing screenshot on failure when REST helper is in use [#2513](https://github.com/Codeception/CodeceptJS/issues/2513) by **[PeterNgTr](https://github.com/PeterNgTr)**
+* Improve error logging in the `screenshotOnFail` plugin [#2512](https://github.com/Codeception/CodeceptJS/issues/2512) by **[pablopaul](https://github.com/pablopaul)**
+
 ## 2.6.7
 
 * Add REST helper into `standardActingHelpers` array [#2474](https://github.com/Codeception/CodeceptJS/issues/2474) by **[PeterNgTr](https://github.com/PeterNgTr)**

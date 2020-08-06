@@ -136,3 +136,13 @@ This is a ready to use example that shows how to integrate CodeceptJS with Puppe
 * test steps, pages, fragments
 * examples for sequential and parallel execution
 * generation of allure test results  
+
+## [Framework with UI and API test support : CodeceptJS , Puppeteer , REST , ESLint](https://github.com/avighub/CodeceptJS-puppeteer)
+This is a basic framework with Puppeteer , REST helpers which can support both UI and API actions within same test.
+More improvements and features will be added and will be updated. 
+Suggestions and improvements are welcome , please raise a ticket in Issue tab.
+
+* Step by step setup in README
+* Two helpers are added. UI - Puppeteer , API - REST and chai-codeceptJS for assetion
+* ESLint for code check
+* Upcoming : API generic functions , Adaptor design pattern , More utilities

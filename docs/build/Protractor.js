@@ -1429,6 +1429,38 @@ class Protractor extends Helper {
   }
 
   /**
+   * Saves screenshot of the specified locator to ouput folder (set in codecept.json or codecept.conf.js).
+   * Filename is relative to output folder.
+   * 
+   * ```js
+   * I.saveElementScreenshot(`#submit`,'debug.png');
+   * ```
+   * 
+   * @param {string|object} locator element located by CSS|XPath|strict locator.  
+   * @param {string} fileName file name to save.
+   *
+   */
+  async saveElementScreenshot(locator, fileName) {
+    const outputFile = screenshotOutputFolder(fileName);
+
+    const writeFile = (png, outputFile) => {
+      const fs = require('fs');
+      const stream = fs.createWriteStream(outputFile);
+      stream.write(Buffer.from(png, 'base64'));
+      stream.end();
+      return new Promise(resolve => stream.on('finish', resolve));
+    };
+
+    const res = await this._locate(locator);
+    assertElementExists(res, locator);
+    if (res.length > 1) this.debug(`[Elements] Using first element out of ${res.length}`);
+    const elem = res[0];
+    this.debug(`Screenshot of ${locator} element has been saved to ${outputFile}`);
+    const png = await elem.takeScreenshot();
+    return writeFile(png, outputFile);
+  }
+
+  /**
    * Saves a screenshot to ouput folder (set in codecept.json or codecept.conf.js).
    * Filename is relative to output folder.
    * Optionally resize the window to the full available page `scrollHeight` and `scrollWidth` to capture the entire page by passing `true` in as the second argument.

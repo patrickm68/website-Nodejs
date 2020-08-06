@@ -1098,6 +1098,20 @@ I.rightClick('Click me', '.context');
 -   `locator` **([string][7] | [object][5])** clickable element located by CSS|XPath|strict locator.
 -   `context` **([string][7]? | [object][5])** (optional, `null` by default) element located by CSS|XPath|strict locator. 
 
+### saveElementScreenshot
+
+Saves screenshot of the specified locator to ouput folder (set in codecept.json or codecept.conf.js).
+Filename is relative to output folder.
+
+```js
+I.saveElementScreenshot(`#submit`,'debug.png');
+```
+
+#### Parameters
+
+-   `locator` **([string][7] | [object][5])** element located by CSS|XPath|strict locator.
+-   `fileName` **[string][7]** file name to save.
+
 ### saveScreenshot
 
 Saves a screenshot to ouput folder (set in codecept.json or codecept.conf.js).
@@ -1458,6 +1472,29 @@ I.switchToPreviousTab(2);
 #### Parameters
 
 -   `num` **[number][8]**  
+
+### type
+
+Types out the given text into an active field.
+To slow down typing use a second parameter, to set interval between key presses.
+_Note:_ Should be used when [`fillField`][13] is not an option.
+
+```js
+// passing in a string
+I.type('Type this out.');
+
+// typing values with a 100ms interval
+I.type('4141555311111111', 100);
+
+// passing in an array
+I.type(['T', 'E', 'X', 'T']);
+```
+
+#### Parameters
+
+-   `keys`  
+-   `delay` **[number][8]?** (optional) delay in ms between key presses 
+-   `key` **([string][7] | [Array][10]&lt;[string][7]>)** or array of keys to type.
 
 ### uncheckOption
 

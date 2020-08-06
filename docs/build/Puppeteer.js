@@ -64,7 +64,7 @@ const consoleLogStore = new Console();
  * * `waitForAction`: (optional) how long to wait after click, doubleClick or PressKey actions in ms. Default: 100.
  * * `waitForNavigation`: (optional, default: 'load'). When to consider navigation succeeded. Possible options: `load`, `domcontentloaded`, `networkidle0`, `networkidle2`. See [Puppeteer API](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pagewaitfornavigationoptions). Array values are accepted as well.
  * * `pressKeyDelay`: (optional, default: '10'). Delay between key presses in ms. Used when calling Puppeteers page.type(...) in fillField/appendField
- * * `getPageTimeout` (optional, default: '0') config option to set maximum navigation time in milliseconds.
+ * * `getPageTimeout` (optional, default: '30000') config option to set maximum navigation time in milliseconds. If the timeout is set to 0, then timeout will be disabled.
  * * `waitForTimeout`: (optional) default wait* timeout in ms. Default: 1000.
  * * `windowSize`: (optional) default window size. Set a dimension like `640x480`.
  * * `userAgent`: (optional) user-agent string.
@@ -190,7 +190,7 @@ class Puppeteer extends Helper {
       disableScreenshots: false,
       uniqueScreenshotNames: false,
       manualStart: false,
-      getPageTimeout: 0,
+      getPageTimeout: 30000,
       waitForNavigation: 'load',
       restart: true,
       keepCookies: false,
@@ -1520,6 +1520,37 @@ class Puppeteer extends Helper {
   }
 
   /**
+   * Types out the given text into an active field.
+   * To slow down typing use a second parameter, to set interval between key presses.
+   * _Note:_ Should be used when [`fillField`](#fillfield) is not an option.
+   * 
+   * ```js
+   * // passing in a string
+   * I.type('Type this out.');
+   * 
+   * // typing values with a 100ms interval
+   * I.type('4141555311111111', 100);
+   * 
+   * // passing in an array
+   * I.type(['T', 'E', 'X', 'T']);
+   * ```
+   * 
+   * @param {string|string[]} key or array of keys to type.
+   * @param {?number} [delay=null] (optional) delay in ms between key presses
+   * 
+   */
+  async type(keys, delay = null) {
+    if (!Array.isArray(keys)) {
+      keys = keys.split('');
+    }
+
+    for (const key of keys) {
+      await this.page.keyboard.press(key);
+      if (delay) await this.wait(delay / 1000);
+    }
+  }
+
+  /**
    * Fills a text field or textarea, after clearing its value, with the given string.
    * Field is located by name, label, CSS, or XPath.
    * 
@@ -2337,6 +2368,29 @@ class Puppeteer extends Helper {
     }
 
     return array.length === 1 ? array[0] : array;
+  }
+
+  /**
+   * Saves screenshot of the specified locator to ouput folder (set in codecept.json or codecept.conf.js).
+   * Filename is relative to output folder.
+   * 
+   * ```js
+   * I.saveElementScreenshot(`#submit`,'debug.png');
+   * ```
+   * 
+   * @param {string|object} locator element located by CSS|XPath|strict locator.  
+   * @param {string} fileName file name to save.
+   *
+   */
+  async saveElementScreenshot(locator, fileName) {
+    const outputFile = screenshotOutputFolder(fileName);
+
+    const res = await this._locate(locator);
+    assertElementExists(res, locator);
+    if (res.length > 1) this.debug(`[Elements] Using first element out of ${res.length}`);
+    const elem = res[0];
+    this.debug(`Screenshot of ${locator} element has been saved to ${outputFile}`);
+    return elem.screenshot({ path: outputFile, type: 'png' });
   }
 
   /**

@@ -1601,6 +1601,82 @@ class Nightmare extends Helper {
   }
 
   /**
+   * Saves screenshot of the specified locator to ouput folder (set in codecept.json or codecept.conf.js).
+   * Filename is relative to output folder.
+   * 
+   * ```js
+   * I.saveElementScreenshot(`#submit`,'debug.png');
+   * ```
+   * 
+   * @param {string|object} locator element located by CSS|XPath|strict locator.  
+   * @param {string} fileName file name to save.
+   *
+   */
+  async saveElementScreenshot(locator, fileName) {
+    const outputFile = screenshotOutputFolder(fileName);
+
+    const rect = await this.grabElementBoundingRect(locator);
+
+    const button_clip = {
+      x: Math.floor(rect.x),
+      y: Math.floor(rect.y),
+      width: Math.floor(rect.width),
+      height: Math.floor(rect.height),
+    };
+
+    this.debug(`Screenshot of ${locator} element has been saved to ${outputFile}`);
+    // take the screenshot
+    await this.browser.screenshot(outputFile, button_clip);
+  }
+
+  /**
+   * Grab the width, height, location of given locator.
+   * Provide `width` or `height`as second param to get your desired prop.
+   * Resumes test execution, so **should be used inside an async function with `await`** operator.
+   * 
+   * Returns an object with `x`, `y`, `width`, `height` keys.
+   * 
+   * ```js
+   * const value = await I.grabElementBoundingRect('h3');
+   * // value is like { x: 226.5, y: 89, width: 527, height: 220 }
+   * ```
+   * 
+   * To get only one metric use second parameter:
+   * 
+   * ```js
+   * const width = await I.grabElementBoundingRect('h3', 'width');
+   * // width == 527
+   * ```
+   * @param {string|object} locator element located by CSS|XPath|strict locator.
+   * @param {string} elementSize x, y, width or height of the given element.
+   * @returns {object} Element bounding rectangle
+   */
+  async grabElementBoundingRect(locator, prop) {
+    locator = new Locator(locator, 'css');
+
+    const rect = await this.browser.evaluate(async (by, locator) => {
+      // store the button in a variable
+
+      const build_cluster_btn = await window.codeceptjs.findElement(by, locator);
+
+      // use the getClientRects() function on the button to determine
+      // the size and location
+      const rect = build_cluster_btn.getBoundingClientRect();
+
+      // convert the rectangle to a clip object and return it
+      return {
+        x: rect.left,
+        y: rect.top,
+        width: rect.width,
+        height: rect.height,
+      };
+    }, locator.type, locator.value);
+
+    if (prop) return rect[prop];
+    return rect;
+  }
+
+  /**
    * Saves a screenshot to ouput folder (set in codecept.json or codecept.conf.js).
    * Filename is relative to output folder.
    * Optionally resize the window to the full available page `scrollHeight` and `scrollWidth` to capture the entire page by passing `true` in as the second argument.

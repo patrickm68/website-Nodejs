@@ -10,20 +10,20 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "autoprefixer": "^9.8.5",
-    "tailwindcss": "^1.5.2",
+    "autoprefixer": "^9.8.6",
+    "tailwindcss": "^1.6.2",
     "vue-carousel": "^0.18.0",
     "runio.js": "^1.0",
     "i": "^0.3.6",
     "node-sass": "^4.14.1",
     "npm": "^6.14.7",
-    "sass-loader": "^9.0.2",
-    "vue-slider-component": "^3.2.2",
+    "sass-loader": "^9.0.3",
+    "vue-slider-component": "^3.2.4",
     "vueperslides": "^2.10.2",
-    "vuepress": "^1.5.2",
+    "vuepress": "^1.5.3",
     "vuepress-plugin-sitemap": "^2.3.1"
   },
   "devDependencies": {
-    "@vuepress/plugin-google-analytics": "^1.5.2"
+    "@vuepress/plugin-google-analytics": "^1.5.3"
   }
 }

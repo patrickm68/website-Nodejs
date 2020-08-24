@@ -348,6 +348,9 @@ class Playwright extends Helper {
       await this.executeScript('localStorage.clear();').catch((err) => {
         if (!(err.message.indexOf("Storage is disabled inside 'data:' URLs.") > -1)) throw err;
       });
+      await this.executeScript('sessionStorage.clear();').catch((err) => {
+        if (!(err.message.indexOf("Storage is disabled inside 'data:' URLs.") > -1)) throw err;
+      });
     }
     // await this.closeOtherTabs();
     return this.browser;
@@ -1432,7 +1435,7 @@ class Playwright extends Helper {
    * @param {string|string[]} key key or array of keys to press.
    * 
    *
-   * _Note:_ Shortcuts like `'Meta'` + `'A'` do not work on macOS ([GoogleChrome/Playwright#1313](https://github.com/GoogleChrome/Playwright/issues/1313)).
+   * _Note:_ Shortcuts like `'Meta'` + `'A'` do not work on macOS ([GoogleChrome/Puppeteer#1313](https://github.com/GoogleChrome/puppeteer/issues/1313)).
    */
   async pressKey(key) {
     const modifiers = [];
@@ -2728,7 +2731,7 @@ class Playwright extends Helper {
   /**
    * Waits for navigation to finish. By default takes configured `waitForNavigation` option.
    *
-   * See [Pupeteer's reference](https://github.com/GoogleChrome/Playwright/blob/master/docs/api.md#pagewaitfornavigationoptions)
+   * See [Pupeteer's reference](https://github.com/microsoft/Playwright/blob/master/docs/api.md#pagewaitfornavigationoptions)
    *
    * @param {*} opts
    */
@@ -3160,7 +3163,7 @@ async function targetCreatedHandler(page) {
 }
 
 // List of key values to key definitions
-// https://github.com/GoogleChrome/Playwright/blob/v1.20.0/lib/USKeyboardLayout.js
+// https://github.com/puppeteer/puppeteer/blob/v1.20.0/lib/USKeyboardLayout.js
 const keyDefinitionMap = {
   /* eslint-disable quote-props */
   '0': 'Digit0',

@@ -25,7 +25,7 @@ Please **add your own** by editing this page.
 * [codeceptjs-applitoolshelper](https://www.npmjs.com/package/codeceptjs-applitoolshelper) - a helper which helps interaction with [Applitools](https://applitools.com)
 
 ## Reporters
-* [codeceptjs-rphelper](https://www.npmjs.com/package/codeceptjs-rphelper) is a CodeceptJS helper which can publish tests results on ReportPortal after execution.
+* [codeceptjs-rphelper](https://github.com/reportportal/agent-js-codecept) is a CodeceptJS helper which can publish tests results on ReportPortal after execution.
 * [codeceptjs-xray-helper](https://www.npmjs.com/package/codeceptjs-xray-helper) is a CodeceptJS helper which can publish tests results on [XRAY](https://confluence.xpand-it.com/display/XRAYCLOUD/Import+Execution+Results+-+REST).
 
 

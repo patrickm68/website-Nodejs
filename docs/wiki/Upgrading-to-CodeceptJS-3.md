@@ -79,12 +79,12 @@ In 3.0 we decided to completely change the way async bootstrap is performed and 
 
 ```js
 // before
-bootstrap: (done) {
+bootstrap: (done) => {
   server.start().then(done);
 },
 
 // after
-bootstrap: async () {
+bootstrap: async () => {
   await server.start();
 }
 ```

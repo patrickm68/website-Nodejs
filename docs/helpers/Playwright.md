@@ -1022,7 +1022,7 @@ Some of the supported key names are:
 
 #### Parameters
 
--   `key` **([string][7] | [Array][10]&lt;[string][7]>)** key or array of keys to press._Note:_ Shortcuts like `'Meta'` + `'A'` do not work on macOS ([GoogleChrome/Playwright#1313][14]).
+-   `key` **([string][7] | [Array][10]&lt;[string][7]>)** key or array of keys to press._Note:_ Shortcuts like `'Meta'` + `'A'` do not work on macOS ([GoogleChrome/Puppeteer#1313][14]).
 
 ### pressKeyDown
 
@@ -1796,7 +1796,7 @@ I.waitUrlEquals('http://127.0.0.1:8000/info');
 
 [13]: #fillfield
 
-[14]: https://github.com/GoogleChrome/Playwright/issues/1313
+[14]: https://github.com/GoogleChrome/puppeteer/issues/1313
 
 [15]: #click
 
@@ -1804,6 +1804,6 @@ I.waitUrlEquals('http://127.0.0.1:8000/info');
 
 [17]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
 
-[18]: https://github.com/GoogleChrome/Playwright/blob/master/docs/api.md#pagewaitfornavigationoptions
+[18]: https://github.com/microsoft/Playwright/blob/master/docs/api.md#pagewaitfornavigationoptions
 
 [19]: https://codecept.io/react

@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "autoprefixer": "^9.8.6",
-    "tailwindcss": "^1.8.6",
+    "tailwindcss": "^1.8.9",
     "vue-carousel": "^0.18.0",
     "runio.js": "^1.0",
     "i": "^0.3.6",

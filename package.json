@@ -10,8 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "autoprefixer": "^9.8.6",
-    "tailwindcss": "^1.8.9",
+    "autoprefixer": "^10.0.0",
+    "tailwindcss": "^1.8.10",
     "vue-carousel": "^0.18.0",
     "runio.js": "^1.0",
     "i": "^0.3.6",
@@ -19,7 +19,7 @@
     "npm": "^6.14.8",
     "sass-loader": "^10.0.2",
     "vue-slider-component": "^3.2.5",
-    "vueperslides": "^2.10.7",
+    "vueperslides": "^2.10.8",
     "vuepress": "^1.5.4",
     "vuepress-plugin-sitemap": "^2.3.1"
   },

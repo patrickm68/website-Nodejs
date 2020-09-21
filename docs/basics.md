@@ -213,7 +213,7 @@ I.fillField('password', secret('123456'));
 
 ### Assertions
 
-In order to verify the expected behavior of a web application, it's content should be checked.
+In order to verify the expected behavior of a web application, its content should be checked.
 CodeceptJS provides built-in assertions for that. They start with a `see` (or `dontSee`) prefix.
 
 The most general and common assertion is `see`, which checks visilibility of a text on a page:
@@ -637,6 +637,7 @@ I.see('There were problems creating your account.');
 ```
 
 > ⚠ `within` can cause problems when used incorrectly. If you see a weird behavior of a test try to refactor it to not use `within`. It is recommended to keep within for simplest cases when possible.
+> Since `within` returns a Promise, it may be necessary to `await` the result even when you're not intending to use the return value.
 
 `within` can also work with IFrames. A special `frame` locator is required to locate the iframe and get into its context.
 

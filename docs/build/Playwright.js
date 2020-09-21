@@ -1,7 +1,6 @@
 const requireg = require('requireg');
 const path = require('path');
 const fs = require('fs');
-const fsExtra = require('fs-extra');
 
 const Helper = require('../helper');
 const Locator = require('../locator');
@@ -11,7 +10,7 @@ const { urlEquals } = require('../assert/equal');
 const { equals } = require('../assert/equal');
 const { empty } = require('../assert/empty');
 const { truth } = require('../assert/truth');
-const isElementClickable = require('./scripts/isElementClickable');
+
 const {
   xpathLocator,
   ucfirst,
@@ -160,7 +159,7 @@ const { createValueEngine, createDisabledEngine } = require('./extras/Playwright
  * }
  * ```
  *
- * #### Example #6: Lunach tests emulating iPhone 6
+ * #### Example #6: Launch tests emulating iPhone 6
  *
  *
  *
@@ -234,6 +233,7 @@ class Playwright extends Helper {
       keepBrowserState: false,
       show: false,
       defaultPopupAction: 'accept',
+      ignoreHTTPSErrors: false, // Adding it here o that context can be set up to ignore the SSL errors
     };
 
     config = Object.assign(defaults, config);
@@ -549,7 +549,7 @@ class Playwright extends Helper {
     this.browser.on('targetchanged', (target) => {
       this.debugSection('Url', target.url());
     });
-    this.browserContext = await this.browser.newContext({ acceptDownloads: true, ...this.options.emulate });
+    this.browserContext = await this.browser.newContext({ ignoreHTTPSErrors: this.options.ignoreHTTPSErrors, acceptDownloads: true, ...this.options.emulate });// Adding the HTTPSError ignore in the context so that we can ignore those errors
 
     const existingPages = await this.browserContext.pages();
 
@@ -725,7 +725,7 @@ class Playwright extends Helper {
     assertElementExists(els);
 
     // Use manual mouse.move instead of .hover() so the offset can be added to the coordinates
-    const { x, y } = await els[0]._clickablePoint();
+    const { x, y } = await clickablePoint(els[0]);
     await this.page.mouse.move(x + offsetX, y + offsetY);
     return this._waitForAction();
   }
@@ -813,7 +813,7 @@ class Playwright extends Helper {
       const els = await this._locate(locator);
       assertElementExists(els, locator, 'Element');
       await els[0].scrollIntoViewIfNeeded();
-      const elementCoordinates = await els[0]._clickablePoint();
+      const elementCoordinates = await clickablePoint(els[0]);
       await this.executeScript((offsetX, offsetY) => window.scrollBy(offsetX, offsetY), { offsetX: elementCoordinates.x + offsetX, offsetY: elementCoordinates.y + offsetY });
     } else {
       await this.executeScript(({ offsetX, offsetY }) => window.scrollTo(offsetX, offsetY), { offsetX, offsetY });
@@ -2210,8 +2210,8 @@ class Playwright extends Helper {
     const src = await this._locate(locator);
     assertElementExists(src, locator, 'Slider Element');
 
-    // Note: Using private api ._clickablePoint because the .BoundingBox does not take into account iframe offsets!
-    const sliderSource = await src[0]._clickablePoint();
+    // Note: Using clickablePoint private api because the .BoundingBox does not take into account iframe offsets!
+    const sliderSource = await clickablePoint(src[0]);
 
     // Drag start point
     await this.page.mouse.move(sliderSource.x, sliderSource.y, { steps: 5 });
@@ -2892,7 +2892,14 @@ async function proceedClick(locator, context = null, options = {}) {
   } else {
     assertElementExists(els, locator, 'Clickable element');
   }
-  await els[0].click(options);
+  /*
+    using the force true options itself but instead dispatching a click
+  */
+  if (options.force) {
+    await els[0].dispatchEvent('click');
+  } else {
+    await els[0].click(options);
+  }
   const promises = [];
   if (options.waitForNavigation) {
     promises.push(this.waitForNavigation());
@@ -3014,9 +3021,9 @@ async function proceedDragAndDrop(sourceLocator, destinationLocator, options = {
   const dst = await this._locate(destinationLocator);
   assertElementExists(dst, destinationLocator, 'Destination Element');
 
-  // Note: Using private api ._clickablePoint becaues the .BoundingBox does not take into account iframe offsets!
-  const dragSource = await src[0]._clickablePoint();
-  const dragDestination = await dst[0]._clickablePoint();
+  // Note: Using clickablePoint private api becaues the .BoundingBox does not take into account iframe offsets!
+  const dragSource = await clickablePoint(src[0]);
+  const dragDestination = await clickablePoint(dst[0]);
 
   // Drag start point
   await this.page.mouse.move(dragSource.x, dragSource.y, { steps: 5 });
@@ -3141,10 +3148,20 @@ function $XPath(element, selector) {
 async function targetCreatedHandler(page) {
   if (!page) return;
   this.withinLocator = null;
-  page.on('load', (frame) => {
+  page.on('load', () => {
     page.$('body')
       .catch(() => null)
-      .then(context => this.context = context);
+      .then(async context => {
+        if (this.context._type === 'Frame') {
+          // we are inside iframe?
+          const frameEl = await this.context.frameElement();
+          this.context = await frameEl.contentFrame();
+          return;
+        }
+        // if context element was in iframe - keep it
+        // if (await this.context.ownerFrame()) return;
+        this.context = context;
+      });
   });
   page.on('console', (msg) => {
     this.debugSection(`Browser:${ucfirst(msg.type())}`, (msg._text || '') + msg.args().join(' '));
@@ -3226,4 +3243,13 @@ function getNormalizedKey(key) {
     return keyDefinitionMap[normalizedKey];
   }
   return normalizedKey;
+}
+
+async function clickablePoint(el) {
+  const rect = await el.boundingBox();
+  if (!rect) throw new ElementNotFound(el);
+  const {
+    x, y, width, height,
+  } = rect;
+  return { x: x + width / 2, y: y + height / 2 };
 }

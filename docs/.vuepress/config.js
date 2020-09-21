@@ -184,6 +184,15 @@ module.exports = {
           ],
         },
         {
+          group: 'wiki',
+          items: [
+            { text: "Plugins & Helpers", link: "https://github.com/codeceptjs/CodeceptJS/wiki/Community-Helpers-&-Plugins" },
+            { text: "Examples", link: "https://github.com/codeceptjs/CodeceptJS/wiki/Examples" },
+            { text: "Videos", link: "https://github.com/codeceptjs/CodeceptJS/wiki/Videos" },
+            { text: "Posts", link: "https://github.com/Codeception/CodeceptJS/wiki/Books-&-Posts" },
+          ],
+        },        
+        {
           group: 'commerce',
           items: [
             { text: "Commercial Support", link: "http://sdclabs.com/" },

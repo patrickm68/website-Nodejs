@@ -1,7 +1,6 @@
 const axios = require('axios');
 const fs = require('fs');
 const fsExtra = require('fs-extra');
-const requireg = require('requireg');
 const path = require('path');
 
 const Helper = require('../helper');
@@ -167,7 +166,7 @@ class Puppeteer extends Helper {
   constructor(config) {
     super(config);
 
-    puppeteer = requireg('puppeteer');
+    puppeteer = require('puppeteer');
 
     // set defaults
     this.isRemoteBrowser = false;
@@ -230,7 +229,7 @@ class Puppeteer extends Helper {
 
   static _checkRequirements() {
     try {
-      requireg('puppeteer');
+      require('puppeteer');
     } catch (e) {
       return ['puppeteer@^3.0.1'];
     }
@@ -312,17 +311,17 @@ class Puppeteer extends Helper {
 
   _session() {
     return {
-      start: async (name = '', config) => {
+      start: async (name = '') => {
         this.debugSection('Incognito Tab', 'opened');
         this.activeSessionName = name;
 
         const bc = await this.browser.createIncognitoBrowserContext();
-        const page = await bc.newPage();
+        await bc.newPage();
 
         // Create a new page inside context.
         return bc;
       },
-      stop: async (context) => {
+      stop: async () => {
         // is closed by _after
       },
       loadVars: async (context) => {
@@ -345,6 +344,27 @@ class Puppeteer extends Helper {
         return this._waitForAction();
       },
     };
+  }
+
+  /**
+  * Use Puppeteer API inside a test.
+  *
+  * First argument is a description of an action.
+  * Second argument is async function that gets this helper as parameter.
+  *
+  * { [`page`](https://github.com/puppeteer/puppeteer/blob/master/docs/api.md#class-page), [`browser`](https://github.com/puppeteer/puppeteer/blob/master/docs/api.md#class-browser) } from Puppeteer API are available.
+  *
+  * ```js
+  * I.usePuppeteerTo('emulate offline mode', async ({ page }) {
+  *   await page.setOfflineMode(true);
+  * });
+  * ```
+  *
+  * @param {string} description used to show in logs.
+  * @param {function} fn async function that is executed with Puppeteer as argument
+  */
+  usePuppeteerTo(description, fn) {
+    return this._useTo(...arguments);
   }
 
   /**
@@ -668,7 +688,7 @@ class Puppeteer extends Helper {
    * I.moveCursorTo('#submit', 5,5);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
    * 
@@ -691,8 +711,9 @@ class Puppeteer extends Helper {
    * I.dragAndDrop('#dragHandle', '#container');
    * ```
    * 
-   * @param {string|object} srcElement located by CSS|XPath|strict locator.
-   * @param {string|object} destElement located by CSS|XPath|strict locator.
+   * @param {string | object} srcElement located by CSS|XPath|strict locator.
+   * @param {string | object} destElement located by CSS|XPath|strict locator.
+   * 
    */
   async dragAndDrop(srcElement, destElement) {
     return proceedDragAndDrop.call(this, srcElement, destElement);
@@ -752,7 +773,7 @@ class Puppeteer extends Helper {
    * I.scrollTo('#submit', 5, 5);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
    */
@@ -797,7 +818,8 @@ class Puppeteer extends Helper {
    * let { x, y } = await I.grabPageScrollPosition();
    * ```
    * 
-   * @returns {Promise<Object<string, *>>} scroll position
+   * @returns {Promise<PageScrollPosition>} scroll position
+   * 
    */
   async grabPageScrollPosition() {
     /* eslint-disable comma-dangle */
@@ -1004,6 +1026,7 @@ class Puppeteer extends Helper {
    * ```
    * 
    * @returns {Promise<number>} number of open tabs
+   * 
    */
   async grabNumberOfOpenTabs() {
     const pages = await this.browser.pages();
@@ -1017,7 +1040,7 @@ class Puppeteer extends Helper {
    * ```js
    * I.seeElement('#modal');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * {{ react }}
    */
   async seeElement(locator) {
@@ -1033,7 +1056,7 @@ class Puppeteer extends Helper {
    * I.dontSeeElement('.modal'); // modal is not shown
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
+   * @param {string | object} locator located by CSS|XPath|Strict locator.
    * {{ react }}
    */
   async dontSeeElement(locator) {
@@ -1049,7 +1072,7 @@ class Puppeteer extends Helper {
    * ```js
    * I.seeElementInDOM('#modal');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * 
    */
   async seeElementInDOM(locator) {
@@ -1064,7 +1087,7 @@ class Puppeteer extends Helper {
    * I.dontSeeElementInDOM('.nav'); // checks that element is not on page visible or not
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
+   * @param {string | object} locator located by CSS|XPath|Strict locator.
    */
   async dontSeeElementInDOM(locator) {
     const els = await this._locate(locator);
@@ -1094,8 +1117,8 @@ class Puppeteer extends Helper {
    * I.click({css: 'nav a.login'});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
    * 
    *
    * {{ react }}
@@ -1130,8 +1153,8 @@ class Puppeteer extends Helper {
    * I.forceClick({css: 'nav a.login'});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
    * 
    *
    * {{ react }}
@@ -1167,8 +1190,8 @@ class Puppeteer extends Helper {
    * ```js
    * I.clickLink('Logout', '#nav');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator
+   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator
+   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator
    *
    * {{ react }}
    */
@@ -1279,8 +1302,8 @@ class Puppeteer extends Helper {
    * I.doubleClick('.btn.edit');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
    * 
    *
    * {{ react }}
@@ -1301,8 +1324,8 @@ class Puppeteer extends Helper {
    * I.rightClick('Click me', '.context');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator clickable element located by CSS|XPath|strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
+   * @param {string | object} locator clickable element located by CSS|XPath|strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
    * 
    *
    * {{ react }}
@@ -1322,8 +1345,8 @@ class Puppeteer extends Helper {
    * I.checkOption('I Agree to Terms and Conditions');
    * I.checkOption('agree', '//form');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
+   * @param {string | object} field checkbox located by label | name | CSS | XPath | strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
    */
   async checkOption(field, context = null) {
     const elm = await this._locateCheckable(field, context);
@@ -1347,8 +1370,8 @@ class Puppeteer extends Helper {
    * I.uncheckOption('I Agree to Terms and Conditions');
    * I.uncheckOption('agree', '//form');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
+   * @param {string | object} field checkbox located by label | name | CSS | XPath | strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
    */
   async uncheckOption(field, context = null) {
     const elm = await this._locateCheckable(field, context);
@@ -1370,7 +1393,7 @@ class Puppeteer extends Helper {
    * I.seeCheckboxIsChecked({css: '#signup_form input[type=checkbox]'});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * 
    */
   async seeCheckboxIsChecked(field) {
@@ -1386,7 +1409,7 @@ class Puppeteer extends Helper {
    * I.dontSeeCheckboxIsChecked('agree'); // located by name
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * 
    */
   async dontSeeCheckboxIsChecked(field) {
@@ -1567,7 +1590,7 @@ class Puppeteer extends Helper {
    * // or by strict locator
    * I.fillField({css: 'form#login input[name=username]'}, 'John');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value text value to fill.
    * 
    * {{ react }}
@@ -1595,7 +1618,8 @@ class Puppeteer extends Helper {
    * I.clearField('user[email]');
    * I.clearField('#email');
    * ```
-   * @param {string|object} editable field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} editable field located by label|name|CSS|XPath|strict locator.
+   * 
    */
   async clearField(field) {
     return this.fillField(field, '');
@@ -1608,7 +1632,7 @@ class Puppeteer extends Helper {
    * ```js
    * I.appendField('#myTextField', 'appended');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator
    * @param {string} value text value to append.
    *
    * {{ react }}
@@ -1631,7 +1655,7 @@ class Puppeteer extends Helper {
    * I.seeInField('form input[type=hidden]','hidden_value');
    * I.seeInField('#searchform input','Search');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
    * 
    */
@@ -1648,7 +1672,7 @@ class Puppeteer extends Helper {
    * I.dontSeeInField({ css: 'form input.email' }, 'user@user.com'); // field by CSS
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
    */
   async dontSeeInField(field, value) {
@@ -1665,7 +1689,7 @@ class Puppeteer extends Helper {
    * I.attachFile('form input[name=avatar]', 'data/avatar.jpg');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
    * @param {string} pathToFile local file path relative to codecept.json config file.
    *
    * > ⚠ There is an [issue with file upload in Puppeteer 2.1.0 & 2.1.1](https://github.com/puppeteer/puppeteer/issues/5420), downgrade to 2.0.0 if you face it.
@@ -1701,8 +1725,9 @@ class Puppeteer extends Helper {
    * ```js
    * I.selectOption('Which OS do you use?', ['Android', 'iOS']);
    * ```
-   * @param {CodeceptJS.LocatorOrString} select field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} select field located by label|name|CSS|XPath|strict locator.
    * @param {string|Array<*>} option visible text or value of option.
+   * 
    */
   async selectOption(select, option) {
     const els = await findFields.call(this, select);
@@ -1741,7 +1766,7 @@ class Puppeteer extends Helper {
    * let numOfElements = await I.grabNumberOfVisibleElements('p');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @returns {Promise<number>} number of visible elements
    * {{ react }}
    */
@@ -1814,7 +1839,7 @@ class Puppeteer extends Helper {
    * I.see('Register', {css: 'form.register'}); // use strict locator
    * ```
    * @param {string} text expected on page.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|Xpath|strict locator in which to search for text.
+   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS|Xpath|strict locator in which to search for text.
    *
    * {{ react }}
    */
@@ -1830,7 +1855,7 @@ class Puppeteer extends Helper {
    * ```
    * 
    * @param {string} text element value to check.
-   * @param {CodeceptJS.LocatorOrString?} [context=null]  element located by CSS|XPath|strict locator.
+   * @param {string | object?} [context=null]  element located by CSS|XPath|strict locator.
    */
   async seeTextEquals(text, context = null) {
     return proceedSee.call(this, 'assert', text, context, true);
@@ -1846,7 +1871,7 @@ class Puppeteer extends Helper {
    * ```
    * 
    * @param {string} text which is not present.
-   * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator in which to perfrom search.
+   * @param {string | object} [context] (optional) element located by CSS|XPath|strict locator in which to perfrom search.
    * 
    *
    * {{ react }}
@@ -1936,7 +1961,7 @@ class Puppeteer extends Helper {
    * I.seeNumberOfElements('#submitBtn', 1);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * 
    *
@@ -1955,7 +1980,7 @@ class Puppeteer extends Helper {
    * I.seeNumberOfVisibleElements('.buttons', 3);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * 
    *
@@ -1981,7 +2006,8 @@ class Puppeteer extends Helper {
    * ]);
    * ```
    * 
-   * @param {object|array} cookie a cookie object or array of cookie objects.
+   * @param {Cookie|Array<Cookie>} cookie a cookie object or array of cookie objects.
+   * 
    */
   async setCookie(cookie) {
     if (Array.isArray(cookie)) {
@@ -2031,7 +2057,8 @@ class Puppeteer extends Helper {
    * ```
    * 
    * @param {?string} [name=null] cookie name.
-   * @returns {Promise<string>} attribute value
+   * @returns {Promise<string>|Promise<string[]>} attribute value
+   * 
    *
    * Returns cookie in JSON format. If name not passed returns all cookies for this domain.
    */
@@ -2094,12 +2121,12 @@ class Puppeteer extends Helper {
    *
    * If a function returns a Promise It will wait for it resolution.
    */
-  async executeScript(fn) {
+  async executeScript(...args) {
     let context = this.page;
     if (this.context && this.context.constructor.name === 'Frame') {
       context = this.context; // switching to iframe context
     }
-    return context.evaluate.apply(context, arguments);
+    return context.evaluate.apply(context, args);
   }
 
   /**
@@ -2131,8 +2158,7 @@ class Puppeteer extends Helper {
    *
    * Asynchronous scripts can also be executed with `executeScript` if a function returns a Promise.
    */
-  async executeAsyncScript(fn) {
-    const args = Array.from(arguments);
+  async executeAsyncScript(...args) {
     const asyncFn = function () {
       const args = Array.from(arguments);
       const fn = eval(`(${args.shift()})`); // eslint-disable-line no-eval
@@ -2147,88 +2173,179 @@ class Puppeteer extends Helper {
   }
 
   /**
+   * Retrieves all texts from an element located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async with `await`** operator.
+   * 
+   * ```js
+   * let pins = await I.grabTextFromAll('#pin li');
+   * ```
+   * 
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @returns {Promise<string[]>} attribute value
+   * 
+   * {{ react }}
+   */
+  async grabTextFromAll(locator) {
+    const els = await this._locate(locator);
+    const texts = [];
+    for (const el of els) {
+      texts.push(await (await el.getProperty('innerText')).jsonValue());
+    }
+    return texts;
+  }
+
+  /**
    * Retrieves a text from an element located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async with `await`** operator.
    * 
    * ```js
    * let pin = await I.grabTextFrom('#pin');
    * ```
-   * If multiple elements found returns an array of texts.
+   * If multiple elements found returns first element.
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
-   * @returns {Promise<string|string[]>} attribute value
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @returns {Promise<string>} attribute value
+   * 
    * {{ react }}
    */
   async grabTextFrom(locator) {
-    const els = await this._locate(locator);
-    assertElementExists(els, locator);
-    const texts = [];
-    for (const el of els) {
-      texts.push(await (await el.getProperty('innerText')).jsonValue());
+    const texts = await this.grabTextFromAll(locator);
+    assertElementExists(texts, locator);
+    if (texts.length > 1) {
+      this.debugSection('GrabText', `Using first element out of ${texts.length}`);
     }
-    if (texts.length === 1) return texts[0];
-    return texts;
+
+    return texts[0];
   }
 
   /**
-   * Retrieves a value from a form element located by CSS or XPath and returns it to test.
+   * Retrieves an array of value from a form located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async function with `await`** operator.
    * 
    * ```js
-   * let email = await I.grabValueFrom('input[name=email]');
+   * let inputs = await I.grabValueFromAll('//form/input');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
-   * @returns {Promise<string>} attribute value
+   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
+   * @returns {Promise<string[]>} attribute value
+   * 
    */
-  async grabValueFrom(locator) {
+  async grabValueFromAll(locator) {
     const els = await findFields.call(this, locator);
-    assertElementExists(els, locator);
-    return els[0].getProperty('value').then(t => t.jsonValue());
-  }
-
-  /**
-   * Retrieves the innerHTML from an element located by CSS or XPath and returns it to test.
-   * Resumes test execution, so **should be used inside async function with `await`** operator.
-   * If more than one element is found - an array of HTMLs returned.
-   * 
-   * ```js
-   * let postHTML = await I.grabHTMLFrom('#post');
-   * ```
-   * 
-   * @param {CodeceptJS.LocatorOrString} element located by CSS|XPath|strict locator.
-   * @returns {Promise<string>} HTML code for an element
-   */
-  async grabHTMLFrom(locator) {
-    const els = await this._locate(locator);
-    assertElementExists(els, locator);
-    const values = await Promise.all(els.map(el => el.executionContext().evaluate(element => element.innerHTML, el)));
-    if (Array.isArray(values) && values.length === 1) {
-      return values[0];
+    const values = [];
+    for (const el of els) {
+      values.push(await (await el.getProperty('value')).jsonValue());
     }
     return values;
   }
 
   /**
+   * Retrieves a value from a form element located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
+   * If more than one element is found - value of first element is returned.
+   * 
+   * ```js
+   * let email = await I.grabValueFrom('input[name=email]');
+   * ```
+   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
+   * @returns {Promise<string>} attribute value
+   * 
+   */
+  async grabValueFrom(locator) {
+    const values = await this.grabValueFromAll(locator);
+    assertElementExists(values, locator);
+    if (values.length > 1) {
+      this.debugSection('GrabValue', `Using first element out of ${values.length}`);
+    }
+
+    return values[0];
+  }
+
+  /**
+   * Retrieves all the innerHTML from elements located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
+   * 
+   * ```js
+   * let postHTMLs = await I.grabHTMLFromAll('.post');
+   * ```
+   * 
+   * @param {string | object} element located by CSS|XPath|strict locator.
+   * @returns {Promise<string[]>} HTML code for an element
+   * 
+   */
+  async grabHTMLFromAll(locator) {
+    const els = await this._locate(locator);
+    const values = await Promise.all(els.map(el => el.executionContext().evaluate(element => element.innerHTML, el)));
+    return values;
+  }
+
+  /**
+   * Retrieves the innerHTML from an element located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
+   * If more than one element is found - HTML of first element is returned.
+   * 
+   * ```js
+   * let postHTML = await I.grabHTMLFrom('#post');
+   * ```
+   * 
+   * @param {string | object} element located by CSS|XPath|strict locator.
+   * @returns {Promise<string>} HTML code for an element
+   * 
+   */
+  async grabHTMLFrom(locator) {
+    const html = await this.grabHTMLFromAll(locator);
+    assertElementExists(html, locator);
+    if (html.length > 1) {
+      this.debugSection('GrabHTML', `Using first element out of ${html.length}`);
+    }
+
+    return html[0];
+  }
+
+  /**
+   * Grab array of CSS properties for given locator
+   * Resumes test execution, so **should be used inside an async function with `await`** operator.
+   * 
+   * ```js
+   * const values = await I.grabCssPropertyFromAll('h3', 'font-weight');
+   * ```
+   * 
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {string} cssProperty CSS property name.
+   * @returns {Promise<string[]>} CSS value
+   * 
+   * {{ react }}
+   */
+  async grabCssPropertyFromAll(locator, cssProperty) {
+    const els = await this._locate(locator);
+    const res = await Promise.all(els.map(el => el.executionContext().evaluate(el => JSON.parse(JSON.stringify(getComputedStyle(el))), el)));
+    const cssValues = res.map(props => props[toCamelCase(cssProperty)]);
+
+    return cssValues;
+  }
+
+  /**
    * Grab CSS property for given locator
    * Resumes test execution, so **should be used inside an async function with `await`** operator.
+   * If more than one element is found - value of first element is returned.
    * 
    * ```js
    * const value = await I.grabCssPropertyFrom('h3', 'font-weight');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {string} cssProperty CSS property name.
    * @returns {Promise<string>} CSS value
+   * 
    * {{ react }}
    */
   async grabCssPropertyFrom(locator, cssProperty) {
-    const els = await this._locate(locator);
-    const res = await Promise.all(els.map(el => el.executionContext().evaluate(el => JSON.parse(JSON.stringify(getComputedStyle(el))), el)));
-    const cssValues = res.map(props => props[toCamelCase(cssProperty)]);
+    const cssValues = await this.grabCssPropertyFromAll(locator, cssProperty);
+    assertElementExists(cssValues, locator);
 
-    if (res.length > 0) {
-      return cssValues;
+    if (cssValues.length > 1) {
+      this.debugSection('GrabCSS', `Using first element out of ${cssValues.length}`);
     }
+
     return cssValues[0];
   }
 
@@ -2239,7 +2356,7 @@ class Puppeteer extends Helper {
    * I.seeCssPropertiesOnElements('h3', { 'font-weight': "bold"});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @param {object} cssProperties object with CSS properties and their values to check.
    * {{ react }}
    */
@@ -2285,7 +2402,7 @@ class Puppeteer extends Helper {
    * I.seeAttributesOnElements('//form', { method: "post"});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @param {object} attributes attributes and their values to check.
    * {{ react }}
    */
@@ -2325,7 +2442,7 @@ class Puppeteer extends Helper {
    * I.dragSlider('#slider', -70);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} locator located by label|name|CSS|XPath|strict locator.
    * @param {number} offsetX position to drag.
    * {{ react }}
    */
@@ -2348,29 +2465,50 @@ class Puppeteer extends Helper {
   }
 
   /**
-   * Retrieves an attribute from an element located by CSS or XPath and returns it to test.
-   * An array as a result will be returned if there are more than one matched element.
-   * Resumes test execution, so **should be used inside async function with `await`** operator.
+   * Retrieves an array of attributes from elements located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async with `await`** operator.
    * 
    * ```js
-   * let hint = await I.grabAttributeFrom('#tooltip', 'title');
+   * let hints = await I.grabAttributeFromAll('.tooltip', 'title');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {string} attr attribute name.
-   * @returns {Promise<string>} attribute value
+   * @returns {Promise<string[]>} attribute value
+   * 
    * {{ react }}
    */
-  async grabAttributeFrom(locator, attr) {
+  async grabAttributeFromAll(locator, attr) {
     const els = await this._locate(locator);
-    assertElementExists(els, locator);
     const array = [];
-
     for (let index = 0; index < els.length; index++) {
       const a = await this._evaluateHandeInContext((el, attr) => el[attr] || el.getAttribute(attr), els[index], attr);
       array.push(await a.jsonValue());
     }
+    return array;
+  }
 
-    return array.length === 1 ? array[0] : array;
+  /**
+   * Retrieves an attribute from an element located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async with `await`** operator.
+   * If more than one element is found - attribute of first element is returned.
+   * 
+   * ```js
+   * let hint = await I.grabAttributeFrom('#tooltip', 'title');
+   * ```
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {string} attr attribute name.
+   * @returns {Promise<string>} attribute value
+   * 
+   * {{ react }}
+   */
+  async grabAttributeFrom(locator, attr) {
+    const attrs = await this.grabAttributeFromAll(locator, attr);
+    assertElementExists(attrs, locator);
+    if (attrs.length > 1) {
+      this.debugSection('GrabAttribute', `Using first element out of ${attrs.length}`);
+    }
+
+    return attrs[0];
   }
 
   /**
@@ -2381,9 +2519,9 @@ class Puppeteer extends Helper {
    * I.saveElementScreenshot(`#submit`,'debug.png');
    * ```
    * 
-   * @param {string|object} locator element located by CSS|XPath|strict locator.  
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {string} fileName file name to save.
-   *
+   * 
    */
   async saveElementScreenshot(locator, fileName) {
     const outputFile = screenshotOutputFolder(fileName);
@@ -2430,7 +2568,7 @@ class Puppeteer extends Helper {
     return this.page.screenshot({ path: outputFile, fullPage: fullPageOption, type: 'png' });
   }
 
-  async _failed(test) {
+  async _failed() {
     await this._withinEnd();
   }
 
@@ -2453,13 +2591,13 @@ class Puppeteer extends Helper {
    * Waits for element to become enabled (by default waits for 1sec).
    * Element can be located by CSS or XPath.
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional) time in seconds to wait, 1 by default.
    */
   async waitForEnabled(locator, sec) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
     locator = new Locator(locator, 'css');
-    const matcher = await this.context;
+    await this.context;
     let waiter;
     const context = await this._getContext();
     if (locator.isCSS()) {
@@ -2490,14 +2628,15 @@ class Puppeteer extends Helper {
    * I.waitForValue('//input', "GoodValue");
    * ```
    * 
-   * @param {string|object} field input field.
+   * @param {string | object} field input field.
    * @param {string }value expected value.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
+   * 
    */
   async waitForValue(field, value, sec) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
     const locator = new Locator(field, 'css');
-    const matcher = await this.context;
+    await this.context;
     let waiter;
     const context = await this._getContext();
     if (locator.isCSS()) {
@@ -2529,7 +2668,7 @@ class Puppeteer extends Helper {
    * I.waitNumberOfVisibleElements('a', 3);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    * {{ react }}
@@ -2537,7 +2676,7 @@ class Puppeteer extends Helper {
   async waitNumberOfVisibleElements(locator, num, sec) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
     locator = new Locator(locator, 'css');
-    const matcher = await this.context;
+    await this.context;
     let waiter;
     const context = await this._getContext();
     if (locator.isCSS()) {
@@ -2570,7 +2709,7 @@ class Puppeteer extends Helper {
    * I.waitForClickable('.btn.continue', 5); // wait for 5 secs
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
    */
   async waitForClickable(locator, waitTimeout) {
@@ -2595,7 +2734,7 @@ class Puppeteer extends Helper {
    * I.waitForElement('.btn.continue', 5); // wait for 5 secs
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
    * {{ react }}
    */
@@ -2623,15 +2762,16 @@ class Puppeteer extends Helper {
    * I.waitForVisible('#popup');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
+   * 
    *
    * This method accepts [React selectors](https://codecept.io/react).
    */
   async waitForVisible(locator, sec) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
     locator = new Locator(locator, 'css');
-    const matcher = await this.context;
+    await this.context;
     let waiter;
     const context = await this._getContext();
     if (locator.isCSS()) {
@@ -2652,13 +2792,13 @@ class Puppeteer extends Helper {
    * I.waitForInvisible('#popup');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    */
   async waitForInvisible(locator, sec) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
     locator = new Locator(locator, 'css');
-    const matcher = await this.context;
+    await this.context;
     let waiter;
     const context = await this._getContext();
     if (locator.isCSS()) {
@@ -2679,7 +2819,7 @@ class Puppeteer extends Helper {
    * I.waitToHide('#popup');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    */
   async waitToHide(locator, sec) {
@@ -2774,7 +2914,7 @@ class Puppeteer extends Helper {
    * 
    * @param {string }text to wait for.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator.
+   * @param {string | object} [context] (optional) element located by CSS|XPath|strict locator.
    */
   async waitForText(text, sec = null, context = null) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
@@ -2849,7 +2989,7 @@ class Puppeteer extends Helper {
    * I.switchTo(); // switch back to main page
    * ```
    * 
-   * @param {?CodeceptJS.LocatorOrString} [locator=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
+   * @param {?string | object} [locator=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
    */
   async switchTo(locator) {
     if (Number.isInteger(locator)) {
@@ -2970,7 +3110,7 @@ class Puppeteer extends Helper {
    * I.waitForDetached('#popup');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    */
   async waitForDetached(locator, sec) {
@@ -3043,9 +3183,10 @@ class Puppeteer extends Helper {
    * const width = await I.grabElementBoundingRect('h3', 'width');
    * // width == 527
    * ```
-   * @param {string|object} locator element located by CSS|XPath|strict locator.
-   * @param {string} elementSize x, y, width or height of the given element.
-   * @returns {object} Element bounding rectangle
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {string=} elementSize x, y, width or height of the given element.
+   * @returns {Promise<DOMRect>|Promise<number>} Element bounding rectangle
+   * 
    */
   async grabElementBoundingRect(locator, prop) {
     const els = await this._locate(locator);
@@ -3194,7 +3335,7 @@ async function findFields(locator) {
   return this._locate({ css: locator });
 }
 
-async function proceedDragAndDrop(sourceLocator, destinationLocator, options = {}) {
+async function proceedDragAndDrop(sourceLocator, destinationLocator) {
   const src = await this._locate(sourceLocator);
   assertElementExists(src, sourceLocator, 'Source Element');
 
@@ -3329,7 +3470,7 @@ function $XPath(element, selector) {
 async function targetCreatedHandler(page) {
   if (!page) return;
   this.withinLocator = null;
-  page.on('load', (frame) => {
+  page.on('load', () => {
     page.$('body')
       .catch(() => null)
       .then(context => this.context = context);

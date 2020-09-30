@@ -3,7 +3,6 @@ let webdriverio;
 const assert = require('assert');
 const path = require('path');
 const fs = require('fs');
-const requireg = require('requireg');
 
 const Helper = require('../helper');
 const stringIncludes = require('../assert/include').includes;
@@ -379,12 +378,10 @@ let version;
 class WebDriver extends Helper {
   constructor(config) {
     super(config);
-    webdriverio = requireg('webdriverio');
-    if (webdriverio.VERSION && webdriverio.VERSION.indexOf('4') === 0) {
-      throw new Error(`This helper is compatible with "webdriverio@5". Current version: ${webdriverio.VERSION}. Please upgrade webdriverio to v5+ or use WebDriverIO helper instead`);
-    }
+    webdriverio = require('webdriverio');
+
     try {
-      version = JSON.parse(fs.readFileSync(path.join(requireg.resolve('webdriverio'), '/../../', 'package.json')).toString()).version;
+      version = JSON.parse(fs.readFileSync(path.join(require.resolve('webdriverio'), '/../../', 'package.json')).toString()).version;
     } catch (err) {
       this.debug('Can\'t detect webdriverio version, assuming webdriverio v6 is used');
     }
@@ -431,9 +428,6 @@ class WebDriver extends Helper {
       keepCookies: false,
       keepBrowserState: false,
       deprecationWarnings: false,
-      timeouts: {
-        script: 1000, // ms
-      },
     };
 
     // override defaults with config
@@ -484,7 +478,7 @@ class WebDriver extends Helper {
 
   static _checkRequirements() {
     try {
-      requireg('webdriverio');
+      require('webdriverio');
     } catch (e) {
       return ['webdriverio@^5.2.2'];
     }
@@ -616,7 +610,29 @@ class WebDriver extends Helper {
     };
   }
 
-  async _failed(test) {
+  /**
+  * Use [webdriverio](https://webdriver.io/docs/api.html) API inside a test.
+  *
+  * First argument is a description of an action.
+  * Second argument is async function that gets this helper as parameter.
+  *
+  * { [`browser`](https://webdriver.io/docs/api.html)) } object from WebDriver API is available.
+  *
+  * ```js
+  * I.useWebDriverTo('open multiple windows', async ({ browser }) {
+  *    // create new window
+  *    await browser.newWindow('https://webdriver.io');
+  * });
+  * ```
+  *
+  * @param {string} description used to show in logs.
+  * @param {function} fn async functuion that executed with WebDriver helper as argument
+  */
+  useWebDriverTo(description, fn) {
+    return this._useTo(...arguments);
+  }
+
+  async _failed() {
     if (this.context !== this.root) await this._withinEnd();
   }
 
@@ -715,7 +731,7 @@ class WebDriver extends Helper {
    * ```
    *
    *
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    */
   async _locate(locator, smartWait = false) {
     if (require('../store').debugMode) smartWait = false;
@@ -757,7 +773,7 @@ class WebDriver extends Helper {
    * this.helpers['WebDriver']._locateCheckable('I agree with terms and conditions').then // ...
    * ```
    *
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    */
   async _locateCheckable(locator) {
     return findCheckable.call(this, locator, this.$$.bind(this)).then(res => res);
@@ -771,7 +787,7 @@ class WebDriver extends Helper {
    * const els = await this.helpers.WebDriver._locateClickable('Next page', '.pages');
    * ```
    *
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    */
   async _locateClickable(locator, context) {
     const locateFn = prepareLocateFn.call(this, context);
@@ -785,7 +801,7 @@ class WebDriver extends Helper {
    * this.helpers['WebDriver']._locateFields('Your email').then // ...
    * ```
    *
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    */
   async _locateFields(locator) {
     return findFields.call(this, locator).then(res => res);
@@ -859,8 +875,8 @@ class WebDriver extends Helper {
    * I.click({css: 'nav a.login'});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
    * 
    *
    * {{ react }}
@@ -905,8 +921,8 @@ class WebDriver extends Helper {
    * I.forceClick({css: 'nav a.login'});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
    * 
    *
    * {{ react }}
@@ -943,8 +959,8 @@ class WebDriver extends Helper {
    * I.doubleClick('.btn.edit');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
    * 
    *
    * {{ react }}
@@ -975,8 +991,8 @@ class WebDriver extends Helper {
    * I.rightClick('Click me', '.context');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator clickable element located by CSS|XPath|strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
+   * @param {string | object} locator clickable element located by CSS|XPath|strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
    * 
    *
    * {{ react }}
@@ -1018,8 +1034,8 @@ class WebDriver extends Helper {
    * I.forceRightClick('Menu');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
    * 
    *
    * {{ react }}
@@ -1059,7 +1075,7 @@ class WebDriver extends Helper {
    * // or by strict locator
    * I.fillField({css: 'form#login input[name=username]'}, 'John');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value text value to fill.
    * 
    * {{ react }}
@@ -1079,7 +1095,7 @@ class WebDriver extends Helper {
    * ```js
    * I.appendField('#myTextField', 'appended');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator
    * @param {string} value text value to append.
    * {{ react }}
    */
@@ -1098,7 +1114,8 @@ class WebDriver extends Helper {
    * I.clearField('user[email]');
    * I.clearField('#email');
    * ```
-   * @param {string|object} editable field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} editable field located by label|name|CSS|XPath|strict locator.
+   * 
    *
    */
   async clearField(field) {
@@ -1127,8 +1144,9 @@ class WebDriver extends Helper {
    * ```js
    * I.selectOption('Which OS do you use?', ['Android', 'iOS']);
    * ```
-   * @param {CodeceptJS.LocatorOrString} select field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} select field located by label|name|CSS|XPath|strict locator.
    * @param {string|Array<*>} option visible text or value of option.
+   * 
    */
   async selectOption(select, option) {
     const res = await findFields.call(this, select);
@@ -1169,7 +1187,7 @@ class WebDriver extends Helper {
    * I.attachFile('form input[name=avatar]', 'data/avatar.jpg');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
    * @param {string} pathToFile local file path relative to codecept.json config file.
    * Appium: not tested
    */
@@ -1208,8 +1226,8 @@ class WebDriver extends Helper {
    * I.checkOption('I Agree to Terms and Conditions');
    * I.checkOption('agree', '//form');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
+   * @param {string | object} field checkbox located by label | name | CSS | XPath | strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
    * Appium: not tested
    */
   async checkOption(field, context = null) {
@@ -1238,8 +1256,8 @@ class WebDriver extends Helper {
    * I.uncheckOption('I Agree to Terms and Conditions');
    * I.uncheckOption('agree', '//form');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
+   * @param {string | object} field checkbox located by label | name | CSS | XPath | strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
    * Appium: not tested
    */
   async uncheckOption(field, context = null) {
@@ -1258,108 +1276,222 @@ class WebDriver extends Helper {
   }
 
   /**
+   * Retrieves all texts from an element located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async with `await`** operator.
+   * 
+   * ```js
+   * let pins = await I.grabTextFromAll('#pin li');
+   * ```
+   * 
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @returns {Promise<string[]>} attribute value
+   * 
+   *
+   */
+  async grabTextFromAll(locator) {
+    const res = await this._locate(locator, true);
+    const val = await forEachAsync(res, el => this.browser.getElementText(getElementId(el)));
+    this.debugSection('GrabText', String(val));
+    return val;
+  }
+
+  /**
    * Retrieves a text from an element located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async with `await`** operator.
    * 
    * ```js
    * let pin = await I.grabTextFrom('#pin');
    * ```
-   * If multiple elements found returns an array of texts.
+   * If multiple elements found returns first element.
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
-   * @returns {Promise<string|string[]>} attribute value
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @returns {Promise<string>} attribute value
+   * 
    *
    */
   async grabTextFrom(locator) {
-    const res = await this._locate(locator, true);
-    assertElementExists(res, locator);
-    let val;
-    if (res.length > 1) {
-      val = await forEachAsync(res, async el => this.browser.getElementText(getElementId(el)));
-    } else {
-      val = await this.browser.getElementText(getElementId(res[0]));
+    const texts = await this.grabTextFromAll(locator);
+    assertElementExists(texts, locator);
+    if (texts.length > 1) {
+      this.debugSection('GrabText', `Using first element out of ${texts.length}`);
     }
-    this.debugSection('Grab', val);
-    return val;
+
+    return texts[0];
+  }
+
+  /**
+   * Retrieves all the innerHTML from elements located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
+   * 
+   * ```js
+   * let postHTMLs = await I.grabHTMLFromAll('.post');
+   * ```
+   * 
+   * @param {string | object} element located by CSS|XPath|strict locator.
+   * @returns {Promise<string[]>} HTML code for an element
+   * 
+   *
+   */
+  async grabHTMLFromAll(locator) {
+    const elems = await this._locate(locator, true);
+    const html = await forEachAsync(elems, elem => elem.getHTML(false));
+    this.debugSection('GrabHTML', String(html));
+    return html;
   }
 
   /**
    * Retrieves the innerHTML from an element located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async function with `await`** operator.
-   * If more than one element is found - an array of HTMLs returned.
+   * If more than one element is found - HTML of first element is returned.
    * 
    * ```js
    * let postHTML = await I.grabHTMLFrom('#post');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} element located by CSS|XPath|strict locator.
+   * @param {string | object} element located by CSS|XPath|strict locator.
    * @returns {Promise<string>} HTML code for an element
+   * 
    *
    */
   async grabHTMLFrom(locator) {
-    const elems = await this._locate(locator, true);
-    assertElementExists(elems, locator);
-    const values = await Promise.all(elems.map(elem => elem.getHTML(false)));
-    this.debugSection('Grab', values);
-    if (Array.isArray(values) && values.length === 1) {
-      return values[0];
+    const html = await this.grabHTMLFromAll(locator);
+    assertElementExists(html);
+    if (html.length > 1) {
+      this.debugSection('GrabHTML', `Using first element out of ${html.length}`);
     }
-    return values;
+
+    return html[0];
+  }
+
+  /**
+   * Retrieves an array of value from a form located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
+   * 
+   * ```js
+   * let inputs = await I.grabValueFromAll('//form/input');
+   * ```
+   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
+   * @returns {Promise<string[]>} attribute value
+   * 
+   *
+   */
+  async grabValueFromAll(locator) {
+    const res = await this._locate(locator, true);
+    const val = await forEachAsync(res, el => el.getValue());
+    this.debugSection('GrabValue', String(val));
+
+    return val;
   }
 
   /**
    * Retrieves a value from a form element located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async function with `await`** operator.
+   * If more than one element is found - value of first element is returned.
    * 
    * ```js
    * let email = await I.grabValueFrom('input[name=email]');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
    * @returns {Promise<string>} attribute value
+   * 
    *
    */
   async grabValueFrom(locator) {
-    const res = await this._locate(locator, true);
-    assertElementExists(res, locator);
+    const values = await this.grabValueFromAll(locator);
+    assertElementExists(values, locator);
+    if (values.length > 1) {
+      this.debugSection('GrabValue', `Using first element out of ${values.length}`);
+    }
 
-    return forEachAsync(res, async el => el.getValue());
+    return values[0];
+  }
+
+  /**
+   * Grab array of CSS properties for given locator
+   * Resumes test execution, so **should be used inside an async function with `await`** operator.
+   * 
+   * ```js
+   * const values = await I.grabCssPropertyFromAll('h3', 'font-weight');
+   * ```
+   * 
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {string} cssProperty CSS property name.
+   * @returns {Promise<string[]>} CSS value
+   * 
+   */
+  async grabCssPropertyFromAll(locator, cssProperty) {
+    const res = await this._locate(locator, true);
+    const val = await forEachAsync(res, async el => this.browser.getElementCSSValue(getElementId(el), cssProperty));
+    this.debugSection('Grab', String(val));
+    return val;
   }
 
   /**
    * Grab CSS property for given locator
    * Resumes test execution, so **should be used inside an async function with `await`** operator.
+   * If more than one element is found - value of first element is returned.
    * 
    * ```js
    * const value = await I.grabCssPropertyFrom('h3', 'font-weight');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {string} cssProperty CSS property name.
    * @returns {Promise<string>} CSS value
+   * 
    */
   async grabCssPropertyFrom(locator, cssProperty) {
+    const cssValues = await this.grabCssPropertyFromAll(locator, cssProperty);
+    assertElementExists(cssValues, locator);
+
+    if (cssValues.length > 1) {
+      this.debugSection('GrabCSS', `Using first element out of ${cssValues.length}`);
+    }
+
+    return cssValues[0];
+  }
+
+  /**
+   * Retrieves an array of attributes from elements located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async with `await`** operator.
+   * 
+   * ```js
+   * let hints = await I.grabAttributeFromAll('.tooltip', 'title');
+   * ```
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {string} attr attribute name.
+   * @returns {Promise<string[]>} attribute value
+   * 
+   * Appium: can be used for apps only with several values ("contentDescription", "text", "className", "resourceId")
+   */
+  async grabAttributeFromAll(locator, attr) {
     const res = await this._locate(locator, true);
-    assertElementExists(res, locator);
-    return forEachAsync(res, async el => this.browser.getElementCSSValue(getElementId(el), cssProperty));
+    const val = await forEachAsync(res, async el => el.getAttribute(attr));
+    this.debugSection('GrabAttribute', String(val));
+    return val;
   }
 
   /**
    * Retrieves an attribute from an element located by CSS or XPath and returns it to test.
-   * An array as a result will be returned if there are more than one matched element.
-   * Resumes test execution, so **should be used inside async function with `await`** operator.
+   * Resumes test execution, so **should be used inside async with `await`** operator.
+   * If more than one element is found - attribute of first element is returned.
    * 
    * ```js
    * let hint = await I.grabAttributeFrom('#tooltip', 'title');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {string} attr attribute name.
    * @returns {Promise<string>} attribute value
+   * 
    * Appium: can be used for apps only with several values ("contentDescription", "text", "className", "resourceId")
    */
   async grabAttributeFrom(locator, attr) {
-    const res = await this._locate(locator, true);
-    assertElementExists(res, locator);
-    return forEachAsync(res, async el => el.getAttribute(attr));
+    const attrs = await this.grabAttributeFromAll(locator, attr);
+    assertElementExists(attrs, locator);
+    if (attrs.length > 1) {
+      this.debugSection('GrabAttribute', `Using first element out of ${attrs.length}`);
+    }
+    return attrs[0];
   }
 
   /**
@@ -1370,7 +1502,6 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {string} text text value to check.
-   *
    */
   async seeInTitle(text) {
     const title = await this.browser.getTitle();
@@ -1378,13 +1509,14 @@ class WebDriver extends Helper {
   }
 
   /**
-   * Checks that title is equal to provided one.
-   *
-   * ```js
-   * I.seeTitleEquals('Test title.');
-   * ```
-   *
-   * @param {string} text value to check.
+   *  Checks that title is equal to provided one.
+   * 
+   *  ```js
+   *  I.seeTitleEquals('Test title.');
+   *  ```
+   * 
+   *  @param {string} text value to check.
+   * 
    */
   async seeTitleEquals(text) {
     const title = await this.browser.getTitle();
@@ -1399,7 +1531,6 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {string} text value to check.
-   *
    */
   async dontSeeInTitle(text) {
     const title = await this.browser.getTitle();
@@ -1415,7 +1546,6 @@ class WebDriver extends Helper {
    * ```
    * 
    * @returns {Promise<string>} title
-   *
    */
   async grabTitle() {
     const title = await this.browser.getTitle();
@@ -1433,7 +1563,7 @@ class WebDriver extends Helper {
    * I.see('Register', {css: 'form.register'}); // use strict locator
    * ```
    * @param {string} text expected on page.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|Xpath|strict locator in which to search for text.
+   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS|Xpath|strict locator in which to search for text.
    *
    * {{ react }}
    */
@@ -1449,7 +1579,7 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {string} text element value to check.
-   * @param {CodeceptJS.LocatorOrString?} [context=null]  element located by CSS|XPath|strict locator.
+   * @param {string | object?} [context=null]  element located by CSS|XPath|strict locator.
    */
   async seeTextEquals(text, context = null) {
     return proceedSee.call(this, 'assert', text, context, true);
@@ -1465,7 +1595,7 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {string} text which is not present.
-   * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator in which to perfrom search.
+   * @param {string | object} [context] (optional) element located by CSS|XPath|strict locator in which to perfrom search.
    * 
    *
    * {{ react }}
@@ -1484,7 +1614,7 @@ class WebDriver extends Helper {
    * I.seeInField('form input[type=hidden]','hidden_value');
    * I.seeInField('#searchform input','Search');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
    * 
    *
@@ -1502,7 +1632,7 @@ class WebDriver extends Helper {
    * I.dontSeeInField({ css: 'form input.email' }, 'user@user.com'); // field by CSS
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
    *
    */
@@ -1519,7 +1649,7 @@ class WebDriver extends Helper {
    * I.seeCheckboxIsChecked({css: '#signup_form input[type=checkbox]'});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * 
    * Appium: not tested
    */
@@ -1536,7 +1666,7 @@ class WebDriver extends Helper {
    * I.dontSeeCheckboxIsChecked('agree'); // located by name
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * 
    * Appium: not tested
    */
@@ -1551,7 +1681,7 @@ class WebDriver extends Helper {
    * ```js
    * I.seeElement('#modal');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * {{ react }}
    *
    */
@@ -1569,7 +1699,7 @@ class WebDriver extends Helper {
    * I.dontSeeElement('.modal'); // modal is not shown
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
+   * @param {string | object} locator located by CSS|XPath|Strict locator.
    * {{ react }}
    */
   async dontSeeElement(locator) {
@@ -1588,7 +1718,7 @@ class WebDriver extends Helper {
    * ```js
    * I.seeElementInDOM('#modal');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * 
    *
    */
@@ -1604,7 +1734,7 @@ class WebDriver extends Helper {
    * I.dontSeeElementInDOM('.nav'); // checks that element is not on page visible or not
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
+   * @param {string | object} locator located by CSS|XPath|Strict locator.
    *
    */
   async dontSeeElementInDOM(locator) {
@@ -1643,12 +1773,15 @@ class WebDriver extends Helper {
 
   /**
    * Get JS log from browser. Log buffer is reset after each request.
-   *
+   * Resumes test execution, so **should be used inside an async function with `await`** operator.
+   * 
    * ```js
    * let logs = await I.grabBrowserLogs();
    * console.log(JSON.stringify(logs))
    * ```
-   * @returns {Promise<string|undefined>}
+   * 
+   * @returns {Promise<object[]>|undefined} all browser logs
+   * 
    */
   async grabBrowserLogs() {
     if (this.browser.isW3C) {
@@ -1699,7 +1832,7 @@ class WebDriver extends Helper {
    * I.seeNumberOfElements('#submitBtn', 1);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * 
    * {{ react }}
@@ -1717,7 +1850,7 @@ class WebDriver extends Helper {
    * I.seeNumberOfVisibleElements('.buttons', 3);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * 
    * {{ react }}
@@ -1734,7 +1867,7 @@ class WebDriver extends Helper {
    * I.seeCssPropertiesOnElements('h3', { 'font-weight': "bold"});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @param {object} cssProperties object with CSS properties and their values to check.
    */
   async seeCssPropertiesOnElements(locator, cssProperties) {
@@ -1776,7 +1909,7 @@ class WebDriver extends Helper {
    * I.seeAttributesOnElements('//form', { method: "post"});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @param {object} attributes attributes and their values to check.
    */
   async seeAttributesOnElements(locator, attributes) {
@@ -1811,7 +1944,7 @@ class WebDriver extends Helper {
    * let numOfElements = await I.grabNumberOfVisibleElements('p');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @returns {Promise<number>} number of visible elements
    */
   async grabNumberOfVisibleElements(locator) {
@@ -1916,8 +2049,8 @@ class WebDriver extends Helper {
    *
    * Wraps [execute](http://webdriver.io/api/protocol/execute.html) command.
    */
-  executeScript(fn) {
-    return this.browser.execute.apply(this.browser, arguments);
+  executeScript(...args) {
+    return this.browser.execute.apply(this.browser, args);
   }
 
   /**
@@ -1948,8 +2081,8 @@ class WebDriver extends Helper {
    * 
    *
    */
-  executeAsyncScript(fn) {
-    return this.browser.executeAsync.apply(this.browser, arguments);
+  executeAsyncScript(...args) {
+    return this.browser.executeAsync.apply(this.browser, args);
   }
 
   /**
@@ -1961,8 +2094,8 @@ class WebDriver extends Helper {
    * I.scrollIntoView('#submit', { behavior: "smooth", block: "center", inline: "center" });
    * ```
    * 
-   * @param {string|object} locator located by CSS|XPath|strict locator.
-   * @param {boolean|object} alignToTop (optional) or scrollIntoViewOptions (optional), see https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
+   * @param {ScrollIntoViewOptions} scrollIntoViewOptions see https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView.
    * 
    *
    */
@@ -1982,7 +2115,7 @@ class WebDriver extends Helper {
    * I.scrollTo('#submit', 5, 5);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
    *
@@ -2023,11 +2156,10 @@ class WebDriver extends Helper {
    * I.moveCursorTo('#submit', 5,5);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
    * 
-   *
    */
   async moveCursorTo(locator, xOffset, yOffset) {
     const res = await this._locate(withStrictLocator(locator), true);
@@ -2045,8 +2177,9 @@ class WebDriver extends Helper {
    * I.saveElementScreenshot(`#submit`,'debug.png');
    * ```
    * 
-   * @param {string|object} locator element located by CSS|XPath|strict locator.  
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {string} fileName file name to save.
+   * 
    *
    */
   async saveElementScreenshot(locator, fileName) {
@@ -2072,7 +2205,6 @@ class WebDriver extends Helper {
    * 
    * @param {string} fileName file name to save.
    * @param {boolean} [fullPage=false] (optional, `false` by default) flag to enable fullscreen screenshot mode.
-   *
    */
   async saveScreenshot(fileName, fullPage = false) {
     const outputFile = screenshotOutputFolder(fileName);
@@ -2126,7 +2258,8 @@ class WebDriver extends Helper {
    * ]);
    * ```
    * 
-   * @param {object|array} cookie a cookie object or array of cookie objects.
+   * @param {Cookie|Array<Cookie>} cookie a cookie object or array of cookie objects.
+   * 
    *
    *
    * Uses Selenium's JSON [cookie
@@ -2146,7 +2279,6 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {?string} [cookie=null] (optional, `null` by default) cookie name
-   *
    */
   async clearCookie(cookie) {
     return this.browser.deleteCookies(cookie);
@@ -2161,7 +2293,6 @@ class WebDriver extends Helper {
    * 
    * @param {string} name cookie name.
    * 
-   *
    */
   async seeCookie(name) {
     const cookie = await this.browser.getCookies([name]);
@@ -2176,7 +2307,6 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {string} name cookie name.
-   *
    */
   async dontSeeCookie(name) {
     const cookie = await this.browser.getCookies([name]);
@@ -2194,8 +2324,8 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {?string} [name=null] cookie name.
-   * @returns {Promise<string>} attribute value
-   *
+   * @returns {Promise<string>|Promise<string[]>} attribute value
+   * 
    */
   async grabCookie(name) {
     if (!name) return this.browser.getCookies();
@@ -2246,10 +2376,11 @@ class WebDriver extends Helper {
 
   /**
    * Grab the text within the popup. If no popup is visible then it will return null.
-   *
    * ```js
    * await I.grabPopupText();
    * ```
+   * @returns {Promise<string>}
+   * 
    */
   async grabPopupText() {
     try {
@@ -2493,8 +2624,9 @@ class WebDriver extends Helper {
    * I.dragAndDrop('#dragHandle', '#container');
    * ```
    * 
-   * @param {string|object} srcElement located by CSS|XPath|strict locator.
-   * @param {string|object} destElement located by CSS|XPath|strict locator.
+   * @param {string | object} srcElement located by CSS|XPath|strict locator.
+   * @param {string | object} destElement located by CSS|XPath|strict locator.
+   * 
    * Appium: not tested
    */
   async dragAndDrop(srcElement, destElement) {
@@ -2518,7 +2650,7 @@ class WebDriver extends Helper {
    * I.dragSlider('#slider', -70);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} locator located by label|name|CSS|XPath|strict locator.
    * @param {number} offsetX position to drag.
    */
   async dragSlider(locator, offsetX = 0) {
@@ -2556,10 +2688,12 @@ class WebDriver extends Helper {
   /**
    * Get all Window Handles.
    * Useful for referencing a specific handle when calling `I.switchToWindow(handle)`
-   *
+   * 
    * ```js
    * const windows = await I.grabAllWindowHandles();
    * ```
+   * @returns {Promise<string[]>}
+   * 
    */
   async grabAllWindowHandles() {
     return this.browser.getWindowHandles();
@@ -2568,10 +2702,11 @@ class WebDriver extends Helper {
   /**
    * Get the current Window Handle.
    * Useful for referencing it when calling `I.switchToWindow(handle)`
-   *
    * ```js
    * const window = await I.grabCurrentWindowHandle();
    * ```
+   * @returns {Promise<string>}
+   * 
    */
   async grabCurrentWindowHandle() {
     return this.browser.getWindowHandle();
@@ -2589,18 +2724,20 @@ class WebDriver extends Helper {
    * // ... do something
    * await I.switchToWindow( window );
    * ```
+   * @param {string} window name of window handle.
    */
   async switchToWindow(window) {
     await this.browser.switchToWindow(window);
   }
 
   /**
-   * Close all tabs except for the current one.
-   *
-   *
-   * ```js
-   * I.closeOtherTabs();
-   * ```
+   *  Close all tabs except for the current one.
+   * 
+   * 
+   *  ```js
+   *  I.closeOtherTabs();
+   *  ```
+   * 
    */
   async closeOtherTabs() {
     const handles = await this.browser.getWindowHandles();
@@ -2622,7 +2759,6 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {number} sec number of second to wait.
-   *
    */
   async wait(sec) {
     return new Promise(resolve => setTimeout(resolve, sec * 1000));
@@ -2632,9 +2768,8 @@ class WebDriver extends Helper {
    * Waits for element to become enabled (by default waits for 1sec).
    * Element can be located by CSS or XPath.
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional) time in seconds to wait, 1 by default.
-   *
    */
   async waitForEnabled(locator, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
@@ -2676,7 +2811,7 @@ class WebDriver extends Helper {
    * I.waitForElement('.btn.continue', 5); // wait for 5 secs
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
    */
   async waitForElement(locator, sec = null) {
@@ -2702,7 +2837,7 @@ class WebDriver extends Helper {
    * I.waitForClickable('.btn.continue', 5); // wait for 5 secs
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
    */
   async waitForClickable(locator, waitTimeout) {
@@ -2715,13 +2850,6 @@ class WebDriver extends Helper {
       timeout: waitTimeout * 1000,
       timeoutMsg: `element ${res.selector} still not clickable after ${waitTimeout} sec`,
     });
-  }
-
-  async waitUntilExists(locator, sec = null) {
-    console.log(`waitUntilExists deprecated:
-    * use 'waitForElement' to wait for element to be attached
-    * use 'waitForDetached to wait for element to be removed'`);
-    return this.waitForStalenessOf(locator, sec);
   }
 
   /**
@@ -2809,7 +2937,7 @@ class WebDriver extends Helper {
    * 
    * @param {string }text to wait for.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator.
+   * @param {string | object} [context] (optional) element located by CSS|XPath|strict locator.
    *
    */
   async waitForText(text, sec = null, context = null) {
@@ -2853,9 +2981,10 @@ class WebDriver extends Helper {
    * I.waitForValue('//input', "GoodValue");
    * ```
    * 
-   * @param {string|object} field input field.
+   * @param {string | object} field input field.
    * @param {string }value expected value.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
+   * 
    */
   async waitForValue(field, value, sec = null) {
     const client = this.browser;
@@ -2898,8 +3027,9 @@ class WebDriver extends Helper {
    * I.waitForVisible('#popup');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
+   * 
    *
    */
   async waitForVisible(locator, sec = null) {
@@ -2933,7 +3063,7 @@ class WebDriver extends Helper {
    * I.waitNumberOfVisibleElements('a', 3);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    */
@@ -2969,9 +3099,8 @@ class WebDriver extends Helper {
    * I.waitForInvisible('#popup');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   *
    */
   async waitForInvisible(locator, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
@@ -2999,17 +3128,11 @@ class WebDriver extends Helper {
    * I.waitToHide('#popup');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   *
    */
   async waitToHide(locator, sec = null) {
     return this.waitForInvisible(locator, sec);
-  }
-
-  async waitForStalenessOf(locator, sec = null) {
-    console.log('waitForStalenessOf deprecated. Use waitForDetached instead');
-    return this.waitForDetached(locator, sec);
   }
 
   /**
@@ -3020,9 +3143,8 @@ class WebDriver extends Helper {
    * I.waitForDetached('#popup');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   *
    */
   async waitForDetached(locator, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
@@ -3062,7 +3184,6 @@ class WebDriver extends Helper {
    * @param {any[]|number} [argsOrSec] (optional, `1` by default) arguments for function or seconds.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
    * 
-   *
    */
   async waitForFunction(fn, argsOrSec = null, sec = null) {
     let args = [];
@@ -3093,7 +3214,6 @@ class WebDriver extends Helper {
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    * @param {string} [timeoutMsg=''] message to show in case of timeout fail.
    * @param {?number} [interval=null]
-   *
    */
   async waitUntil(fn, sec = null, timeoutMsg = null, interval = null) {
     const aSec = sec || this.options.waitForTimeout;
@@ -3112,8 +3232,7 @@ class WebDriver extends Helper {
    * I.switchTo(); // switch back to main page
    * ```
    * 
-   * @param {?CodeceptJS.LocatorOrString} [locator=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
-   *
+   * @param {?string | object} [locator=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
    */
   async switchTo(locator) {
     this.browser.isInsideFrame = true;
@@ -3131,15 +3250,16 @@ class WebDriver extends Helper {
   }
 
   /**
-   * Switch focus to a particular tab by its number. It waits tabs loading and then switch tab.
-   *
-   * ```js
-   * I.switchToNextTab();
-   * I.switchToNextTab(2);
-   * ```
-   *
-   * @param {number} [num] (optional) number of tabs to switch forward, default: 1.
-   * @param {number | null} [sec] (optional) time in seconds to wait.
+   *  Switch focus to a particular tab by its number. It waits tabs loading and then switch tab.
+   * 
+   *  ```js
+   *  I.switchToNextTab();
+   *  I.switchToNextTab(2);
+   *  ```
+   * 
+   *  @param {number} [num] (optional) number of tabs to switch forward, default: 1.
+   *  @param {number | null} [sec] (optional) time in seconds to wait.
+   * 
    */
   async switchToNextTab(num = 1, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
@@ -3170,15 +3290,16 @@ class WebDriver extends Helper {
   }
 
   /**
-   * Switch focus to a particular tab by its number. It waits tabs loading and then switch tab.
-   *
-   * ```js
-   * I.switchToPreviousTab();
-   * I.switchToPreviousTab(2);
-   * ```
-   *
-   * @param {number} [num] (optional) number of tabs to switch backward, default: 1.
-   * @param {number?} [sec] (optional) time in seconds to wait.
+   *  Switch focus to a particular tab by its number. It waits tabs loading and then switch tab.
+   * 
+   *  ```js
+   *  I.switchToPreviousTab();
+   *  I.switchToPreviousTab(2);
+   *  ```
+   * 
+   *  @param {number} [num] (optional) number of tabs to switch backward, default: 1.
+   *  @param {number?} [sec] (optional) time in seconds to wait.
+   * 
    */
   async switchToPreviousTab(num = 1, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
@@ -3209,11 +3330,12 @@ class WebDriver extends Helper {
   }
 
   /**
-   * Close current tab.
-   *
-   * ```js
-   * I.closeCurrentTab();
-   * ```
+   *  Close current tab.
+   * 
+   *  ```js
+   *  I.closeCurrentTab();
+   *  ```
+   * 
    */
   async closeCurrentTab() {
     await this.browser.closeWindow();
@@ -3222,11 +3344,12 @@ class WebDriver extends Helper {
   }
 
   /**
-   * Open new tab and switch to it.
-   *
-   * ```js
-   * I.openNewTab();
-   * ```
+   *  Open new tab and switch to it.
+   * 
+   *  ```js
+   *  I.openNewTab();
+   *  ```
+   * 
    */
   async openNewTab(url = 'about:blank', windowName = null) {
     const client = this.browser;
@@ -3246,6 +3369,7 @@ class WebDriver extends Helper {
    * ```
    * 
    * @returns {Promise<number>} number of open tabs
+   * 
    */
   async grabNumberOfOpenTabs() {
     const pages = await this.browser.getWindowHandles();
@@ -3313,7 +3437,8 @@ class WebDriver extends Helper {
    * let { x, y } = await I.grabPageScrollPosition();
    * ```
    * 
-   * @returns {Promise<Object<string, *>>} scroll position
+   * @returns {Promise<PageScrollPosition>} scroll position
+   * 
    */
   async grabPageScrollPosition() {
     /* eslint-disable comma-dangle */
@@ -3338,8 +3463,8 @@ class WebDriver extends Helper {
    * 
    * @param {number} latitude to set.
    * @param {number} longitude to set
-   * @param {number} altitude (optional, null by default) to set
-   *
+   * @param {number=} altitude (optional, null by default) to set
+   * 
    */
   async setGeoLocation(latitude, longitude, altitude = null) {
     if (altitude) {
@@ -3381,9 +3506,10 @@ class WebDriver extends Helper {
    * const width = await I.grabElementBoundingRect('h3', 'width');
    * // width == 527
    * ```
-   * @param {string|object} locator element located by CSS|XPath|strict locator.
-   * @param {string} elementSize x, y, width or height of the given element.
-   * @returns {object} Element bounding rectangle
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {string=} elementSize x, y, width or height of the given element.
+   * @returns {Promise<DOMRect>|Promise<number>} Element bounding rectangle
+   * 
    */
   async grabElementBoundingRect(locator, prop) {
     const res = await this._locate(locator, true);
@@ -3401,6 +3527,7 @@ class WebDriver extends Helper {
   /**
    * Placeholder for ~ locator only test case write once run on both Appium and WebDriver.
    */
+  /* eslint-disable */
   runOnIOS(caps, fn) {
   }
 
@@ -3409,6 +3536,7 @@ class WebDriver extends Helper {
    */
   runOnAndroid(caps, fn) {
   }
+  /* eslint-enable */
 
   /**
    * Placeholder for ~ locator only test case write once run on both Appium and WebDriver.

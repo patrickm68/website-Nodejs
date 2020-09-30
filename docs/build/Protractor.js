@@ -5,7 +5,6 @@ let ProtractorBy;
 let ProtractorExpectedConditions;
 
 const path = require('path');
-const requireg = require('requireg');
 
 const Helper = require('../helper');
 const stringIncludes = require('../assert/include').includes;
@@ -55,7 +54,7 @@ let Runner;
  * * `waitForTimeout`: (optional) sets default wait time in _ms_ for all `wait*` functions. 1000 by default.
  * * `scriptsTimeout`: (optional) timeout in milliseconds for each script run on the browser, 10000 by default.
  * * `windowSize`: (optional) default window size. Set to `maximize` or a dimension in the format `640x480`.
- * * `manualStart` (optional, default: false) - do not start browser before a test, start it manually inside a helper with `this.helpers["WebDriverIO"]._startBrowser()`
+ * * `manualStart` (optional, default: false) - do not start browser before a test, start it manually inside a helper with `this.helpers.WebDriver._startBrowser()`
  * * `capabilities`: {} - list of [Desired Capabilities](https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities)
  * * `proxy`: set proxy settings
  *
@@ -163,19 +162,19 @@ class Protractor extends Helper {
       }
     });
 
-    Runner = requireg('protractor/built/runner').Runner;
-    ProtractorBy = requireg('protractor').ProtractorBy;
-    Key = requireg('protractor').Key;
-    Button = requireg('protractor').Button;
-    ProtractorExpectedConditions = requireg('protractor').ProtractorExpectedConditions;
+    Runner = require('protractor/built/runner').Runner;
+    ProtractorBy = require('protractor').ProtractorBy;
+    Key = require('protractor').Key;
+    Button = require('protractor').Button;
+    ProtractorExpectedConditions = require('protractor').ProtractorExpectedConditions;
 
     return Promise.resolve();
   }
 
   static _checkRequirements() {
     try {
-      requireg('protractor');
-      require('assert').ok(requireg('protractor/built/runner').Runner);
+      require('protractor');
+      require('assert').ok(require('protractor/built/runner').Runner);
     } catch (e) {
       return ['protractor@^5.3.0'];
     }
@@ -270,7 +269,7 @@ class Protractor extends Helper {
     return this.closeOtherTabs();
   }
 
-  async _failed(test, err) {
+  async _failed() {
     await this._withinEnd();
   }
 
@@ -343,6 +342,27 @@ class Protractor extends Helper {
         loadGlobals(this.browser);
       },
     };
+  }
+
+  /**
+   * Use [Protractor](https://www.protractortest.org/#/api) API inside a test.
+   *
+   * First argument is a description of an action.
+   * Second argument is async function that gets this helper as parameter.
+   *
+   * { [`browser`](https://www.protractortest.org/#/api?view=ProtractorBrowser)) } object from Protractor API is available.
+   *
+   * ```js
+   * I.useProtractorTo('change url via in-page navigation', async ({ browser }) {
+   *    await browser.setLocation('api');
+   * });
+   * ```
+   *
+   * @param {string} description used to show in logs.
+   * @param {function} fn async functuion that executed with Protractor helper as argument
+   */
+  useProtractorTo(description, fn) {
+    return this._useTo(...arguments);
   }
 
   /**
@@ -467,8 +487,8 @@ class Protractor extends Helper {
    * I.click({css: 'nav a.login'});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
    * 
    */
   async click(locator, context = null) {
@@ -493,8 +513,8 @@ class Protractor extends Helper {
    * I.doubleClick('.btn.edit');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
    * 
    */
   async doubleClick(locator, context = null) {
@@ -520,8 +540,8 @@ class Protractor extends Helper {
    * I.rightClick('Click me', '.context');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator clickable element located by CSS|XPath|strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
+   * @param {string | object} locator clickable element located by CSS|XPath|strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
    * 
    */
   async rightClick(locator, context = null) {
@@ -552,7 +572,7 @@ class Protractor extends Helper {
    * I.moveCursorTo('#submit', 5,5);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
    * 
@@ -577,7 +597,7 @@ class Protractor extends Helper {
    * I.see('Register', {css: 'form.register'}); // use strict locator
    * ```
    * @param {string} text expected on page.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|Xpath|strict locator in which to search for text.
+   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS|Xpath|strict locator in which to search for text.
    */
   async see(text, context = null) {
     return proceedSee.call(this, 'assert', text, context);
@@ -591,7 +611,7 @@ class Protractor extends Helper {
    * ```
    * 
    * @param {string} text element value to check.
-   * @param {CodeceptJS.LocatorOrString?} [context=null]  element located by CSS|XPath|strict locator.
+   * @param {string | object?} [context=null]  element located by CSS|XPath|strict locator.
    */
   async seeTextEquals(text, context = null) {
     return proceedSee.call(this, 'assert', text, context, true);
@@ -607,7 +627,7 @@ class Protractor extends Helper {
    * ```
    * 
    * @param {string} text which is not present.
-   * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator in which to perfrom search.
+   * @param {string | object} [context] (optional) element located by CSS|XPath|strict locator in which to perfrom search.
    * 
    */
   dontSee(text, context = null) {
@@ -623,7 +643,8 @@ class Protractor extends Helper {
    * console.log(JSON.stringify(logs))
    * ```
    * 
-   * @returns {Promise<Array<*>>} all browser logs
+   * @returns {Promise<object[]>|undefined} all browser logs
+   * 
    */
   async grabBrowserLogs() {
     return this.browser.manage().logs().get('browser');
@@ -663,8 +684,9 @@ class Protractor extends Helper {
    * ```js
    * I.selectOption('Which OS do you use?', ['Android', 'iOS']);
    * ```
-   * @param {CodeceptJS.LocatorOrString} select field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} select field located by label|name|CSS|XPath|strict locator.
    * @param {string|Array<*>} option visible text or value of option.
+   * 
    */
   async selectOption(select, option) {
     const fields = await findFields(this.browser, select);
@@ -700,7 +722,7 @@ class Protractor extends Helper {
    * // or by strict locator
    * I.fillField({css: 'form#login input[name=username]'}, 'John');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value text value to fill.
    * 
    */
@@ -753,7 +775,7 @@ class Protractor extends Helper {
    * I.attachFile('form input[name=avatar]', 'data/avatar.jpg');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
    * @param {string} pathToFile local file path relative to codecept.json config file.
    */
   async attachFile(locator, pathToFile) {
@@ -780,7 +802,7 @@ class Protractor extends Helper {
    * I.seeInField('form input[type=hidden]','hidden_value');
    * I.seeInField('#searchform input','Search');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
    * 
    */
@@ -797,7 +819,7 @@ class Protractor extends Helper {
    * I.dontSeeInField({ css: 'form input.email' }, 'user@user.com'); // field by CSS
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
    */
   async dontSeeInField(field, value) {
@@ -811,7 +833,7 @@ class Protractor extends Helper {
    * ```js
    * I.appendField('#myTextField', 'appended');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator
    * @param {string} value text value to append.
    */
   async appendField(field, value) {
@@ -828,7 +850,8 @@ class Protractor extends Helper {
    * I.clearField('user[email]');
    * I.clearField('#email');
    * ```
-   * @param {string|object} editable field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} editable field located by label|name|CSS|XPath|strict locator.
+   * 
    */
   async clearField(field) {
     const els = await findFields(this.browser, field);
@@ -847,8 +870,8 @@ class Protractor extends Helper {
    * I.checkOption('I Agree to Terms and Conditions');
    * I.checkOption('agree', '//form');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
+   * @param {string | object} field checkbox located by label | name | CSS | XPath | strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
    */
   async checkOption(field, context = null) {
     let matcher = this.browser;
@@ -874,8 +897,8 @@ class Protractor extends Helper {
    * I.uncheckOption('I Agree to Terms and Conditions');
    * I.uncheckOption('agree', '//form');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
+   * @param {string | object} field checkbox located by label | name | CSS | XPath | strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
    */
   async uncheckOption(field, context = null) {
     let matcher = this.browser;
@@ -899,7 +922,7 @@ class Protractor extends Helper {
    * I.seeCheckboxIsChecked({css: '#signup_form input[type=checkbox]'});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * 
    */
   async seeCheckboxIsChecked(field) {
@@ -915,11 +938,32 @@ class Protractor extends Helper {
    * I.dontSeeCheckboxIsChecked('agree'); // located by name
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * 
    */
   async dontSeeCheckboxIsChecked(field) {
     return proceedIsChecked.call(this, 'negate', field);
+  }
+
+  /**
+   * Retrieves all texts from an element located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async with `await`** operator.
+   * 
+   * ```js
+   * let pins = await I.grabTextFromAll('#pin li');
+   * ```
+   * 
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @returns {Promise<string[]>} attribute value
+   * 
+   */
+  async grabTextFromAll(locator) {
+    const els = await this._locate(locator);
+    const texts = [];
+    for (const el of els) {
+      texts.push(await el.getText());
+    }
+    return texts;
   }
 
   /**
@@ -929,109 +973,196 @@ class Protractor extends Helper {
    * ```js
    * let pin = await I.grabTextFrom('#pin');
    * ```
-   * If multiple elements found returns an array of texts.
+   * If multiple elements found returns first element.
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
-   * @returns {Promise<string|string[]>} attribute value
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @returns {Promise<string>} attribute value
+   * 
    */
   async grabTextFrom(locator) {
-    const els = await this._locate(locator);
-    assertElementExists(els);
-    const texts = [];
-    for (const el of els) {
-      texts.push(await el.getText());
+    const texts = await this.grabTextFromAll(locator);
+    assertElementExists(texts);
+    if (texts.length > 1) {
+      this.debugSection('GrabText', `Using first element out of ${texts.length}`);
     }
-    if (texts.length === 1) return texts[0];
-    return texts;
+
+    return texts[0];
   }
 
   /**
-   * Retrieves the innerHTML from an element located by CSS or XPath and returns it to test.
+   * Retrieves all the innerHTML from elements located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async function with `await`** operator.
-   * If more than one element is found - an array of HTMLs returned.
    * 
    * ```js
-   * let postHTML = await I.grabHTMLFrom('#post');
+   * let postHTMLs = await I.grabHTMLFromAll('.post');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} element located by CSS|XPath|strict locator.
-   * @returns {Promise<string>} HTML code for an element
+   * @param {string | object} element located by CSS|XPath|strict locator.
+   * @returns {Promise<string[]>} HTML code for an element
+   * 
    */
-  async grabHTMLFrom(locator) {
+  async grabHTMLFromAll(locator) {
     const els = await this._locate(locator);
-    assertElementExists(els);
 
     const html = await Promise.all(els.map((el) => {
       return this.browser.executeScript('return arguments[0].innerHTML;', el);
     }));
 
-    if (html.length === 1) {
-      return html[0];
-    }
     return html;
+  }
+
+  /**
+   * Retrieves the innerHTML from an element located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
+   * If more than one element is found - HTML of first element is returned.
+   * 
+   * ```js
+   * let postHTML = await I.grabHTMLFrom('#post');
+   * ```
+   * 
+   * @param {string | object} element located by CSS|XPath|strict locator.
+   * @returns {Promise<string>} HTML code for an element
+   * 
+   */
+  async grabHTMLFrom(locator) {
+    const html = await this.grabHTMLFromAll(locator);
+    assertElementExists(html);
+    if (html.length > 1) {
+      this.debugSection('GrabHTMl', `Using first element out of ${html.length}`);
+    }
+
+    return html[0];
+  }
+
+  /**
+   * Retrieves an array of value from a form located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
+   * 
+   * ```js
+   * let inputs = await I.grabValueFromAll('//form/input');
+   * ```
+   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
+   * @returns {Promise<string[]>} attribute value
+   * 
+   */
+  async grabValueFromAll(locator) {
+    const els = await findFields(this.browser, locator);
+    const values = await Promise.all(els.map(el => el.getAttribute('value')));
+
+    return values;
   }
 
   /**
    * Retrieves a value from a form element located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async function with `await`** operator.
+   * If more than one element is found - value of first element is returned.
    * 
    * ```js
    * let email = await I.grabValueFrom('input[name=email]');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
    * @returns {Promise<string>} attribute value
+   * 
    */
   async grabValueFrom(locator) {
-    const els = await findFields(this.browser, locator);
-    assertElementExists(els, locator, 'Field');
-    return els[0].getAttribute('value');
+    const values = await this.grabValueFromAll(locator);
+    assertElementExists(values, locator, 'Field');
+    if (values.length > 1) {
+      this.debugSection('GrabValue', `Using first element out of ${values.length}`);
+    }
+
+    return values[0];
+  }
+
+  /**
+   * Grab array of CSS properties for given locator
+   * Resumes test execution, so **should be used inside an async function with `await`** operator.
+   * 
+   * ```js
+   * const values = await I.grabCssPropertyFromAll('h3', 'font-weight');
+   * ```
+   * 
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {string} cssProperty CSS property name.
+   * @returns {Promise<string[]>} CSS value
+   * 
+   */
+  async grabCssPropertyFromAll(locator, cssProperty) {
+    const els = await this._locate(locator, true);
+    const values = await Promise.all(els.map(el => el.getCssValue(cssProperty)));
+
+    return values;
   }
 
   /**
    * Grab CSS property for given locator
    * Resumes test execution, so **should be used inside an async function with `await`** operator.
+   * If more than one element is found - value of first element is returned.
    * 
    * ```js
    * const value = await I.grabCssPropertyFrom('h3', 'font-weight');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {string} cssProperty CSS property name.
    * @returns {Promise<string>} CSS value
+   * 
    */
   async grabCssPropertyFrom(locator, cssProperty) {
-    const els = await this._locate(locator, true);
-    assertElementExists(els, locator);
-    const values = await Promise.all(els.map(el => el.getCssValue(cssProperty)));
+    const cssValues = await this.grabCssPropertyFromAll(locator, cssProperty);
+    assertElementExists(cssValues, locator);
 
-    if (Array.isArray(values) && values.length === 1) {
-      return values[0];
+    if (cssValues.length > 1) {
+      this.debugSection('GrabCSS', `Using first element out of ${cssValues.length}`);
     }
-    return values;
+
+    return cssValues[0];
   }
 
   /**
-   * Retrieves an attribute from an element located by CSS or XPath and returns it to test.
-   * An array as a result will be returned if there are more than one matched element.
-   * Resumes test execution, so **should be used inside async function with `await`** operator.
+   * Retrieves an array of attributes from elements located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async with `await`** operator.
    * 
    * ```js
-   * let hint = await I.grabAttributeFrom('#tooltip', 'title');
+   * let hints = await I.grabAttributeFromAll('.tooltip', 'title');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {string} attr attribute name.
-   * @returns {Promise<string>} attribute value
+   * @returns {Promise<string[]>} attribute value
+   * 
    */
-  async grabAttributeFrom(locator, attr) {
+  async grabAttributeFromAll(locator, attr) {
     const els = await this._locate(locator);
-    assertElementExists(els);
     const array = [];
 
     for (let index = 0; index < els.length; index++) {
       const el = els[index];
       array.push(await el.getAttribute(attr));
     }
-    return array.length === 1 ? array[0] : array;
+    return array;
+  }
+
+  /**
+   * Retrieves an attribute from an element located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async with `await`** operator.
+   * If more than one element is found - attribute of first element is returned.
+   * 
+   * ```js
+   * let hint = await I.grabAttributeFrom('#tooltip', 'title');
+   * ```
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {string} attr attribute name.
+   * @returns {Promise<string>} attribute value
+   * 
+   */
+  async grabAttributeFrom(locator, attr) {
+    const attrs = await this.grabAttributeFromAll(locator, attr);
+    assertElementExists(attrs, locator);
+    if (attrs.length > 1) {
+      this.debugSection('GrabAttribute', `Using first element out of ${attrs.length}`);
+    }
+
+    return attrs[0];
   }
 
   /**
@@ -1096,7 +1227,7 @@ class Protractor extends Helper {
    * ```js
    * I.seeElement('#modal');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    */
   async seeElement(locator) {
     let els = await this._locate(locator, true);
@@ -1111,7 +1242,7 @@ class Protractor extends Helper {
    * I.dontSeeElement('.modal'); // modal is not shown
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
+   * @param {string | object} locator located by CSS|XPath|Strict locator.
    */
   async dontSeeElement(locator) {
     let els = await this._locate(locator, false);
@@ -1126,7 +1257,7 @@ class Protractor extends Helper {
    * ```js
    * I.seeElementInDOM('#modal');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * 
    */
   async seeElementInDOM(locator) {
@@ -1140,7 +1271,7 @@ class Protractor extends Helper {
    * I.dontSeeElementInDOM('.nav'); // checks that element is not on page visible or not
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
+   * @param {string | object} locator located by CSS|XPath|Strict locator.
    */
   async dontSeeElementInDOM(locator) {
     return this.browser.findElements(guessLocator(locator) || global.by.css(locator)).then(els => empty('elements').assert(els.fill('ELEMENT')));
@@ -1195,7 +1326,7 @@ class Protractor extends Helper {
    * I.seeNumberOfElements('#submitBtn', 1);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * 
    */
@@ -1212,7 +1343,7 @@ class Protractor extends Helper {
    * I.seeNumberOfVisibleElements('.buttons', 3);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * 
    */
@@ -1229,7 +1360,7 @@ class Protractor extends Helper {
    * let numOfElements = await I.grabNumberOfVisibleElements('p');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @returns {Promise<number>} number of visible elements
    */
   async grabNumberOfVisibleElements(locator) {
@@ -1245,7 +1376,7 @@ class Protractor extends Helper {
    * I.seeCssPropertiesOnElements('h3', { 'font-weight': "bold"});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @param {object} cssProperties object with CSS properties and their values to check.
    */
   async seeCssPropertiesOnElements(locator, cssProperties) {
@@ -1283,7 +1414,7 @@ class Protractor extends Helper {
    * I.seeAttributesOnElements('//form', { method: "post"});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @param {object} attributes attributes and their values to check.
    */
   async seeAttributesOnElements(locator, attributes) {
@@ -1339,7 +1470,7 @@ class Protractor extends Helper {
    * @return {Promise<any>}
    * 
    */
-  async executeScript(fn) {
+  async executeScript() {
     return this.browser.executeScript.apply(this.browser, arguments);
   }
 
@@ -1370,7 +1501,7 @@ class Protractor extends Helper {
    * @return {Promise<any>}
    * 
    */
-  async executeAsyncScript(fn) {
+  async executeAsyncScript() {
     this.browser.manage().timeouts().setScriptTimeout(this.options.scriptTimeout);
     return this.browser.executeAsyncScript.apply(this.browser, arguments);
   }
@@ -1436,8 +1567,9 @@ class Protractor extends Helper {
    * I.saveElementScreenshot(`#submit`,'debug.png');
    * ```
    * 
-   * @param {string|object} locator element located by CSS|XPath|strict locator.  
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {string} fileName file name to save.
+   * 
    *
    */
   async saveElementScreenshot(locator, fileName) {
@@ -1559,7 +1691,8 @@ class Protractor extends Helper {
    * ```
    * 
    * @param {?string} [name=null] cookie name.
-   * @returns {Promise<string>} attribute value
+   * @returns {Promise<string>|Promise<string[]>} attribute value
+   * 
    *
    * Returns cookie in JSON [format](https://code.google.com/p/selenium/wiki/JsonWireProtocol#Cookie_JSON_Object).
    */
@@ -1648,8 +1781,9 @@ class Protractor extends Helper {
    * I.dragAndDrop('#dragHandle', '#container');
    * ```
    * 
-   * @param {string|object} srcElement located by CSS|XPath|strict locator.
-   * @param {string|object} destElement located by CSS|XPath|strict locator.
+   * @param {string | object} srcElement located by CSS|XPath|strict locator.
+   * @param {string | object} destElement located by CSS|XPath|strict locator.
+   * 
    */
   async dragAndDrop(srcElement, destElement) {
     const srcEl = await this._locate(srcElement, true);
@@ -1776,6 +1910,7 @@ class Protractor extends Helper {
    * ```
    * 
    * @returns {Promise<number>} number of open tabs
+   * 
    */
   async grabNumberOfOpenTabs() {
     const pages = await this.browser.getAllWindowHandles();
@@ -1790,7 +1925,7 @@ class Protractor extends Helper {
    * I.switchTo(); // switch back to main page
    * ```
    * 
-   * @param {?CodeceptJS.LocatorOrString} [locator=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
+   * @param {?string | object} [locator=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
    */
   async switchTo(locator) {
     if (Number.isInteger(locator)) {
@@ -1827,7 +1962,7 @@ class Protractor extends Helper {
    * I.waitForElement('.btn.continue', 5); // wait for 5 secs
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
    */
   async waitForElement(locator, sec = null) {
@@ -1851,7 +1986,7 @@ class Protractor extends Helper {
    * I.waitForDetached('#popup');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    */
   async waitForDetached(locator, sec = null) {
@@ -1885,8 +2020,9 @@ class Protractor extends Helper {
    * I.waitForVisible('#popup');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
+   * 
    */
   async waitForVisible(locator, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
@@ -1902,7 +2038,7 @@ class Protractor extends Helper {
    * I.waitToHide('#popup');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    */
   async waitToHide(locator, sec = null) {
@@ -1917,7 +2053,7 @@ class Protractor extends Helper {
    * I.waitForInvisible('#popup');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    */
   async waitForInvisible(locator, sec = null) {
@@ -1940,7 +2076,7 @@ class Protractor extends Helper {
    * I.waitNumberOfVisibleElements('a', 3);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    */
@@ -1958,7 +2094,7 @@ class Protractor extends Helper {
     const guessLoc = guessLocator(locator) || global.by.css(locator);
 
     return this.browser.wait(visibilityCountOf(guessLoc, num), aSec * 1000)
-      .catch((err) => {
+      .catch(() => {
         throw Error(`The number of elements (${locator}) is not ${num} after ${aSec} sec`);
       });
   }
@@ -1967,7 +2103,7 @@ class Protractor extends Helper {
    * Waits for element to become enabled (by default waits for 1sec).
    * Element can be located by CSS or XPath.
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional) time in seconds to wait, 1 by default.
    */
   async waitForEnabled(locator, sec = null) {
@@ -1975,7 +2111,7 @@ class Protractor extends Helper {
     const el = global.element(guessLocator(locator) || global.by.css(locator));
 
     return this.browser.wait(EC.elementToBeClickable(el), aSec * 1000)
-      .catch((err) => {
+      .catch(() => {
         throw Error(`element (${locator}) still not enabled after ${aSec} sec`);
       });
   }
@@ -1987,14 +2123,15 @@ class Protractor extends Helper {
    * I.waitForValue('//input', "GoodValue");
    * ```
    * 
-   * @param {string|object} field input field.
+   * @param {string | object} field input field.
    * @param {string }value expected value.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
+   * 
    */
   async waitForValue(field, value, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
 
-    const valueToBeInElementValue = (loc, expectedCount) => {
+    const valueToBeInElementValue = (loc) => {
       return async () => {
         const els = await findFields(this.browser, loc);
 
@@ -2007,7 +2144,7 @@ class Protractor extends Helper {
     };
 
     return this.browser.wait(valueToBeInElementValue(field, value), aSec * 1000)
-      .catch((err) => {
+      .catch(() => {
         throw Error(`element (${field}) is not in DOM or there is no element(${field}) with value "${value}" after ${aSec} sec`);
       });
   }
@@ -2130,7 +2267,7 @@ class Protractor extends Helper {
    * 
    * @param {string }text to wait for.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator.
+   * @param {string | object} [context] (optional) element located by CSS|XPath|strict locator.
    */
   async waitForText(text, sec = null, context = null) {
     if (!context) {
@@ -2179,7 +2316,7 @@ class Protractor extends Helper {
    * I.scrollTo('#submit', 5, 5);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
    */
@@ -2248,7 +2385,8 @@ class Protractor extends Helper {
    * let { x, y } = await I.grabPageScrollPosition();
    * ```
    * 
-   * @returns {Promise<Object<string, *>>} scroll position
+   * @returns {Promise<PageScrollPosition>} scroll position
+   * 
    */
   async grabPageScrollPosition() {
     /* eslint-disable comma-dangle */
@@ -2305,7 +2443,8 @@ class Protractor extends Helper {
    * ]);
    * ```
    * 
-   * @param {object|array} cookie a cookie object or array of cookie objects.
+   * @param {Cookie|Array<Cookie>} cookie a cookie object or array of cookie objects.
+   * 
    */
   setCookie(cookie) {
     return this.browser.manage().addCookie(cookie);

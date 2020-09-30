@@ -1,14 +1,6 @@
----
-permalink: /docker
-layout: Section
-sidebar: false
-title: Docker
-editLink: false
----
-
 # Codeceptjs Docker
 
-CodeceptJS packed into container with the Nightmare, Protractor, Puppeteer, and WebDriverIO drivers.
+CodeceptJS packed into container with the Nightmare, Protractor, Puppeteer, and WebDriver drivers.
 
 ## How to Use
 
@@ -64,7 +56,7 @@ services:
 
 ### Linking Containers
 
-If using the Protractor or WebDriverIO drivers, link the container with a Selenium Standalone docker container with an alias of `selenium`. Additionally, make sure your `codeceptjs.conf.js` contains the following to allow CodeceptJS to identify where Selenium is running.
+If using the Protractor or WebDriver drivers, link the container with a Selenium Standalone docker container with an alias of `selenium`. Additionally, make sure your `codeceptjs.conf.js` contains the following to allow CodeceptJS to identify where Selenium is running.
 
 ```javascript
   ...

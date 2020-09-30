@@ -12,7 +12,7 @@
             <router-link to="/basics">Getting Started</router-link>
           </li>
           <li>
-            <router-link to="/puppeteer">CodeceptJS & Puppeteer</router-link>
+            <router-link to="/playwright">CodeceptJS & Playwright</router-link>
           </li>
           <li>
             <router-link to="/puppeteer">CodeceptJS & WebDriver</router-link>
@@ -35,6 +35,12 @@
           <li><a href="http://sdclabs.com/trainings/web-automation-codeceptjs?utm_source=codecept.io&utm_medium=top_menu&utm_term=link&utm_campaign=reference">Trainings</a> </li>
           <li><a href="https://sdclabs.com/#services">Hire Engineers</a></li>
         </ul>
+      </div>
+      <div class="col">
+        <a href="https://testomat.io">
+        <h4>Try Testomat.io &rarr;</h4>
+        <p>Powerful <b>Test Case Management</b> for CodeceptJS from its authors</p>
+        </a>
       </div>
     </section>
     <div class="copyright">
@@ -96,7 +102,8 @@ export default {
       @apply flex;
       justify-content: space-around;
       .col {
-        @apply px-2;
+
+        @apply flex-1 px-2;
       }
     }
   }

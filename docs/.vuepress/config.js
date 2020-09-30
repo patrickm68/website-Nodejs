@@ -43,6 +43,7 @@ module.exports = {
           group: "Basics",
           items: [
             { text: "Getting Started", link: '/basics' },
+            { text: "CodeceptUI", link: '/ui' },
           ]
         },
         {
@@ -58,9 +59,11 @@ module.exports = {
         {
           group: "Other",
           items: [
+            { text: "Custom Helpers", link: '/custom-helpers' },
             { text: "Locators", link: "/locators" },
             { text: "Page Objects", link: "/pageobjects" },
             { text: "Behavior Driven Development", link: "/bdd" },
+            { text: "TypeScript", link: "/typescript" },
             { text: "Data Management", link: "/data" },
             { text: "Parallel Execution", link: "/parallel" },
             { text: "Reports", link: "/reports" },
@@ -112,9 +115,9 @@ module.exports = {
           group: "Web Testing",
           text: 'Web Testing',
           items: [
+            { text: "Playwright", link: "/helpers/Playwright" },
             { text: "WebDriver", link: "/helpers/WebDriver" },
             { text: "Puppeteer", link: "/helpers/Puppeteer" },
-            { text: "Playwright", link: "/helpers/Playwright" },
             { text: "Protractor", link: "/helpers/Protractor" },
             { text: "TestCafe", link: "/helpers/TestCafe" },
             { text: "Nightmare", link: "/helpers/Nightmare" },
@@ -147,10 +150,6 @@ module.exports = {
           ]
         },
       ]
-    },
-    {
-      text: 'UI',
-      link: '/ui',
     },
     {
       text: 'Plugins',
@@ -213,12 +212,12 @@ module.exports = {
           collapsable: true,
           children: [
             "basics",
+            'ui',
+            'playwright',
             'webdriver',
             'puppeteer',
-            'playwright',
             'testcafe',
             'angular',
-            'nightmare',
           ]
         },
         {
@@ -231,25 +230,26 @@ module.exports = {
         {
           title: 'Organizing Tests',
           children: [
-            "best",
+            "custom-helpers",
+            "typescript",
             "locators",
             "pageobjects",
-            "bdd",
             "data",
-            "parallel",
-            "reports",
-            "continuous-integration",
+            "best",
+            "bdd",
           ]
         },
         {
           title: 'Advanced Usage',
           children: [
             "advanced",
+            "bootstrap",
+            "reports",
+            "continuous-integration",
+            "parallel",
             'visual',
             'email',
             'react',
-            "hooks",
-            "custom-helpers",
           ]
         },
       ]

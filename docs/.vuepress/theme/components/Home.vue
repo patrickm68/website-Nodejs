@@ -9,21 +9,14 @@
       >
 
       <h1>
-        Supercharged<br><span class="name">End 2 End</span> Testing
-      </h1>
+        <span class="name">CodeceptJS 3</span> &dash; supercharged<br><span class="name">End 2 End</span> Testing
+      </h1>      
 
-      <div class="playwright-home">
-        <router-link to="/playwright" class="badge">Now with <b>Playwright</b> support</router-link>
-      </div>
+      <pre><code>npx create-codeceptjs .</code></pre>
 
-      <img src="/img/code.png" alt="code" />
+      <img src="/img/runui.gif" class="ui" alt="CodeceptUI" />
 
-        <div class="video">
-          <a href="#" @click="toggleVideo">📺 Watch a video ▶</a>
-          <div v-if="showVideo" class="videoModal">
-            <video controls="" src="/img/codeceptjs_demo.mp4" style="width:100%;"></video>
-          </div>
-        </div>
+
 
       <p
         class="action"
@@ -38,8 +31,9 @@
     </div>
 <div class="frameworks">
     <div class="content">
+      <b>CodeceptJS</b> is opensource MIT licensed testing framework.
       <h4>
-        Plays nicely with your favorite frameworks &rarr;
+        Works with your favorite frontend frameworks &rarr;
           <router-link to="/react"><img src="/img/react.svg" alt="React" ></router-link>
           <router-link to="/vue"><img src="/img/vue.svg" alt="Vue" ></router-link>
           <router-link to="/angular"><img src="/img/AngularLogo.png" alt="Angular" ></router-link>
@@ -49,6 +43,7 @@
 
 
     <div class="content">
+
 
   <div class="features">
 
@@ -63,7 +58,7 @@
     <div class="feature">
       <img src="/img/Mind-Map-Paper.svg" alt="Mind map paper" />
       <div class="inner"><h5>Driver Agnostic</h5>
-        Run your tests via <b>WebDriver, Puppeteer, TestCafe, Protractor, Appium</b>. The code is the same.
+        Run your tests via <b>Playwright, WebDriver, Puppeteer, TestCafe, Protractor, Appium</b>. The code is the same.
         <router-link to="/basics#architecture">Learn More</router-link></div>
     </div>
     <div class="feature">
@@ -444,6 +439,8 @@ export default {
     background-image url(/img/back.png)
     background-color #805ad5
     text-align center
+    pre>code
+      @apply bg-gray-900 text-white px-8 py-2 rounded
     .video
       margin-top -30px
       a
@@ -468,11 +465,11 @@ export default {
           max-width 800px
 
     img
+      @apply shadow-xl rounded
       max-width: 600px
       width 100%
       display block
       margin 3rem auto 1.5rem
-      margin-top 0
     h1
       font-size 3rem
     h1, .description, .action

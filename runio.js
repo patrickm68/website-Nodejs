@@ -9,7 +9,7 @@ module.exports = {
     const dir = 'website';
     if (!fs.existsSync(dir)) {
       await git((fn) => {
-        fn.cloneShallow('git@github.com:codeceptjs/website.git', dir);
+        fn.cloneShallow('-b 3.x git@github.com:codeceptjs/codeceptjs.git', dir);
       });
     }
     await chdir(dir, async () => {

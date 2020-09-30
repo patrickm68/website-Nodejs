@@ -1,3 +1,11 @@
+---
+permalink: /docker
+layout: Section
+sidebar: false
+title: Docker
+editLink: false
+---
+
 # Codeceptjs Docker
 
 CodeceptJS packed into container with the Nightmare, Protractor, Puppeteer, and WebDriverIO drivers.
@@ -61,7 +69,7 @@ If using the Protractor or WebDriverIO drivers, link the container with a Seleni
 ```javascript
   ...
   helpers: {
-    WebDriverIO: {
+    WebDriver: {
       ...
       host: process.env.HOST
       ...

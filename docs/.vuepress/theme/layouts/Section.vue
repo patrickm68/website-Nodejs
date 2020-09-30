@@ -82,7 +82,7 @@
 
 .container {
   .content {
-    background: rgba(255,255,255,0.9);
+    background: white;
     margin-top: -405px;
     z-index: 100;
     @apply p-8 rounded-lg;

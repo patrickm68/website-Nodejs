@@ -7,8 +7,18 @@ layout: Section
 
 # Releases
 
-## 3.0.0
+## 3.0.1
 
+♨️ Hot fix:
+  * Lock the mocha version to avoid the errors. See [#2624](https://github.com/codeceptjs/CodeceptJS/issues/2624) by PeterNgTr
+ 
+🐛 Bug Fix:
+  * Fixed error handling in Scenario.js. See [#2607](https://github.com/codeceptjs/CodeceptJS/issues/2607) by haveac1gar
+  * Changing type definition in order to allow the use of functions with any number of any arguments. See [#2616](https://github.com/codeceptjs/CodeceptJS/issues/2616) by akoltun
+
+* Some updates/changes on documentations
+
+## 3.0.0
 > [ 👌 **LEARN HOW TO UPGRADE TO CODECEPTJS 3 ➡**](https://bit.ly/codecept3Up)
 
 * Playwright set to be a default engine.
@@ -25,7 +35,7 @@ Scenario('title', ({ I, loginPage }) => {});
 ```
 
 * **BREAKING** Replaced bootstrap/teardown scripts to accept only functions or async functions. Async function with callback (with done parameter) should be replaced with async/await. [See our upgrde guide](https://bit.ly/codecept3Up).
-* **[TypeScript guide](/typscript) and [boilerplate project](https://github.com/codeceptjs/typescript-boilerplate)
+* **[TypeScript guide](/typescript)** and [boilerplate project](https://github.com/codeceptjs/typescript-boilerplate)
 * [tryTo](/plugins/#tryTo) and [pauseOnFail](/plugins/#pauseOnFail) plugins installed by default
 * Introduced one-line installer:
 

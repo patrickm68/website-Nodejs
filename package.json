@@ -18,7 +18,7 @@
     "sass-loader": "^10.0.4",
     "tailwindcss": "^1.9.6",
     "vue-carousel": "^0.18.0",
-    "vue-slider-component": "^3.2.9",
+    "vue-slider-component": "^3.2.10",
     "vueperslides": "^2.10.9",
     "vuepress": "^1.7.1",
     "vuepress-plugin-sitemap": "^2.3.1"

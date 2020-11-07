@@ -221,7 +221,7 @@ export default {
       right 0
       background-color #fff
       padding 0.6rem 0
-      border 1px solid #ddd
+      box-shadow: 0px 0px 0px 1px #ddd;
       border-bottom-color #ccc
       text-align left
       border-radius 0.25rem

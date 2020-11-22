@@ -42,6 +42,7 @@
       @click="toggleSidebar(false)"
     ></div>
 
+    <Banner />
     <Footer />
   </div>
 </template>
@@ -152,9 +153,10 @@ import Page from '@theme/components/Page.vue'
 import Sidebar from '@theme/components/Sidebar.vue'
 import Footer from '../components/Footer'
 import { resolveSidebarItems } from '../util'
+import Banner from "../components/Banner";
 
 export default {
-  components: { Home, Page, Sidebar, Navbar, Footer },
+  components: {Banner, Home, Page, Sidebar, Navbar, Footer },
 
   data () {
     return {

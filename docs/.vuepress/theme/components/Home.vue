@@ -194,7 +194,7 @@
   </div>
  </section>
 
-
+  <Banner />
   <Footer />
   </main>
 </template>
@@ -203,9 +203,10 @@
 import NavLink from '@theme/components/NavLink.vue'
 import Slides from './Slides';
 import Footer from './Footer';
+import Banner from './Banner';
 
 export default {
-  components: { NavLink, Footer, Slides },
+  components: { NavLink, Footer, Slides, Banner },
 
   data() {
     return {
@@ -267,7 +268,7 @@ export default {
 
 .testimonials {
   border-top: 5px dashed;
-  @apply bg-white my-4 py-8 border-gray-200;
+  @apply bg-white mt-4 py-8 border-gray-200;
   .inner {
     max-width: 960px;
     margin: 0 auto;

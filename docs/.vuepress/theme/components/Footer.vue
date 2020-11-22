@@ -67,7 +67,7 @@ export default {
   }
   footer {
     border-top: 5px dashed #fff;
-    @apply bg-gray-100 mt-4;
+    @apply bg-gray-100;
     .copyright {
       border-top: 5px dashed;
       @apply bg-purple-600 py-2 text-center text-xs border-gray-200 text-gray-400;

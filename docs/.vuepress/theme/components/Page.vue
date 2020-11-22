@@ -14,6 +14,7 @@
 
     <slot name="bottom" />
 
+    <Banner />
     <Footer/>
   </main>
 </template>
@@ -23,9 +24,10 @@ import PageEdit from '@theme/components/PageEdit.vue'
 import PageNav from '@theme/components/PageNav.vue'
 import Footer from './Footer.vue'
 import RightSidebar from './RightSidebar.vue'
+import Banner from './Banner.vue'
 
 export default {
-  components: { PageEdit, PageNav, Footer, RightSidebar },
+  components: { PageEdit, PageNav, Footer, RightSidebar, Banner },
   props: ['sidebarItems'],
 
   computed: {

@@ -197,6 +197,12 @@ module.exports = {
             { text: "Commercial Support", link: "http://sdclabs.com/" },
             { text: "Trainings", link: "http://sdclabs.com/trainings/web-automation-codeceptjs?utm_source=codecept.io&utm_medium=top_menu&utm_term=link&utm_campaign=reference" },
           ]
+        },
+        {
+          group: 'support',
+          items: [
+            { text: "Support us via OpenCollective!", link: "https://opencollective.com/codeceptjs" },
+          ]
         }
       ],
     },

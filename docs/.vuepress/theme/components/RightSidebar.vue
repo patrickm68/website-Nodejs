@@ -39,6 +39,12 @@
           <small><b>Plan your end 2 end tests</b>, collaborate, synchronize with code & get reports!<br>
           Join Testomat.io while it is in beta and get a huge discount!</small>
         </p>
+
+        <p class="border">
+          <a href="https://opencollective.com/codeceptjs" class="dashed">
+            Support us via OpenCollective!
+          </a>
+        </p>
       </div>
     </div>
 </template>

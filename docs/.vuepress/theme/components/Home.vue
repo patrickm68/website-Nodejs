@@ -10,7 +10,7 @@
 
       <h1>
         <span class="name">CodeceptJS 3</span> &dash; supercharged<br><span class="name">End 2 End</span> Testing
-      </h1>      
+      </h1>
 
       <pre><code>npx create-codeceptjs .</code></pre>
 
@@ -184,12 +184,10 @@
       </div>
     </div>
   </div>
-  <div class="commercial">
-    CodeceptJS offers enterprise support!<br>
-     <a href="http://sdclabs.com/codeceptjs?utm_source=codecept.io&utm_medium=front&utm_term=link&utm_campaign=reference">Contact SDCLabs for</a>
-     <a href="http://sdclabs.com/codeceptjs?utm_source=codecept.io&utm_medium=front&utm_term=link&utm_campaign=reference"><b>consulting</b></a>,
-     <a href="http://sdclabs.com/trainings/web-automation-codeceptjs?utm_source=codecept.io&utm_medium=front&utm_term=link&utm_campaign=reference"><b>trainings</b></a>,
-     or hire engineers to write tests for you.
+  <div class="bg-green-100 text-center">
+    🚀 Get more of CodeceptJS<br>
+
+    ✅ Try <a href="https://testomat.io">Testomat.io</a>, next-gen <b>Test Management</b> system for automated & manual tests. Brought to you by creators of CodeceptJS.
   </div>
   </div>
  </section>

@@ -159,6 +159,13 @@
   <Content slot-key="code"></Content>
 </div>
 
+  <section class="testomatio">
+    🚀 Get more of CodeceptJS<br>
+
+    ✅ Try <a href="https://testomat.io">Testomat.io</a>, next-gen <b>Test Management</b> system for automated & manual tests. Brought to you by creators of CodeceptJS.
+  </section>
+
+
 <section class="testimonials">
   <div class="inner">
   <h2 class="text-center">Trusted By Enterprises</h2>
@@ -183,11 +190,6 @@
         <div class="position"><b>Mitko Tschimev</b><br> Frontend Tech Lead at <b>My Porsche Core</b></div>
       </div>
     </div>
-  </div>
-  <div class="bg-green-100 text-center">
-    🚀 Get more of CodeceptJS<br>
-
-    ✅ Try <a href="https://testomat.io">Testomat.io</a>, next-gen <b>Test Management</b> system for automated & manual tests. Brought to you by creators of CodeceptJS.
   </div>
   </div>
  </section>
@@ -262,6 +264,10 @@ export default {
 
 .badge {
   @apply bg-yellow-400 text-purple-800 p-1 px-2 rounded-lg text-sm;
+}
+
+.testomatio {
+  @apply py-8 bg-green-100 text-center text-gray-700;
 }
 
 .testimonials {

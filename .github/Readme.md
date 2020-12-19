@@ -1,6 +1,6 @@
 # CodeceptJS website
 
-Website is built with vuepress.
+Website is built with vuepress. Source code for [codecept.io](https://codecept.io/)
 
 ## Launch website
 

@@ -162,7 +162,8 @@
   <section class="testomatio">
     🚀 Get more of CodeceptJS<br>
 
-    ✅ Try <a href="https://testomat.io">Testomat.io</a>, next-gen <b>Test Management</b> system for automated & manual tests. Brought to you by creators of CodeceptJS.
+<a href="https://testomat.io">
+    ✅ Try Testomat.io, next-gen <b>Test Management</b> system for automated & manual tests. </a><br>Brought to you by creators of CodeceptJS.
   </section>
 
 
@@ -267,7 +268,7 @@ export default {
 }
 
 .testomatio {
-  @apply py-8 bg-green-100 text-center text-gray-700;
+  @apply py-8 bg-green-100 text-center text-gray-700 text-lg;
 }
 
 .testimonials {

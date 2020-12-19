@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const fs = require('fs');
-const { runio, exec, npx, git, copy, chdir, writeToFile, stopOnFail } = require('runio.js');
+const { runok, exec, npx, git, copy, chdir, writeToFile, stopOnFail } = require('runok');
 
 module.exports = {
 
@@ -40,7 +40,7 @@ module.exports = {
       cfg.line('---');
       cfg.line('');
       cfg.textFromFile('website/CHANGELOG.md');
-    });    
+    });
   },
 
   async serve() {
@@ -65,4 +65,4 @@ module.exports = {
   },
 }
 
-if (require.main === module) runio(module.exports);
+if (require.main === module) runok(module.exports);

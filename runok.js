@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const fs = require('fs');
-const { runok, exec, npx, git, copy, chdir, writeToFile, stopOnFail } = require('runok');
+const { runok, stopOnFail, chdir, tasks: { exec, npx, git, copy, writeToFile } } = require('runok');
 
 module.exports = {
 

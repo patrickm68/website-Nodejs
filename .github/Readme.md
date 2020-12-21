@@ -6,21 +6,21 @@ Website is built with vuepress. Source code for [codecept.io](https://codecept.i
 
 1. clone this repo
 2. `npm i`
-3. `./runio.js serve` - to launch server
+3. `./runok.js serve` - to launch server
 
-> runio task runner is used for build tasks. Call it with `./runio.js <command>` or `npx runio <command>`
+> runok task runner is used for build tasks. Call it with `./runok.js <command>` or `npx runok <command>`
 
 ## Sync docs
 
 Docs are taken from CodeceptJS repo and synchronized manually with:
 
 ```
-./runio.js update
+./runok.js update
 ```
 
 ## Publish site
 
 ```
-./runio.js publish
+./runok.js publish
 ```
 

@@ -23,6 +23,7 @@
         <h4>Community</h4>
         <ul>
           <li><a href="https://github.com/codeceptjs/CodeceptJS">GitHub</a></li>
+          <li><a href="https://github.com/codeceptjs/CodeceptJS/discussions">GitHub discussions</a></li>
           <li><a href="http://bit.ly/chat-codeceptjs">Slack Chat</a></li>
           <li><a href="https://codecept.discourse.group/">Forum</a></li>
           <li><a href="https://twitter.com/codeceptjs">Twitter</a></li>

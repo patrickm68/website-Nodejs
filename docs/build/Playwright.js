@@ -878,11 +878,14 @@ class Playwright extends Helper {
   }
 
   /**
-   * Checks that title is equal to provided one.
-   *
-   * ```js
-   * I.seeTitleEquals('Test title.');
-   * ```
+   *  Checks that title is equal to provided one.
+   * 
+   *  ```js
+   *  I.seeTitleEquals('Test title.');
+   *  ```
+   * 
+   *  @param {string} text value to check.
+   * 
    */
   async seeTitleEquals(text) {
     const title = await this.page.title();
@@ -1217,14 +1220,34 @@ class Playwright extends Helper {
   }
 
   /**
-   *
-   * Force clicks an element without waiting for it to become visible and not animating.
-   *
+   * Perform an emulated click on a link or a button, given by a locator.
+   * Unlike normal click instead of sending native event, emulates a click with JavaScript.
+   * This works on hidden, animated or inactive elements as well.
+   * 
+   * If a fuzzy locator is given, the page will be searched for a button, link, or image matching the locator string.
+   * For buttons, the "value" attribute, "name" attribute, and inner text are searched. For links, the link text is searched.
+   * For images, the "alt" attribute and inner text of any parent links are searched.
+   * 
+   * The second parameter is a context (CSS or XPath locator) to narrow the search.
+   * 
    * ```js
-   * I.forceClick('#hiddenButton');
-   * I.forceClick('Click me', '#hidden');
+   * // simple link
+   * I.forceClick('Logout');
+   * // button of form
+   * I.forceClick('Submit');
+   * // CSS button
+   * I.forceClick('#form input[type=submit]');
+   * // XPath
+   * I.forceClick('//form/*[@type=submit]');
+   * // link in context
+   * I.forceClick('Logout', '#nav');
+   * // using strict locator
+   * I.forceClick({css: 'nav a.login'});
    * ```
-   *
+   * 
+   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * 
    */
   async forceClick(locator, context = null) {
     return proceedClick.call(this, locator, context, { force: true });
@@ -1530,7 +1553,7 @@ class Playwright extends Helper {
    * I.fillField({css: 'form#login input[name=username]'}, 'John');
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @param {string} value text value to fill.
+   * @param {CodeceptJS.StringOrSecret} value text value to fill.
    * 
    *
    */
@@ -2043,6 +2066,10 @@ class Playwright extends Helper {
    * I.executeScript(([x, y]) => x + y, [x, y]);
    * ```
    * If a function returns a Promise it will wait for its resolution.
+   *
+   * @param {string|function} fn function to be executed in browser context.
+   * @param {any} [arg] optional argument to pass to the function
+   * @return {Promise<any>}
    */
   async executeScript(fn, arg) {
     let context = this.page;
@@ -2209,8 +2236,7 @@ class Playwright extends Helper {
   async grabCssPropertyFromAll(locator, cssProperty) {
     const els = await this._locate(locator);
     this.debug(`Matched ${els.length} elements`);
-    const res = await Promise.all(els.map(el => el.$eval('xpath=.', el => JSON.parse(JSON.stringify(getComputedStyle(el))), el)));
-    const cssValues = res.map(props => props[toCamelCase(cssProperty)]);
+    const cssValues = await Promise.all(els.map(el => el.$eval('xpath=.', (el, cssProperty) => getComputedStyle(el).getPropertyValue(cssProperty), cssProperty)));
 
     return cssValues;
   }
@@ -2882,7 +2908,7 @@ class Playwright extends Helper {
   /**
    * Waits for navigation to finish. By default takes configured `waitForNavigation` option.
    *
-   * See [Pupeteer's reference](https://github.com/microsoft/Playwright/blob/master/docs/api.md#pagewaitfornavigationoptions)
+   * See [Playwright's reference](https://playwright.dev/docs/api/class-page?_highlight=waitfornavi#pagewaitfornavigationoptions)
    *
    * @param {*} opts
    */

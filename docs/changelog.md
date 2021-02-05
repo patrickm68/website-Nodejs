@@ -7,6 +7,40 @@ layout: Section
 
 # Releases
 
+## 3.0.5
+
+
+Features:
+
+* **[Official Docker image for CodeceptJS v3](https://hub.docker.com/r/codeceptjs/codeceptjs)**. New Docker image is based on official Playwright image and supports Playwright, Puppeteer, WebDriver engines. Thanks **[VikentyShevyrin](https://github.com/VikentyShevyrin)**  
+* Better support for Typescript `codecept.conf.ts` configuration files. See [#2750](https://github.com/codeceptjs/CodeceptJS/issues/2750) by **[elaichenkov](https://github.com/elaichenkov)**
+* Propagate more events for custom parallel script. See [#2796](https://github.com/codeceptjs/CodeceptJS/issues/2796) by **[jccguimaraes](https://github.com/jccguimaraes)** 
+* [mocha-junit-reporter] Now supports attachments, see documentation for details. See [#2675](https://github.com/codeceptjs/CodeceptJS/issues/2675) by **[Shard](https://github.com/Shard)**
+* CustomLocators interface for TypeScript to extend from LocatorOrString. See [#2798](https://github.com/codeceptjs/CodeceptJS/issues/2798) by **[danielrentz](https://github.com/danielrentz)**
+* **[REST]** Mask sensitive data from log messages.
+```js
+I.sendPatchRequest('/api/users.json', secret({ "email": "user@user.com" }));
+```
+See [#2786](https://github.com/codeceptjs/CodeceptJS/issues/2786) by **[PeterNgTr](https://github.com/PeterNgTr)**
+
+Bug fixes:
+* Fixed reporting of nested steps with PageObjects and BDD scenarios. See [#2800](https://github.com/codeceptjs/CodeceptJS/issues/2800) by **[davertmik](https://github.com/davertmik)**. Fixes [#2720](https://github.com/codeceptjs/CodeceptJS/issues/2720) [#2682](https://github.com/codeceptjs/CodeceptJS/issues/2682)
+* Fixed issue with `codeceptjs shell` which was broken since 3.0.0. See [#2743](https://github.com/codeceptjs/CodeceptJS/issues/2743) by **[stedman](https://github.com/stedman)**
+* **[Gherkin]** Fixed issue suppressed or hidden errors in tests. See [#2745](https://github.com/codeceptjs/CodeceptJS/issues/2745) by **[ktryniszewski-mdsol](https://github.com/ktryniszewski-mdsol)**
+* **[Playwright]** fix grabCssPropertyFromAll serialization by using property names. See [#2757](https://github.com/codeceptjs/CodeceptJS/issues/2757) by **[elaichenkov](https://github.com/elaichenkov)**
+* **[Allure]** fix report for multi sessions. See [#2771](https://github.com/codeceptjs/CodeceptJS/issues/2771) by **[cbayer97](https://github.com/cbayer97)**
+* **[WebDriver]** Fix locator object debug log messages in smart wait. See 2748 by **[elaichenkov](https://github.com/elaichenkov)**
+
+Documentation fixes:
+* Fixed some broken examples. See [#2756](https://github.com/codeceptjs/CodeceptJS/issues/2756) by **[danielrentz](https://github.com/danielrentz)**
+* Fixed Typescript typings. See [#2747](https://github.com/codeceptjs/CodeceptJS/issues/2747), [#2758](https://github.com/codeceptjs/CodeceptJS/issues/2758) and [#2769](https://github.com/codeceptjs/CodeceptJS/issues/2769) by **[elaichenkov](https://github.com/elaichenkov)**
+* Added missing type for xFeature. See [#2754](https://github.com/codeceptjs/CodeceptJS/issues/2754) by **[PeterNgTr](https://github.com/PeterNgTr)**
+* Fixed code example in Page Object documentation. See [#2793](https://github.com/codeceptjs/CodeceptJS/issues/2793) by **[mkrtchian](https://github.com/mkrtchian)**
+
+Library updates:
+* Updated Axios to 0.21.1. See by **[sseide](https://github.com/sseide)**
+* Updated **[pollyjs](https://github.com/pollyjs)**/core **[pollyjs](https://github.com/pollyjs)**/adapter-puppeteer. See [#2760](https://github.com/codeceptjs/CodeceptJS/issues/2760) by **[Anikethana](https://github.com/Anikethana)**
+
 ## 3.0.4
 
 * **Hotfix** Fixed `init` script by adding `cross-spawn` package. By **[vipulgupta2048](https://github.com/vipulgupta2048)**

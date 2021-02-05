@@ -723,7 +723,7 @@ class Protractor extends Helper {
    * I.fillField({css: 'form#login input[name=username]'}, 'John');
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @param {string} value text value to fill.
+   * @param {CodeceptJS.StringOrSecret} value text value to fill.
    * 
    */
   async fillField(field, value) {

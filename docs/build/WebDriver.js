@@ -718,7 +718,7 @@ class WebDriver extends Helper {
    * @param {object} locator
    */
   async _smartWait(locator) {
-    this.debugSection(`SmartWait (${this.options.smartWait}ms)`, `Locating ${locator} in ${this.options.smartWait}`);
+    this.debugSection(`SmartWait (${this.options.smartWait}ms)`, `Locating ${JSON.stringify(locator)} in ${this.options.smartWait}`);
     await this.defineTimeout({ implicit: this.options.smartWait });
   }
 
@@ -1076,7 +1076,7 @@ class WebDriver extends Helper {
    * I.fillField({css: 'form#login input[name=username]'}, 'John');
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @param {string} value text value to fill.
+   * @param {CodeceptJS.StringOrSecret} value text value to fill.
    * 
    * {{ react }}
    *
@@ -1785,7 +1785,7 @@ class WebDriver extends Helper {
    */
   async grabBrowserLogs() {
     if (this.browser.isW3C) {
-      this.debug('Logs not awailable in W3C specification');
+      this.debug('Logs not available in W3C specification');
       return;
     }
     return this.browser.getLogs('browser');

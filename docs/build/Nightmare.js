@@ -966,7 +966,7 @@ class Nightmare extends Helper {
    * I.fillField({css: 'form#login input[name=username]'}, 'John');
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @param {string} value text value to fill.
+   * @param {CodeceptJS.StringOrSecret} value text value to fill.
    * 
    */
   async fillField(field, value) {
@@ -1180,15 +1180,14 @@ class Nightmare extends Helper {
   }
 
   /**
-   * Retrieves a value from a form element located by CSS or XPath and returns it to test.
+   * Retrieves an array of value from a form located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async function with `await`** operator.
-   * If more than one element is found - value of first element is returned.
    * 
    * ```js
-   * let email = await I.grabValueFrom('input[name=email]');
+   * let inputs = await I.grabValueFromAll('//form/input');
    * ```
    * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
-   * @returns {Promise<string>} attribute value
+   * @returns {Promise<string[]>} attribute value
    * 
    */
   async grabValueFromAll(locator) {

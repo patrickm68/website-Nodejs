@@ -9,6 +9,11 @@ module.exports = {
     ['link', { rel: 'mask-icon', href: '/favicon/safari-pinned-tab.svg', color: '#805ad5' }],
     ['meta', { name: 'theme-color', content: '#805ad5' }],
     ['meta', { name: 'msapplication-config', content: '/favicon/browserconfig.xml' }],
+    ['script', {}, `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-P98R7LQ');`]
   ],
 
   themeConfig: {
@@ -190,7 +195,7 @@ module.exports = {
             { text: "Videos", link: "https://github.com/codeceptjs/CodeceptJS/wiki/Videos" },
             { text: "Posts", link: "https://github.com/Codeception/CodeceptJS/wiki/Books-&-Posts" },
           ],
-        },        
+        },
         {
           group: 'commerce',
           items: [

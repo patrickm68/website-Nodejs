@@ -28,7 +28,7 @@ Requires `playwright` package version ^1 to be installed:
 This helper should be configured in codecept.json or codecept.conf.js
 
 -   `url`: base url of website to be tested
--   `browser`: a browser to test on, either: `chromium`, `firefox`, `webkit`. Default: chromium.
+-   `browser`: a browser to test on, either: `chromium`, `firefox`, `webkit`, `electron`. Default: chromium.
 -   `show`:  - show browser window.
 -   `restart`:  - restart browser between tests.
 -   `disableScreenshots`:   - don't save screenshot on failure.
@@ -47,6 +47,7 @@ This helper should be configured in codecept.json or codecept.conf.js
 -   `userAgent`: (optional) user-agent string.
 -   `manualStart`:  - do not start browser before a test, start it manually inside a helper with `this.helpers["Playwright"]._startBrowser()`.
 -   `chromium`: (optional) pass additional chromium options
+-   `electron`: (optional) pass additional electron options
 
 #### Example #1: Wait for 0 network connections.
 
@@ -99,7 +100,7 @@ This helper should be configured in codecept.json or codecept.conf.js
      Playwright: {
        url: "http://localhost",
        chromium: {
-         browserWSEndpoint: "ws://localhost:9222/devtools/browser/c5aa6160-b5bc-4d53-bb49-6ecb36cd2e0a"
+         browserWSEndpoint: { wsEndpoint: 'ws://localhost:9222/devtools/browser/c5aa6160-b5bc-4d53-bb49-6ecb36cd2e0a' }
        }
      }
    }
@@ -117,6 +118,7 @@ This helper should be configured in codecept.json or codecept.conf.js
      url: "http://localhost",
      show: true // headless mode not supported for extensions
      chromium: {
+       userDataDir: '/tmp/playwright-tmp', // necessary to launch the browser in normal mode instead of incognito,
        args: [
           `--disable-extensions-except=${pathToExtension}`,
           `--load-extension=${pathToExtension}`
@@ -1894,7 +1896,7 @@ I.waitUrlEquals('http://127.0.0.1:8000/info');
 
 [2]: https://github.com/microsoft/playwright/blob/master/docs/api.md#pagewaitfornavigationoptions
 
-[3]: https://chromedevtools.github.io/devtools-protocol/#how-do-i-access-the-browser-target
+[3]: https://playwright.dev/docs/api/class-browsertype#browsertypeconnectparams
 
 [4]: https://github.com/microsoft/playwright/blob/v0.11.0/docs/api.md#working-with-chrome-extensions
 

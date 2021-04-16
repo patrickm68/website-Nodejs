@@ -35,7 +35,7 @@ let defaultSelectorEnginesInitialized = false;
 
 const popupStore = new Popup();
 const consoleLogStore = new Console();
-const availableBrowsers = ['chromium', 'webkit', 'firefox'];
+const availableBrowsers = ['chromium', 'webkit', 'firefox', 'electron'];
 
 const { createValueEngine, createDisabledEngine } = require('./extras/PlaywrightPropEngine');
 /**
@@ -58,7 +58,7 @@ const { createValueEngine, createDisabledEngine } = require('./extras/Playwright
  * This helper should be configured in codecept.json or codecept.conf.js
  *
  * * `url`: base url of website to be tested
- * * `browser`: a browser to test on, either: `chromium`, `firefox`, `webkit`. Default: chromium.
+ * * `browser`: a browser to test on, either: `chromium`, `firefox`, `webkit`, `electron`. Default: chromium.
  * * `show`: (optional, default: false) - show browser window.
  * * `restart`: (optional, default: true) - restart browser between tests.
  * * `disableScreenshots`: (optional, default: false)  - don't save screenshot on failure.
@@ -77,6 +77,7 @@ const { createValueEngine, createDisabledEngine } = require('./extras/Playwright
  * * `userAgent`: (optional) user-agent string.
  * * `manualStart`: (optional, default: false) - do not start browser before a test, start it manually inside a helper with `this.helpers["Playwright"]._startBrowser()`.
  * * `chromium`: (optional) pass additional chromium options
+ * * `electron`: (optional) pass additional electron options
  *
  * #### Example #1: Wait for 0 network connections.
  *
@@ -121,7 +122,7 @@ const { createValueEngine, createDisabledEngine } = require('./extras/Playwright
  * }
  * ```
  *
- * #### Example #4: Connect to remote browser by specifying [websocket endpoint](https://chromedevtools.github.io/devtools-protocol/#how-do-i-access-the-browser-target)
+ * #### Example #4: Connect to remote browser by specifying [websocket endpoint](https://playwright.dev/docs/api/class-browsertype#browsertypeconnectparams)
  *
  * ```js
  * {
@@ -129,7 +130,7 @@ const { createValueEngine, createDisabledEngine } = require('./extras/Playwright
  *      Playwright: {
  *        url: "http://localhost",
  *        chromium: {
- *          browserWSEndpoint: "ws://localhost:9222/devtools/browser/c5aa6160-b5bc-4d53-bb49-6ecb36cd2e0a"
+ *          browserWSEndpoint: { wsEndpoint: 'ws://localhost:9222/devtools/browser/c5aa6160-b5bc-4d53-bb49-6ecb36cd2e0a' }
  *        }
  *      }
  *    }
@@ -147,6 +148,7 @@ const { createValueEngine, createDisabledEngine } = require('./extras/Playwright
  *      url: "http://localhost",
  *      show: true // headless mode not supported for extensions
  *      chromium: {
+ *        userDataDir: '/tmp/playwright-tmp', // necessary to launch the browser in normal mode instead of incognito,
  *        args: [
  *           `--disable-extensions-except=${pathToExtension}`,
  *           `--load-extension=${pathToExtension}`
@@ -206,6 +208,8 @@ class Playwright extends Helper {
     this.isAuthenticated = false;
     this.sessionPages = {};
     this.activeSessionName = '';
+    this.isElectron = false;
+    this.electronSessions = [];
 
     // override defaults with config
     this._setConfig(config);
@@ -257,6 +261,8 @@ class Playwright extends Helper {
       ...this._getOptionsForBrowser(config),
     };
     this.isRemoteBrowser = !!this.playwrightOptions.browserWSEndpoint;
+    this.isElectron = this.options.browser === 'electron';
+    this.userDataDir = this.playwrightOptions.userDataDir;
     popupStore.defaultAction = this.options.defaultPopupAction;
   }
 
@@ -268,7 +274,7 @@ class Playwright extends Helper {
       },
       {
         name: 'browser',
-        message: 'Browser in which testing will be performed. Possible options: chromium, firefox or webkit',
+        message: 'Browser in which testing will be performed. Possible options: chromium, firefox, webkit or electron',
         default: 'chromium',
       },
     ];
@@ -320,11 +326,21 @@ class Playwright extends Helper {
   async _after() {
     if (!this.isRunning) return;
 
-    // close other sessions
-    const contexts = await this.browser.contexts();
-    contexts.shift();
+    if (this.isElectron) {
+      this.browser.close();
+      this.electronSessions.forEach(session => session.close());
+      return;
+    }
 
-    await Promise.all(contexts.map(c => c.close()));
+    // close other sessions
+    try {
+      const contexts = await this.browser.contexts();
+      contexts.shift();
+
+      await Promise.all(contexts.map(c => c.close()));
+    } catch (e) {
+      console.log(e);
+    }
 
     if (this.options.restart) {
       this.isRunning = false;
@@ -371,12 +387,22 @@ class Playwright extends Helper {
         this.debugSection('New Context', config ? JSON.stringify(config) : 'opened');
         this.activeSessionName = sessionName;
 
-        const bc = await this.browser.newContext(config);
-        const page = await bc.newPage();
+        let browserContext;
+        let page;
+        if (this.isElectron) {
+          const browser = await playwright._electron.launch(this.playwrightOptions);
+          this.electronSessions.push(browser);
+          browserContext = browser.context();
+          page = await browser.firstWindow();
+        } else {
+          browserContext = await this.browser.newContext(config);
+          page = await browserContext.newPage();
+        }
+
         targetCreatedHandler.call(this, page);
         this._setPage(page);
         // Create a new page inside context.
-        return bc;
+        return browserContext;
       },
       stop: async () => {
         // is closed by _after
@@ -554,15 +580,19 @@ class Playwright extends Helper {
   }
 
   async _startBrowser() {
-    if (this.isRemoteBrowser) {
+    if (this.isElectron) {
+      this.browser = await playwright._electron.launch(this.playwrightOptions);
+    } else if (this.isRemoteBrowser) {
       try {
-        this.browser = await playwright[this.options.browser].connect(this.playwrightOptions);
+        this.browser = await playwright[this.options.browser].connect(this.playwrightOptions.browserWSEndpoint);
       } catch (err) {
         if (err.toString().indexOf('ECONNREFUSED')) {
           throw new RemoteBrowserConnectionRefused(err);
         }
         throw err;
       }
+    } else if (this.userDataDir) {
+      this.browser = await playwright[this.options.browser].launchPersistentContext(this.userDataDir, this.playwrightOptions);
     } else {
       this.browser = await playwright[this.options.browser].launch(this.playwrightOptions);
     }
@@ -571,17 +601,32 @@ class Playwright extends Helper {
     this.browser.on('targetchanged', (target) => {
       this.debugSection('Url', target.url());
     });
-    this.browserContext = await this.browser.newContext({ ignoreHTTPSErrors: this.options.ignoreHTTPSErrors, acceptDownloads: true, ...this.options.emulate });// Adding the HTTPSError ignore in the context so that we can ignore those errors
 
-    const existingPages = await this.browserContext.pages();
+    if (this.isElectron) {
+      this.browserContext = this.browser.context();
+    } else if (this.userDataDir) {
+      this.browserContext = this.browser;
+    } else {
+      this.browserContext = await this.browser.newContext({ ignoreHTTPSErrors: this.options.ignoreHTTPSErrors, acceptDownloads: true, ...this.options.emulate });// Adding the HTTPSError ignore in the context so that we can ignore those errors
+    }
 
-    const mainPage = existingPages[0] || await this.browserContext.newPage();
+    let mainPage;
+    if (this.isElectron) {
+      mainPage = await this.browser.firstWindow();
+    } else {
+      const existingPages = await this.browserContext.pages();
+      mainPage = existingPages[0] || await this.browserContext.newPage();
+    }
     targetCreatedHandler.call(this, mainPage);
 
     await this._setPage(mainPage);
     await this.closeOtherTabs();
 
     this.isRunning = true;
+  }
+
+  _getType() {
+    return this.browser._type;
   }
 
   async _stopBrowser() {
@@ -651,6 +696,9 @@ class Playwright extends Helper {
    * @param {string} url url path or global url.
    */
   async amOnPage(url) {
+    if (this.isElectron) {
+      throw new Error('Cannot open pages inside an Electron container');
+    }
     if (!(/^\w+\:\/\//.test(url))) {
       url = this.options.url + url;
     }
@@ -732,7 +780,7 @@ class Playwright extends Helper {
    * I.moveCursorTo('#submit', 5,5);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
    * 
@@ -755,8 +803,8 @@ class Playwright extends Helper {
    * I.dragAndDrop('#dragHandle', '#container');
    * ```
    * 
-   * @param {LocatorOrString} srcElement located by CSS|XPath|strict locator.
-   * @param {LocatorOrString} destElement located by CSS|XPath|strict locator.
+   * @param {string | object} srcElement located by CSS|XPath|strict locator.
+   * @param {string | object} destElement located by CSS|XPath|strict locator.
    * 
    */
   async dragAndDrop(srcElement, destElement) {
@@ -817,7 +865,7 @@ class Playwright extends Helper {
    * I.scrollTo('#submit', 5, 5);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
    */
@@ -984,6 +1032,9 @@ class Playwright extends Helper {
    * @param {number} [num=1]
    */
   async switchToNextTab(num = 1) {
+    if (this.isElectron) {
+      throw new Error('Cannot switch tabs inside an Electron container');
+    }
     const pages = await this.browserContext.pages();
 
     const index = pages.indexOf(this.page);
@@ -1007,6 +1058,9 @@ class Playwright extends Helper {
    * @param {number} [num=1]
    */
   async switchToPreviousTab(num = 1) {
+    if (this.isElectron) {
+      throw new Error('Cannot switch tabs inside an Electron container');
+    }
     const pages = await this.browserContext.pages();
     const index = pages.indexOf(this.page);
     this.withinLocator = null;
@@ -1028,6 +1082,9 @@ class Playwright extends Helper {
    * ```
    */
   async closeCurrentTab() {
+    if (this.isElectron) {
+      throw new Error('Cannot close current tab inside an Electron container');
+    }
     const oldPage = this.page;
     await this.switchToPreviousTab();
     await oldPage.close();
@@ -1066,6 +1123,9 @@ class Playwright extends Helper {
    * ```
    */
   async openNewTab(options) {
+    if (this.isElectron) {
+      throw new Error('Cannot open new tabs inside an Electron container');
+    }
     await this._setPage(await this.browserContext.newPage(options));
     return this._waitForAction();
   }
@@ -1093,7 +1153,7 @@ class Playwright extends Helper {
    * ```js
    * I.seeElement('#modal');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    *
    */
   async seeElement(locator) {
@@ -1109,7 +1169,7 @@ class Playwright extends Helper {
    * I.dontSeeElement('.modal'); // modal is not shown
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
+   * @param {string | object} locator located by CSS|XPath|Strict locator.
    *
    */
   async dontSeeElement(locator) {
@@ -1125,7 +1185,7 @@ class Playwright extends Helper {
    * ```js
    * I.seeElementInDOM('#modal');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * 
    */
   async seeElementInDOM(locator) {
@@ -1140,7 +1200,7 @@ class Playwright extends Helper {
    * I.dontSeeElementInDOM('.nav'); // checks that element is not on page visible or not
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
+   * @param {string | object} locator located by CSS|XPath|Strict locator.
    */
   async dontSeeElementInDOM(locator) {
     const els = await this._locate(locator);
@@ -1200,8 +1260,8 @@ class Playwright extends Helper {
    * I.click({css: 'nav a.login'});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
    * 
    *
    *
@@ -1245,8 +1305,8 @@ class Playwright extends Helper {
    * I.forceClick({css: 'nav a.login'});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
    * 
    */
   async forceClick(locator, context = null) {
@@ -1264,8 +1324,8 @@ class Playwright extends Helper {
    * I.doubleClick('.btn.edit');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
    * 
    *
    *
@@ -1286,8 +1346,8 @@ class Playwright extends Helper {
    * I.rightClick('Click me', '.context');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator clickable element located by CSS|XPath|strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
+   * @param {string | object} locator clickable element located by CSS|XPath|strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
    * 
    *
    *
@@ -1307,8 +1367,8 @@ class Playwright extends Helper {
    * I.checkOption('I Agree to Terms and Conditions');
    * I.checkOption('agree', '//form');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
+   * @param {string | object} field checkbox located by label | name | CSS | XPath | strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
    */
   async checkOption(field, context = null) {
     const elm = await this._locateCheckable(field, context);
@@ -1332,8 +1392,8 @@ class Playwright extends Helper {
    * I.uncheckOption('I Agree to Terms and Conditions');
    * I.uncheckOption('agree', '//form');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
+   * @param {string | object} field checkbox located by label | name | CSS | XPath | strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
    */
   async uncheckOption(field, context = null) {
     const elm = await this._locateCheckable(field, context);
@@ -1355,7 +1415,7 @@ class Playwright extends Helper {
    * I.seeCheckboxIsChecked({css: '#signup_form input[type=checkbox]'});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * 
    */
   async seeCheckboxIsChecked(field) {
@@ -1371,7 +1431,7 @@ class Playwright extends Helper {
    * I.dontSeeCheckboxIsChecked('agree'); // located by name
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * 
    */
   async dontSeeCheckboxIsChecked(field) {
@@ -1552,8 +1612,8 @@ class Playwright extends Helper {
    * // or by strict locator
    * I.fillField({css: 'form#login input[name=username]'}, 'John');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @param {CodeceptJS.StringOrSecret} value text value to fill.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} value text value to fill.
    * 
    *
    */
@@ -1580,7 +1640,7 @@ class Playwright extends Helper {
    * I.clearField('user[email]');
    * I.clearField('#email');
    * ```
-   * @param {LocatorOrString} editable field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} editable field located by label|name|CSS|XPath|strict locator.
    * 
    */
   async clearField(field) {
@@ -1594,7 +1654,7 @@ class Playwright extends Helper {
    * ```js
    * I.appendField('#myTextField', 'appended');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator
    * @param {string} value text value to append.
    *
    *
@@ -1617,7 +1677,7 @@ class Playwright extends Helper {
    * I.seeInField('form input[type=hidden]','hidden_value');
    * I.seeInField('#searchform input','Search');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
    * 
    */
@@ -1634,7 +1694,7 @@ class Playwright extends Helper {
    * I.dontSeeInField({ css: 'form input.email' }, 'user@user.com'); // field by CSS
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
    */
   async dontSeeInField(field, value) {
@@ -1651,7 +1711,7 @@ class Playwright extends Helper {
    * I.attachFile('form input[name=avatar]', 'data/avatar.jpg');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
    * @param {string} pathToFile local file path relative to codecept.json config file.
    *
    */
@@ -1686,7 +1746,7 @@ class Playwright extends Helper {
    * ```js
    * I.selectOption('Which OS do you use?', ['Android', 'iOS']);
    * ```
-   * @param {LocatorOrString} select field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} select field located by label|name|CSS|XPath|strict locator.
    * @param {string|Array<*>} option visible text or value of option.
    * 
    */
@@ -1727,7 +1787,7 @@ class Playwright extends Helper {
    * let numOfElements = await I.grabNumberOfVisibleElements('p');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @returns {Promise<number>} number of visible elements
    *
    */
@@ -1800,7 +1860,7 @@ class Playwright extends Helper {
    * I.see('Register', {css: 'form.register'}); // use strict locator
    * ```
    * @param {string} text expected on page.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|Xpath|strict locator in which to search for text.
+   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS|Xpath|strict locator in which to search for text.
    *
    *
    */
@@ -1816,7 +1876,7 @@ class Playwright extends Helper {
    * ```
    * 
    * @param {string} text element value to check.
-   * @param {CodeceptJS.LocatorOrString?} [context=null]  element located by CSS|XPath|strict locator.
+   * @param {(string | object)?} [context=null]  element located by CSS|XPath|strict locator.
    */
   async seeTextEquals(text, context = null) {
     return proceedSee.call(this, 'assert', text, context, true);
@@ -1832,7 +1892,7 @@ class Playwright extends Helper {
    * ```
    * 
    * @param {string} text which is not present.
-   * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator in which to perfrom search.
+   * @param {string | object} [context] (optional) element located by CSS|XPath|strict locator in which to perfrom search.
    * 
    *
    *
@@ -1922,7 +1982,7 @@ class Playwright extends Helper {
    * I.seeNumberOfElements('#submitBtn', 1);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * 
    *
@@ -1941,7 +2001,7 @@ class Playwright extends Helper {
    * I.seeNumberOfVisibleElements('.buttons', 3);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * 
    *
@@ -2088,7 +2148,7 @@ class Playwright extends Helper {
    * ```
    * If multiple elements found returns first element.
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @returns {Promise<string>} attribute value
    * 
    *
@@ -2108,7 +2168,7 @@ class Playwright extends Helper {
    * let pins = await I.grabTextFromAll('#pin li');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @returns {Promise<string[]>} attribute value
    * 
    *
@@ -2131,7 +2191,7 @@ class Playwright extends Helper {
    * ```js
    * let email = await I.grabValueFrom('input[name=email]');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
    * @returns {Promise<string>} attribute value
    * 
    */
@@ -2149,7 +2209,7 @@ class Playwright extends Helper {
    * ```js
    * let inputs = await I.grabValueFromAll('//form/input');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
    * @returns {Promise<string[]>} attribute value
    * 
    */
@@ -2168,7 +2228,7 @@ class Playwright extends Helper {
    * let postHTML = await I.grabHTMLFrom('#post');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} element located by CSS|XPath|strict locator.
+   * @param {string | object} element located by CSS|XPath|strict locator.
    * @returns {Promise<string>} HTML code for an element
    * 
    */
@@ -2187,7 +2247,7 @@ class Playwright extends Helper {
    * let postHTMLs = await I.grabHTMLFromAll('.post');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} element located by CSS|XPath|strict locator.
+   * @param {string | object} element located by CSS|XPath|strict locator.
    * @returns {Promise<string[]>} HTML code for an element
    * 
    */
@@ -2206,7 +2266,7 @@ class Playwright extends Helper {
    * const value = await I.grabCssPropertyFrom('h3', 'font-weight');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {string} cssProperty CSS property name.
    * @returns {Promise<string>} CSS value
    * 
@@ -2227,7 +2287,7 @@ class Playwright extends Helper {
    * const values = await I.grabCssPropertyFromAll('h3', 'font-weight');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {string} cssProperty CSS property name.
    * @returns {Promise<string[]>} CSS value
    * 
@@ -2248,7 +2308,7 @@ class Playwright extends Helper {
    * I.seeCssPropertiesOnElements('h3', { 'font-weight': "bold"});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @param {object} cssProperties object with CSS properties and their values to check.
    *
    */
@@ -2293,7 +2353,7 @@ class Playwright extends Helper {
    * I.seeAttributesOnElements('//form', { method: "post"});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @param {object} attributes attributes and their values to check.
    *
    */
@@ -2331,7 +2391,7 @@ class Playwright extends Helper {
    * I.dragSlider('#slider', -70);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} locator located by label|name|CSS|XPath|strict locator.
    * @param {number} offsetX position to drag.
    *
    */
@@ -2361,7 +2421,7 @@ class Playwright extends Helper {
    * ```js
    * let hint = await I.grabAttributeFrom('#tooltip', 'title');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {string} attr attribute name.
    * @returns {Promise<string>} attribute value
    * 
@@ -2381,7 +2441,7 @@ class Playwright extends Helper {
    * ```js
    * let hints = await I.grabAttributeFromAll('.tooltip', 'title');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {string} attr attribute name.
    * @returns {Promise<string[]>} attribute value
    * 
@@ -2408,7 +2468,7 @@ class Playwright extends Helper {
    * I.saveElementScreenshot(`#submit`,'debug.png');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {string} fileName file name to save.
    * 
    *
@@ -2481,7 +2541,7 @@ class Playwright extends Helper {
    * Waits for element to become enabled (by default waits for 1sec).
    * Element can be located by CSS or XPath.
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional) time in seconds to wait, 1 by default.
    */
   async waitForEnabled(locator, sec) {
@@ -2514,7 +2574,7 @@ class Playwright extends Helper {
    * I.waitForValue('//input', "GoodValue");
    * ```
    * 
-   * @param {LocatorOrString} field input field.
+   * @param {string | object} field input field.
    * @param {string }value expected value.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    * 
@@ -2550,7 +2610,7 @@ class Playwright extends Helper {
    * I.waitNumberOfVisibleElements('a', 3);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    *
@@ -2591,7 +2651,7 @@ class Playwright extends Helper {
    * I.waitForClickable('.btn.continue', 5); // wait for 5 secs
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
    */
   async waitForClickable(locator, waitTimeout) {
@@ -2608,7 +2668,7 @@ class Playwright extends Helper {
    * I.waitForElement('.btn.continue', 5); // wait for 5 secs
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
    *
    */
@@ -2631,7 +2691,7 @@ class Playwright extends Helper {
    * I.waitForVisible('#popup');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    * 
    *
@@ -2655,7 +2715,7 @@ class Playwright extends Helper {
    * I.waitForInvisible('#popup');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    */
   async waitForInvisible(locator, sec) {
@@ -2676,7 +2736,7 @@ class Playwright extends Helper {
    * I.waitToHide('#popup');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    */
   async waitToHide(locator, sec) {
@@ -2765,7 +2825,7 @@ class Playwright extends Helper {
    * 
    * @param {string }text to wait for.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator.
+   * @param {string | object} [context] (optional) element located by CSS|XPath|strict locator.
    */
   async waitForText(text, sec = null, context = null) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
@@ -2835,7 +2895,7 @@ class Playwright extends Helper {
    * I.switchTo(); // switch back to main page
    * ```
    * 
-   * @param {?CodeceptJS.LocatorOrString} [locator=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
+   * @param {?string | object} [locator=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
    */
   async switchTo(locator) {
     if (Number.isInteger(locator)) {
@@ -2956,7 +3016,7 @@ class Playwright extends Helper {
    * I.waitForDetached('#popup');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    */
   async waitForDetached(locator, sec) {
@@ -3026,7 +3086,7 @@ class Playwright extends Helper {
    * const width = await I.grabElementBoundingRect('h3', 'width');
    * // width == 527
    * ```
-   * @param {LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {string=} elementSize x, y, width or height of the given element.
    * @returns {Promise<DOMRect>|Promise<number>} Element bounding rectangle
    * 
@@ -3349,7 +3409,7 @@ async function targetCreatedHandler(page) {
   if (this.options.userAgent) {
     await page.setUserAgent(this.options.userAgent);
   }
-  if (this.options.windowSize && this.options.windowSize.indexOf('x') > 0) {
+  if (this.options.windowSize && this.options.windowSize.indexOf('x') > 0 && this._getType() === 'Browser') {
     const dimensions = this.options.windowSize.split('x');
     const width = parseInt(dimensions[0], 10);
     const height = parseInt(dimensions[1], 10);

@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "autoprefixer": "^10.2.5",
+    "autoprefixer": "^10.2.6",
     "node-sass": "^4.14.1",
     "npm": "^7.15.0",
     "postcss": "^8.3.0",

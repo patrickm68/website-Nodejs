@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "autoprefixer": "^10.2.6",
+    "autoprefixer": "^10.3.1",
     "node-sass": "^4.14.1",
     "npm": "^7.19.0",
     "postcss": "^8.3.5",
@@ -18,7 +18,7 @@
     "tailwindcss": "^1.9.6",
     "vue-carousel": "^0.18.0",
     "vue-slider-component": "^3.2.13",
-    "vueperslides": "^2.15.0",
+    "vueperslides": "^2.15.2",
     "vuepress": "^1.8.2",
     "vuepress-plugin-sitemap": "^2.3.1"
   },

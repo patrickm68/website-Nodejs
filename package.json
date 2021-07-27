@@ -12,12 +12,12 @@
   "dependencies": {
     "autoprefixer": "^10.3.1",
     "node-sass": "^4.14.1",
-    "npm": "^7.19.0",
-    "postcss": "^8.3.5",
+    "npm": "^7.20.1",
+    "postcss": "^8.3.6",
     "sass-loader": "^10.1.1",
     "tailwindcss": "^1.9.6",
     "vue-carousel": "^0.18.0",
-    "vue-slider-component": "^3.2.13",
+    "vue-slider-component": "^3.2.14",
     "vueperslides": "^2.15.2",
     "vuepress": "^1.8.2",
     "vuepress-plugin-sitemap": "^2.3.1"

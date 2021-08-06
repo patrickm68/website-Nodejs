@@ -7,6 +7,22 @@ layout: Section
 
 # Releases
 
+## 3.1.0
+
+* **[Plawyright]** Updated to Playwright 1.13
+* **[Playwright]** Added recording of [video](https://codecept.io/playwright/#video) and [traces](https://codecept.io/playwright/#trace) by **[davertmik](https://github.com/davertmik)**
+* **[Playwritght]** [Mocking requests](https://codecept.io/playwright/#mocking-network-requests) implemented via `route` API of Playwright by **[davertmik](https://github.com/davertmik)**
+* **[Playwright]** Added **support for [React locators](https://codecept.io/react/#locators)** in [#2912](https://github.com/codeceptjs/CodeceptJS/issues/2912) by **[AAAstorga](https://github.com/AAAstorga)**
+* **[Puppeteer]** Updated to Puppeteer 10.2.
+* **[Puppeteer]** Fixed [#2244](https://github.com/codeceptjs/CodeceptJS/issues/2244) `els[0]._clickablePoint is not a function` by **[karunandrii](https://github.com/karunandrii)**.
+* **[Puppeteer]** Fixed `fillField` to check for invisible elements. See [#2916](https://github.com/codeceptjs/CodeceptJS/issues/2916) by **[anne-open-xchange](https://github.com/anne-open-xchange)** 
+* **[Playwright]** Reset of dialog event listener before registration of new one. [#2946](https://github.com/codeceptjs/CodeceptJS/issues/2946) by **[nikocanvacom](https://github.com/nikocanvacom)** 
+* Fixed running Gherkin features with `run-multiple` using chunks. See [#2900](https://github.com/codeceptjs/CodeceptJS/issues/2900) by **[andrenoberto](https://github.com/andrenoberto)**
+* Fixed [#2937](https://github.com/codeceptjs/CodeceptJS/issues/2937) broken typings for subfolders on Windows by **[jancorvus](https://github.com/jancorvus)**
+* Fixed issue where cucumberJsonReporter not working with fakerTransform plugin. See [#2942](https://github.com/codeceptjs/CodeceptJS/issues/2942) by **[ilangv](https://github.com/ilangv)** 
+* Fixed [#2952](https://github.com/codeceptjs/CodeceptJS/issues/2952) finished job with status code 0 when playwright cannot connect to remote wss url. By **[davertmik](https://github.com/davertmik)**
+
+
 ## 3.0.7
 
 Documentation fixes:

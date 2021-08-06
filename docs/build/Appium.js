@@ -1463,6 +1463,60 @@ class Appium extends Webdriver {
   }
 
   /**
+   * Grab number of visible elements by locator.
+   * Resumes test execution, so **should be used inside async function with `await`** operator.
+   * 
+   * ```js
+   * let numOfElements = await I.grabNumberOfVisibleElements('p');
+   * ```
+   * 
+   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @returns {Promise<number>} number of visible elements
+   */
+  async grabNumberOfVisibleElements(locator) {
+    if (this.isWeb) return super.grabNumberOfVisibleElements(locator);
+    return super.grabNumberOfVisibleElements(parseLocator.call(this, locator));
+  }
+
+  /**
+   * Can be used for apps only with several values ("contentDescription", "text", "className", "resourceId")
+   *
+   * Retrieves an attribute from an element located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async with `await`** operator.
+   * If more than one element is found - attribute of first element is returned.
+   * 
+   * ```js
+   * let hint = await I.grabAttributeFrom('#tooltip', 'title');
+   * ```
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string} attr attribute name.
+   * @returns {Promise<string>} attribute value
+   * 
+   */
+  async grabAttributeFrom(locator, attr) {
+    if (this.isWeb) return super.grabAttributeFrom(locator, attr);
+    return super.grabAttributeFrom(parseLocator.call(this, locator), attr);
+  }
+
+  /**
+   * Can be used for apps only with several values ("contentDescription", "text", "className", "resourceId")
+   * Retrieves an array of attributes from elements located by CSS or XPath and returns it to test.
+   * Resumes test execution, so **should be used inside async with `await`** operator.
+   * 
+   * ```js
+   * let hints = await I.grabAttributeFromAll('.tooltip', 'title');
+   * ```
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string} attr attribute name.
+   * @returns {Promise<string[]>} attribute value
+   * 
+   */
+  async grabAttributeFromAll(locator, attr) {
+    if (this.isWeb) return super.grabAttributeFromAll(locator, attr);
+    return super.grabAttributeFromAll(parseLocator.call(this, locator), attr);
+  }
+
+  /**
    * Retrieves an array of value from a form located by CSS or XPath and returns it to test.
    * Resumes test execution, so **should be used inside async function with `await`** operator.
    * 

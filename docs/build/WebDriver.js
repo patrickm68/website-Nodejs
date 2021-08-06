@@ -1521,7 +1521,6 @@ class WebDriver extends Helper {
    * @param {string} attr attribute name.
    * @returns {Promise<string[]>} attribute value
    * 
-   * Appium: can be used for apps only with several values ("contentDescription", "text", "className", "resourceId")
    */
   async grabAttributeFromAll(locator, attr) {
     const res = await this._locate(locator, true);
@@ -1542,7 +1541,6 @@ class WebDriver extends Helper {
    * @param {string} attr attribute name.
    * @returns {Promise<string>} attribute value
    * 
-   * Appium: can be used for apps only with several values ("contentDescription", "text", "className", "resourceId")
    */
   async grabAttributeFrom(locator, attr) {
     const attrs = await this.grabAttributeFromAll(locator, attr);

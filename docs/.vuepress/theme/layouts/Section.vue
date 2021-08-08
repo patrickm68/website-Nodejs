@@ -53,7 +53,8 @@
     width: 100%
     @apply shadow
   li
-    word-break break-all
+    @media (max-width 767px)
+      word-break break-word
 
 </style>
 

@@ -2570,7 +2570,7 @@ class Playwright extends Helper {
     }
 
     if (this.options.trace) {
-      const path = `${global.output_dir}/trace/${clearString(test.title)}.zip`;
+      const path = `${global.output_dir}/trace/${clearString(test.title).slice(0, 255)}.zip`;
       await this.browserContext.tracing.stop({ path });
       test.artifacts.trace = path;
     }
@@ -2581,7 +2581,7 @@ class Playwright extends Helper {
       if (this.options.keepVideoForPassedTests) {
         test.artifacts.video = await this.page.video().path();
       } else {
-        this.page.video().delete();
+        this.page.video().delete().catch(e => {});
       }
     }
 

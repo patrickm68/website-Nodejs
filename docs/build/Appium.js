@@ -1552,6 +1552,20 @@ class Appium extends Webdriver {
   }
 
   /**
+   * Saves a screenshot to ouput folder (set in codecept.json or codecept.conf.js).
+   * Filename is relative to output folder.
+   *
+   * ```js
+   * I.saveScreenshot('debug.png');
+   * ```
+   *
+   * @param {string} fileName file name to save.
+   */
+  async saveScreenshot(fileName) {
+    return super.saveScreenshot(fileName, false);
+  }
+
+  /**
    * Scroll element into viewport.
    * 
    * ```js

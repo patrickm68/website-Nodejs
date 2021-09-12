@@ -7,8 +7,13 @@
       :per-page="1"
       :navigation-next-label="nextLabel"
       :navigation-prev-label="prevLabel"
-      :center-mode="true" >
-      <slide :is="slideComp">
+      :center-mode="true"
+    >
+      <slide
+          :is="slideComp"
+          aria-hidden="false"
+
+      >
         <div class="slide">
           <img src="/img/pause.gif" alt="pause">
           <div>
@@ -16,7 +21,10 @@
           </div>
         </div>
       </slide>
-      <slide :is="slideComp">
+      <slide
+          :is="slideComp"
+          aria-hidden="false"
+      >
 
         <div class="slide" >
           <img src="/img/test.gif" alt="test">
@@ -25,7 +33,10 @@
           </div>
         </div>
       </slide>
-      <slide :is="slideComp">
+      <slide
+          :is="slideComp"
+          aria-hidden="false"
+      >
         <div class="slide" >
           <img src="/img/edit.gif" alt="edit">
           <div>
@@ -33,7 +44,10 @@
           </div>
         </div>
       </slide>
-      <slide :is="slideComp">
+      <slide
+          :is="slideComp"
+          aria-hidden="false"
+      >
         <div class="slide" >
           <img src="/img/codeceptui.gif" alt="codeceptui">
           <div>
@@ -42,7 +56,10 @@
           </div>
         </div>
       </slide>
-      <slide :is="slideComp">
+      <slide
+          :is="slideComp"
+          aria-hidden="false"
+      >
         <div class="slide">
           <img src="/img/new-test.gif" alt="new-test">
           <div>

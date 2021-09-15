@@ -7,7 +7,6 @@
         :src="$withBase(data.heroImage)"
         :alt="data.heroAlt || 'hero'"
       >
-
       <h1>
         <span class="name">CodeceptJS 3</span> &dash; supercharged<br><span class="name">End 2 End</span> Testing
       </h1>
@@ -159,17 +158,19 @@
   <Content slot-key="code"></Content>
 </div>
 
-  <section class="testomatio">
-    🚀 Get more of CodeceptJS<br>
-
-<a href="https://testomat.io">
-    ✅ Try Testomat.io, next-gen <b>Test Management</b> system for automated & manual tests. </a><br>Brought to you by creators of CodeceptJS.
-  </section>
-
-
 <section class="testimonials">
   <div class="inner">
   <h2 class="text-center">Trusted By Enterprises</h2>
+  <div class="companies">
+
+    <img src="/img/companies/doxyme.png" >
+    <img src="/img/companies/gen3.png" style="background: #666; padding: 10px;" class="rounded" >
+    <img src="/img/companies/isotipo.png" class="rounded" >
+    <img src="/img/companies/mynd.png" class="rounded" >
+
+  </div>
+
+
   <div class="row">
     <div class="quote">
       <p>
@@ -195,7 +196,14 @@
   </div>
  </section>
 
-  <Banner />
+  <section class="testomatio">
+    🚀 Get more of CodeceptJS<br>
+
+<a href="https://testomat.io">
+    ✅ Try Testomat.io, next-gen <b>Test Management</b> system for automated & manual tests. </a><br>Brought to you by creators of CodeceptJS.
+  </section>
+
+
   <Footer />
   </main>
 </template>
@@ -268,12 +276,28 @@ export default {
 }
 
 .testomatio {
-  @apply py-8 bg-green-100 text-center text-gray-700 text-lg;
+  border-top: 5px dashed ;
+  @apply   py-16 leading-8 text-center text-gray-700 text-lg border-gray-200;
 }
 
 .testimonials {
   border-top: 5px dashed;
   @apply bg-white mt-4 py-8 border-gray-200;
+  .companies {
+    max-width: 1200px;
+    @apply flex items-center;
+    img {
+      filter: grayscale(0.9);
+      @apply flex-none rounded-xl;
+      max-width: 400px;
+      margin-right: 20px;
+      height: 100px;
+      &:hover {
+        filter: grayscale(0);
+      }
+    }
+    
+  }
   .inner {
     max-width: 960px;
     margin: 0 auto;
@@ -433,7 +457,7 @@ export default {
   max-width 100%
   display block
   h1
-    @apply text-gray-400
+    @apply text-gray-400 mb-12
     .name
       @apply text-gray-200
   .hero
@@ -478,7 +502,7 @@ export default {
       margin 3rem auto 1.5rem
     h1
       font-size 3rem
-    h1, .description, .action
+    .description, .action
       margin 1.8rem auto
       margin-bottom 0
     .description

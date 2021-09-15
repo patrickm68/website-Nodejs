@@ -26,6 +26,7 @@
         'max-width': linksWrapMaxWidth + 'px'
       } : {}"
     >
+      <a class="can-hide" target="_blank" rel="nofollow"  href="https://opencollective.com/codeceptjs">💖 Support Us</a>&nbsp;&nbsp;&nbsp;&nbsp;
       <AlgoliaSearchBox
         v-if="isAlgoliaSearch"
         :options="algolia"

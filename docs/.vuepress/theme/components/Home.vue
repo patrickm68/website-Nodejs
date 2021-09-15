@@ -432,7 +432,16 @@ export default {
     }
   }
 
+  body .testomatio {
+    display: none;
+  }
+
   body .testimonials {
+    .companies {
+      zoom: 0.5;
+      overflow: hidden;
+    }
+
     .row {
       display: block !important;
     }

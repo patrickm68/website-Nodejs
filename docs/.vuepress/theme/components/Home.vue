@@ -162,13 +162,13 @@
   <div class="inner">
   <h2 class="text-center">Trusted By Enterprises</h2>
   <div class="companies">
-
-    <img src="/img/companies/doxyme.png" title="Doxy.me" alt="Doxy.me" >
-    <img src="/img/companies/gen3.png" title="Gen3"  alt="Gen3" style="background: rgb(143 156 150); padding: 10px;" class="rounded" >
-    <img src="/img/companies/isotipo.png" title="Isitopio"  alt="Isitopio" class="rounded" >
-    <img src="/img/companies/mynd.png" title="Mynd"  alt="Mynd" class="rounded" >
-
+    <ClientOnly>
+      <Companies />
+    </ClientOnly>
   </div>
+
+
+  <h2 class="text-center">Loved By Teams</h2>
 
 
   <div class="row">
@@ -211,11 +211,12 @@
 <script>
 import NavLink from '@theme/components/NavLink.vue'
 import Slides from './Slides';
+import Companies from './Companies';
 import Footer from './Footer';
 import Banner from './Banner';
 
 export default {
-  components: { NavLink, Footer, Slides, Banner },
+  components: { NavLink, Footer, Slides, Companies, Banner },
 
   data() {
     return {
@@ -283,22 +284,6 @@ export default {
 .testimonials {
   border-top: 5px dashed;
   @apply bg-white mt-4 py-8 border-gray-200;
-  .companies {
-    margin-left: -50px;
-    max-width: 1200px;
-    @apply flex items-center mb-4;
-    img {
-      filter: grayscale(0.9);
-      @apply flex-none rounded-xl;
-      max-width: 400px;
-      margin-right: 20px;
-      height: 100px;
-      &:hover {
-        filter: grayscale(0);
-      }
-    }
-    
-  }
   .inner {
     max-width: 960px;
     margin: 0 auto;

@@ -8,6 +8,7 @@
       :navigation-next-label="nextLabel"
       :navigation-prev-label="prevLabel"
       :center-mode="true"
+      :perPageCustom="[[768, 2], [1024, 3]]"
     >
       <slide
           :is="slideComp"
@@ -16,9 +17,24 @@
       >
         <div class="slide">
           <img src="/img/companies/doxyme.png" title="Doxy.me" alt="Doxy.me" >
-          <img src="/img/companies/zenitech.png" title="Zenitech"  alt="Zenitech" class="rounded" >
-          <img src="/img/companies/kiabi.png" title="Kiabi"  alt="Kiabi" class="rounded" >
+        </div>
+      </slide>
+      <slide
+          :is="slideComp"
+          aria-hidden="false"
 
+      >
+        <div class="slide">
+          <img src="/img/companies/zenitech.png" title="Zenitech"  alt="Zenitech" class="rounded" >
+        </div>
+      </slide>
+      <slide
+          :is="slideComp"
+          aria-hidden="false"
+
+      >
+        <div class="slide">
+          <img src="/img/companies/kiabi.png" title="Kiabi"  alt="Kiabi" class="rounded" style="max-height: 95px" >
         </div>
       </slide>
       <slide
@@ -27,10 +43,25 @@
       >
 
         <div class="slide" >
-          <img src="/img/companies/mynd.png" title="Mynd"  alt="Mynd" class="rounded" >
-          <img src="/img/companies/gen3.png" title="Gen3"  alt="Gen3" style="background: rgb(143 156 150); padding: 10px;" class="rounded" >
-          <img src="/img/companies/isotipo.png" title="Gamelearn"  alt="Gamelearn" class="rounded" >
+          <img src="/img/companies/mynd.png" title="Mynd"  alt="Mynd" class="rounded mynd-img" style="max-height: 65px" >
+        </div>
+      </slide>
+      <slide
+          :is="slideComp"
+          aria-hidden="false"
+      >
 
+        <div class="slide" >
+          <img src="/img/companies/gen3.png" title="Gen3"  alt="Gen3" style="background: rgb(143 156 150); padding: 10px; max-height: 75px" class="rounded" >
+        </div>
+      </slide>
+      <slide
+          :is="slideComp"
+          aria-hidden="false"
+      >
+
+        <div class="slide" >
+          <img src="/img/companies/isotipo.png" title="Gamelearn"  alt="Gamelearn" class="rounded" >
         </div>
       </slide>
 
@@ -88,6 +119,7 @@ export default {
 
 .VueCarousel-slide {
   overflow-x: hidden;
+  display: flex;
 }
 
 .VueCarousel-navigation-prev {
@@ -137,12 +169,19 @@ export default {
 
     img {
       filter: grayscale(0.9);
-      @apply flex-none rounded-xl my-2;
+      @apply flex-none rounded-xl my-2 mx-auto;
+      height: 100%;
       max-height: 100px;
       -webkit-transition : -webkit-filter 500ms linear;
       width: auto;
       border: none;
       @apply p-1 my-4 shadow-none;
+      @media (max-width: 767px) {
+        max-height: 180px !important;
+        &.mynd-img {
+          max-height: 130px !important;
+        }
+      }
 
       &:hover {
         filter: grayscale(0);

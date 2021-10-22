@@ -19,7 +19,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
   themeConfig: {
     lastUpdated: 'Last Updated',
-    docsRepo: 'codeception/codeceptjs',
+    docsRepo: 'codeceptjs/codeceptjs',
     // if your docs are not at the root of the repo:
     docsDir: 'docs',
     // if your docs are in a specific branch (defaults to 'master'):

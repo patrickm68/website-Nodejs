@@ -1315,7 +1315,7 @@ I.defineTimeout({ implicit: 10000, pageLoad: 10000, script: 5000 });
 
 #### Parameters
 
--   `timeouts` **WebdriverIO.Timeouts** WebDriver timeouts object.
+-   `timeouts` **any** WebDriver timeouts object.
 
 ### amOnPage
 

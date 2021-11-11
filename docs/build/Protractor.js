@@ -1181,11 +1181,14 @@ class Protractor extends Helper {
   }
 
   /**
-   * Checks that title is equal to provided one.
-   *
-   * ```js
-   * I.seeTitleEquals('Test title.');
-   * ```
+   *  Checks that title is equal to provided one.
+   * 
+   *  ```js
+   *  I.seeTitleEquals('Test title.');
+   *  ```
+   * 
+   *  @param {string} text value to check.
+   * 
    */
   async seeTitleEquals(text) {
     const title = await this.browser.getTitle();
@@ -1509,7 +1512,7 @@ class Protractor extends Helper {
   }
 
   /**
-     * Checks that current url contains a provided fragment.
+   * Checks that current url contains a provided fragment.
    * 
    * ```js
    * I.seeInCurrentUrl('/register'); // we are on registration page
@@ -2182,24 +2185,6 @@ class Protractor extends Helper {
 
     const aSec = sec || this.options.waitForTimeout;
     return this.browser.wait(() => this.browser.executeScript.call(this.browser, fn, ...args), aSec * 1000);
-  }
-
-  /**
-   * Waits for a function to return true (waits for 1sec by default).
-   * 
-   * ```js
-   * I.waitUntil(() => window.requests == 0);
-   * I.waitUntil(() => window.requests == 0, 5);
-   * ```
-   * 
-   * @param {function|string} fn function which is executed in browser context.
-   * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @param {string} [timeoutMsg=''] message to show in case of timeout fail.
-   * @param {?number} [interval=null]
-   */
-  async waitUntil(fn, sec = null, timeoutMsg = null) {
-    const aSec = sec || this.options.waitForTimeout;
-    return this.browser.wait(fn, aSec * 1000, timeoutMsg);
   }
 
   /**

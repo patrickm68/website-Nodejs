@@ -561,10 +561,9 @@ class Puppeteer extends Helper {
     this.context = null;
     popupStore.clear();
     this.isAuthenticated = false;
+    await this.browser.close();
     if (this.isRemoteBrowser) {
       await this.browser.disconnect();
-    } else {
-      await this.browser.close();
     }
   }
 
@@ -852,11 +851,14 @@ class Puppeteer extends Helper {
   }
 
   /**
-   * Checks that title is equal to provided one.
-   *
-   * ```js
-   * I.seeTitleEquals('Test title.');
-   * ```
+   *  Checks that title is equal to provided one.
+   * 
+   *  ```js
+   *  I.seeTitleEquals('Test title.');
+   *  ```
+   * 
+   *  @param {string} text value to check.
+   * 
    */
   async seeTitleEquals(text) {
     const title = await this.page.title();
@@ -3100,26 +3102,6 @@ class Puppeteer extends Helper {
       ...opts,
     };
     return this.page.waitForNavigation(opts);
-  }
-
-  /**
-   * Waits for a function to return true (waits for 1sec by default).
-   * 
-   * ```js
-   * I.waitUntil(() => window.requests == 0);
-   * I.waitUntil(() => window.requests == 0, 5);
-   * ```
-   * 
-   * @param {function|string} fn function which is executed in browser context.
-   * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @param {string} [timeoutMsg=''] message to show in case of timeout fail.
-   * @param {?number} [interval=null]
-   */
-  async waitUntil(fn, sec = null) {
-    console.log('This method will remove in CodeceptJS 1.4; use `waitForFunction` instead!');
-    const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
-    const context = await this._getContext();
-    return context.waitForFunction(fn, { timeout: waitTimeout });
   }
 
   async waitUntilExists(locator, sec) {

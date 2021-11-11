@@ -80,6 +80,7 @@ const { createValueEngine, createDisabledEngine } = require('./extras/Playwright
  * * `basicAuth`: (optional) the basic authentication to pass to base url. Example: {username: 'username', password: 'password'}
  * * `windowSize`: (optional) default window size. Set a dimension like `640x480`.
  * * `userAgent`: (optional) user-agent string.
+ * * `locale`: (optional) locale string. Example: 'en-GB', 'de-DE', 'fr-FR', ...
  * * `manualStart`: (optional, default: false) - do not start browser before a test, start it manually inside a helper with `this.helpers["Playwright"]._startBrowser()`.
  * * `chromium`: (optional) pass additional chromium options
  * * `electron`: (optional) pass additional electron options
@@ -193,6 +194,19 @@ const { createValueEngine, createDisabledEngine } = require('./extras/Playwright
  *      url: "http://localhost",
  *      emulate: devices['iPhone 6'],
  *    }
+ *  }
+ * }
+ * ```
+ *
+ * #### Example #7: Launch test with a specifc user locale
+ *
+ * ```js
+ * {
+ *  helpers: {
+ *   Playwright : {
+ *     url: "http://localhost",
+ *     locale: "fr-FR",
+ *   }
  *  }
  * }
  * ```
@@ -371,6 +385,8 @@ class Playwright extends Helper {
       }
       if (this.options.recordVideo) contextOptions.recordVideo = this.options.recordVideo;
       if (this.storageState) contextOptions.storageState = this.storageState;
+      if (this.options.userAgent) contextOptions.userAgent = this.options.userAgent;
+      if (this.options.locale) contextOptions.locale = this.options.locale;
       this.browserContext = await this.browser.newContext(contextOptions); // Adding the HTTPSError ignore in the context so that we can ignore those errors
     }
 
@@ -2956,11 +2972,11 @@ class Playwright extends Helper {
   }
 
   /**
-   * Waits for a network request.
+   * Waits for a network response.
    *
    * ```js
    * I.waitForResponse('http://example.com/resource');
-   * I.waitForResponse(request => request.url() === 'http://example.com' && request.method() === 'GET');
+   * I.waitForResponse(response => response.url() === 'https://example.com' && response.status() === 200);
    * ```
    *
    * @param {string|function} urlOrPredicate
@@ -3067,26 +3083,6 @@ class Playwright extends Helper {
       ...opts,
     };
     return this.page.waitForNavigation(opts);
-  }
-
-  /**
-   * Waits for a function to return true (waits for 1sec by default).
-   * 
-   * ```js
-   * I.waitUntil(() => window.requests == 0);
-   * I.waitUntil(() => window.requests == 0, 5);
-   * ```
-   * 
-   * @param {function|string} fn function which is executed in browser context.
-   * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @param {string} [timeoutMsg=''] message to show in case of timeout fail.
-   * @param {?number} [interval=null]
-   */
-  async waitUntil(fn, sec = null) {
-    console.log('This method will remove in CodeceptJS 1.4; use `waitForFunction` instead!');
-    const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
-    const context = await this._getContext();
-    return context.waitForFunction(fn, { timeout: waitTimeout });
   }
 
   async waitUntilExists(locator, sec) {
@@ -3551,13 +3547,10 @@ async function targetCreatedHandler(page) {
       });
   });
   page.on('console', (msg) => {
-    this.debugSection(`Browser:${ucfirst(msg.type())}`, (msg._text || '') + msg.args().join(' '));
+    this.debugSection(`Browser:${ucfirst(msg.type())}`, (msg.text && msg.text() || msg._text || '') + msg.args().join(' '));
     consoleLogStore.add(msg);
   });
 
-  if (this.options.userAgent) {
-    await page.setUserAgent(this.options.userAgent);
-  }
   if (this.options.windowSize && this.options.windowSize.indexOf('x') > 0 && this._getType() === 'Browser') {
     await page.setViewportSize(parseWindowSize(this.options.windowSize));
   }

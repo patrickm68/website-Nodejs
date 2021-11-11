@@ -1614,7 +1614,7 @@ I.seeTitleEquals('Test title.');
 
 #### Parameters
 
--   `text`  
+-   `text` **[string][8]** value to check.
 
 ### selectOption
 
@@ -1997,22 +1997,6 @@ I.waitToHide('#popup');
 
 -   `locator` **([string][8] | [object][6])** element located by CSS|XPath|strict locator.
 -   `sec` **[number][10]** (optional, `1` by default) time in seconds to wait 
-
-### waitUntil
-
-Waits for a function to return true (waits for 1sec by default).
-
-```js
-I.waitUntil(() => window.requests == 0);
-I.waitUntil(() => window.requests == 0, 5);
-```
-
-#### Parameters
-
--   `fn` **([function][12] | [string][8])** function which is executed in browser context.
--   `sec` **[number][10]** (optional, `1` by default) time in seconds to wait 
--   `timeoutMsg` **[string][8]** message to show in case of timeout fail. 
--   `interval` **[number][10]?**  
 
 ### waitUrlEquals
 

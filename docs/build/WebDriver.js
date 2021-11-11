@@ -875,7 +875,7 @@ class WebDriver extends Helper {
    * I.defineTimeout({ implicit: 10000, pageLoad: 10000, script: 5000 });
    * ```
    *
-   * @param {WebdriverIO.Timeouts} timeouts WebDriver timeouts object.
+   * @param {*} timeouts WebDriver timeouts object.
    */
   defineTimeout(timeouts) {
     return this._defineBrowserTimeout(this.browser, timeouts);
@@ -3257,28 +3257,6 @@ class WebDriver extends Helper {
       return this.browser.waitUntil(async () => this.browser.execute(fn, ...args), aSec * 1000, '');
     }
     return this.browser.waitUntil(async () => this.browser.execute(fn, ...args), { timeout: aSec * 1000, timeoutMsg: '' });
-  }
-
-  /**
-   * Waits for a function to return true (waits for 1sec by default).
-   * 
-   * ```js
-   * I.waitUntil(() => window.requests == 0);
-   * I.waitUntil(() => window.requests == 0, 5);
-   * ```
-   * 
-   * @param {function|string} fn function which is executed in browser context.
-   * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @param {string} [timeoutMsg=''] message to show in case of timeout fail.
-   * @param {?number} [interval=null]
-   */
-  async waitUntil(fn, sec = null, timeoutMsg = null, interval = null) {
-    const aSec = sec || this.options.waitForTimeout;
-    const _interval = typeof interval === 'number' ? interval * 1000 : null;
-    if (isWebDriver5()) {
-      return this.browser.waitUntil(fn, aSec * 1000, timeoutMsg, _interval);
-    }
-    return this.browser.waitUntil(fn, { timeout: aSec * 1000, timeoutMsg, interval: _interval });
   }
 
   /**

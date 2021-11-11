@@ -9,7 +9,6 @@ layout: Section
 
 ## 3.2.0
 
-<<<<<<< HEAD
 🛩️ Features:
 
 **Timeouts implemented**
@@ -55,8 +54,6 @@ await retryTo(() => {
 * stepbyStepReport Plugin: Disabled screenshots after test has failed. See [#3119](https://github.com/codeceptjs/CodeceptJS/issues/3119) by **[ioannisChalkias](https://github.com/ioannisChalkias)**
 
 
-=======
->>>>>>> timeouts
 ## 3.1.3
 
 🛩️ Features:

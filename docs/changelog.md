@@ -7,6 +7,16 @@ layout: Section
 
 # Releases
 
+## 3.2.2
+
+* **[Playwright]** Reverted removal of retry on context errors. Fixes [#3130](https://github.com/codeceptjs/CodeceptJS/issues/3130)
+* Timeout improvements by **[nikocanvacom](https://github.com/nikocanvacom)**:
+  * Added priorites to timeouts
+  * Added `overrideStepLimits` to [stepTimeout plugin](https://codecept.io/plugins/#steptimeout) to override steps timeouts set by `limitTime`.
+  * Fixed step timeout not working due to override by NaN by test timeout [#3126](https://github.com/codeceptjs/CodeceptJS/issues/3126)
+* **[Appium]** Fixed logging error when `manualStart` is true. See [#3140](https://github.com/codeceptjs/CodeceptJS/issues/3140) by **[nikocanvacom](https://github.com/nikocanvacom)**
+
+
 ## 3.2.1
 
 > ♻️ This release fixes hanging of tests by reducing timeouts for automatic retries on failures.

@@ -14,7 +14,6 @@ const {
   ucfirst,
   fileExists,
   chunkArray,
-  toCamelCase,
   convertCssPropertiesToCamelCase,
   screenshotOutputFolder,
   getNormalizedKeyAttributeValue,
@@ -73,7 +72,7 @@ const { createValueEngine, createDisabledEngine } = require('./extras/Playwright
  * * `keepBrowserState`: (optional, default: false) - keep browser state between tests when `restart` is set to false.
  * * `keepCookies`: (optional, default: false) - keep cookies between tests when `restart` is set to false.
  * * `waitForAction`: (optional) how long to wait after click, doubleClick or PressKey actions in ms. Default: 100.
- * * `waitForNavigation`: (optional, default: 'load'). When to consider navigation succeeded. Possible options: `load`, `domcontentloaded`, `networkidle`. Choose one of those options is possible. See [Playwright API](https://github.com/microsoft/playwright/blob/master/docs/api.md#pagewaitfornavigationoptions).
+ * * `waitForNavigation`: (optional, default: 'load'). When to consider navigation succeeded. Possible options: `load`, `domcontentloaded`, `networkidle`. Choose one of those options is possible. See [Playwright API](https://github.com/microsoft/playwright/blob/main/docs/api.md#pagewaitfornavigationoptions).
  * * `pressKeyDelay`: (optional, default: '10'). Delay between key presses in ms. Used when calling Playwrights page.type(...) in fillField/appendField
  * * `getPageTimeout` (optional, default: '0') config option to set maximum navigation time in milliseconds.
  * * `waitForTimeout`: (optional) default wait* timeout in ms. Default: 1000.
@@ -84,6 +83,7 @@ const { createValueEngine, createDisabledEngine } = require('./extras/Playwright
  * * `manualStart`: (optional, default: false) - do not start browser before a test, start it manually inside a helper with `this.helpers["Playwright"]._startBrowser()`.
  * * `chromium`: (optional) pass additional chromium options
  * * `electron`: (optional) pass additional electron options
+ * * `channel`: (optional) While Playwright can operate against the stock Google Chrome and Microsoft Edge browsers available on the machine. In particular, current Playwright version will support Stable and Beta channels of these browsers. See [Google Chrome & Microsoft Edge](https://playwright.dev/docs/browsers/#google-chrome--microsoft-edge).
  *
  * #### Video Recording Customization
  *
@@ -301,6 +301,11 @@ class Playwright extends Helper {
       headless: !this.options.show,
       ...this._getOptionsForBrowser(config),
     };
+
+    if (this.options.channel && this.options.browser === 'chromium') {
+      this.playwrightOptions.channel = this.options.channel;
+    }
+
     if (this.options.video) {
       this.options.recordVideo = { size: parseWindowSize(this.options.windowSize) };
     }
@@ -501,10 +506,10 @@ class Playwright extends Helper {
   * First argument is a description of an action.
   * Second argument is async function that gets this helper as parameter.
   *
-  * { [`page`](https://github.com/microsoft/playwright/blob/master/docs/api.md#class-page), [`context`](https://github.com/microsoft/playwright/blob/master/docs/api.md#class-context) [`browser`](https://github.com/microsoft/playwright/blob/master/docs/api.md#class-browser) } objects from Playwright API are available.
+  * { [`page`](https://github.com/microsoft/playwright/blob/main/docs/src/api/class-page.md), [`context`](https://github.com/microsoft/playwright/blob/main/docs/src/api/class-browsercontext.md) [`browser`](https://github.com/microsoft/playwright/blob/main/docs/src/api/class-browser.md) } objects from Playwright API are available.
   *
   * ```js
-  * I.usePlaywrightTo('emulate offline mode', async ({ context }) {
+  * I.usePlaywrightTo('emulate offline mode', async ({ context }) => {
   *   await context.setOffline(true);
   * });
   * ```
@@ -1169,7 +1174,7 @@ class Playwright extends Helper {
    * I.openNewTab();
    * ```
    *
-   * You can pass in [page options](https://github.com/microsoft/playwright/blob/master/docs/api.md#browsernewpageoptions) to emulate device on this page
+   * You can pass in [page options](https://github.com/microsoft/playwright/blob/main/docs/api.md#browsernewpageoptions) to emulate device on this page
    *
    * ```js
    * // enable mobile
@@ -2157,7 +2162,7 @@ class Playwright extends Helper {
    */
   async clearCookie() {
     // Playwright currently doesn't support to delete a certain cookie
-    // https://github.com/microsoft/playwright/blob/master/docs/api.md#class-browsercontext
+    // https://github.com/microsoft/playwright/blob/main/docs/api.md#class-browsercontext
     if (!this.browserContext) return;
     return this.browserContext.clearCookies();
   }
@@ -2602,7 +2607,7 @@ class Playwright extends Helper {
     }
 
     if (this.options.trace) {
-      const path = `${global.output_dir}/trace/${clearString(test.title).slice(0, 255)}.zip`;
+      const path = `${`${global.output_dir}/trace/${clearString(test.title)}`.slice(0, 251)}.zip`;
       await this.browserContext.tracing.stop({ path });
       test.artifacts.trace = path;
     }

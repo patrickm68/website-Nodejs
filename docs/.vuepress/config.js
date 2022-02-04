@@ -54,9 +54,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         {
           group: "Helpers",
           items: [
+            { text: "Using Playwright", link: '/playwright' },            
             { text: "Using WebDriver", link: '/webdriver' },
             { text: "Using Puppeteer", link: '/puppeteer' },
-            { text: "Using Playwright", link: '/playwright' },
+            { text: "API Testing", link: '/api' },            
             { text: "Using TestCafe", link: '/testcafe' },
             { text: "Mobile Testing", link: '/mobile' },
           ]
@@ -144,6 +145,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             { text: "ApiDataFactory", link: "/helpers/ApiDataFactory" },
             { text: "GraphQL", link: "/helpers/GraphQL" },
             { text: "GraphQLDataFactory", link: "/helpers/GraphQLDataFactory" },
+            { text: "JSONResponse", link: "/helpers/JSONResponse" },
             { text: "MockRequest", link: "/helpers/MockRequest" },
           ]
         },
@@ -228,6 +230,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             'playwright',
             'webdriver',
             'puppeteer',
+            'api',
             'testcafe',
             'angular',
           ]

@@ -55,7 +55,7 @@ await eachElement('click all links in .list', '.list a', (el) => {
 
 📖 Documentation
 
-* Added [Testomat.io reporter](/reporters#testomatio)
+* Added [Testomat.io reporter](/reports#testomatio)
 * Added [api testing](/api) guides
 * Added [internal api](/internal-api) guides
 * **[Appium]** Fixed documentation for `performSwipe`

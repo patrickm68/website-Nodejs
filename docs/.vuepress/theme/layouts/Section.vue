@@ -9,7 +9,7 @@
       v-if="shouldShowNavbar"
       @toggle-sidebar="toggleSidebar"
     />
-
+    <Subbar/>
     <div class="hero"></div>
 
 
@@ -85,7 +85,7 @@
 .container {
   .content {
     background: white;
-    margin-top: -405px;
+    margin-top: -370px;
     z-index: 100;
     @apply p-8 rounded-lg;
   }
@@ -155,9 +155,10 @@ import Sidebar from '@theme/components/Sidebar.vue'
 import Footer from '../components/Footer'
 import { resolveSidebarItems } from '../util'
 import Banner from "../components/Banner";
+import Subbar from '@theme/components/Subbar'
 
 export default {
-  components: {Banner, Home, Page, Sidebar, Navbar, Footer },
+  components: {Banner, Home, Page, Sidebar, Navbar, Footer, Subbar },
 
   data () {
     return {

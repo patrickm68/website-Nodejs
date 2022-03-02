@@ -9,6 +9,8 @@
       v-if="shouldShowNavbar"
       @toggle-sidebar="toggleSidebar"
     />
+    
+    <Subbar/>
 
     <div
       class="sidebar-mask"
@@ -39,9 +41,10 @@ import Navbar from '@theme/components/Navbar.vue'
 import Page from '@theme/components/Page.vue'
 import Sidebar from '@theme/components/Sidebar.vue'
 import { resolveSidebarItems } from '../util'
+import Subbar from '@theme/components/Subbar'
 
 export default {
-  components: { Home, Page, Sidebar, Navbar },
+  components: { Home, Page, Sidebar, Navbar, Subbar },
 
   data () {
     return {

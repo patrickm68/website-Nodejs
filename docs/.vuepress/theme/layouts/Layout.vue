@@ -9,7 +9,7 @@
       v-if="shouldShowNavbar"
       @toggle-sidebar="toggleSidebar"
     />
-
+    <Subbar/>
     <div
       class="sidebar-mask"
       @click="toggleSidebar(false)"
@@ -53,13 +53,14 @@
 <script>
 import Home from '@theme/components/Home.vue'
 import Navbar from '@theme/components/Navbar.vue'
+import Subbar from '@theme/components/Subbar'
 import Page from '@theme/components/Page.vue'
 import Sidebar from '@theme/components/Sidebar.vue'
 import RightSidebar from '@theme/components/RightSidebar.vue'
 import { resolveSidebarItems } from '../util'
 
 export default {
-  components: { Home, Page, Sidebar, Navbar, RightSidebar },
+  components: { Home, Page, Sidebar, Navbar, RightSidebar, Subbar },
 
   data () {
     return {

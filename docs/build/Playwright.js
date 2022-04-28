@@ -92,6 +92,7 @@ const { createValueEngine, createDisabledEngine } = require('./extras/Playwright
  * * `waitForTimeout`: (optional) default wait* timeout in ms. Default: 1000.
  * * `basicAuth`: (optional) the basic authentication to pass to base url. Example: {username: 'username', password: 'password'}
  * * `windowSize`: (optional) default window size. Set a dimension like `640x480`.
+ * * `colorScheme`: (optional) default color scheme. Possible values: `dark` | `light` | `no-preference`.
  * * `userAgent`: (optional) user-agent string.
  * * `locale`: (optional) locale string. Example: 'en-GB', 'de-DE', 'fr-FR', ...
  * * `manualStart`: (optional, default: false) - do not start browser before a test, start it manually inside a helper with `this.helpers["Playwright"]._startBrowser()`.
@@ -212,7 +213,7 @@ const { createValueEngine, createDisabledEngine } = require('./extras/Playwright
  * }
  * ```
  *
- * #### Example #7: Launch test with a specifc user locale
+ * #### Example #7: Launch test with a specific user locale
  *
  * ```js
  * {
@@ -220,6 +221,19 @@ const { createValueEngine, createDisabledEngine } = require('./extras/Playwright
  *   Playwright : {
  *     url: "http://localhost",
  *     locale: "fr-FR",
+ *   }
+ *  }
+ * }
+ * ```
+ *
+ * * #### Example #8: Launch test with a specific color scheme
+ *
+ * ```js
+ * {
+ *  helpers: {
+ *   Playwright : {
+ *     url: "http://localhost",
+ *     colorScheme: "dark",
  *   }
  *  }
  * }
@@ -273,7 +287,7 @@ class Playwright extends Helper {
       waitForAction: 100,
       waitForTimeout: 1000,
       pressKeyDelay: 10,
-      timeout: 1000,
+      timeout: 5000,
       fullPageScreenshots: false,
       disableScreenshots: false,
       ignoreLog: ['warning', 'log'],
@@ -411,6 +425,7 @@ class Playwright extends Helper {
       if (this.storageState) contextOptions.storageState = this.storageState;
       if (this.options.userAgent) contextOptions.userAgent = this.options.userAgent;
       if (this.options.locale) contextOptions.locale = this.options.locale;
+      if (this.options.colorScheme) contextOptions.colorScheme = this.options.colorScheme;
       if (!this.browserContext || !restartsSession()) {
         this.browserContext = await this.browser.newContext(contextOptions); // Adding the HTTPSError ignore in the context so that we can ignore those errors
       }
@@ -539,6 +554,7 @@ class Playwright extends Helper {
   *
   * @param {string} description used to show in logs.
   * @param {function} fn async function that executed with Playwright helper as argument
+  * @return {Promise<any>}
   */
   usePlaywrightTo(description, fn) {
     return this._useTo(...arguments);
@@ -553,6 +569,7 @@ class Playwright extends Helper {
    * I.click('#triggerPopup');
    * I.acceptPopup();
    * ```
+   * @return {Promise<any>}
    */
   amAcceptingPopups() {
     popupStore.actionType = 'accept';
@@ -562,6 +579,7 @@ class Playwright extends Helper {
    * Accepts the active JavaScript native popup window, as created by window.alert|window.confirm|window.prompt.
    * Don't confuse popups with modal windows, as created by [various
    * libraries](http://jster.net/category/windows-modals-popups).
+   * @return {Promise<any>}
    */
   acceptPopup() {
     popupStore.assertPopupActionType('accept');
@@ -576,6 +594,7 @@ class Playwright extends Helper {
    * I.click('#triggerPopup');
    * I.cancelPopup();
    * ```
+   * @return {Promise<any>}
    */
   amCancellingPopups() {
     popupStore.actionType = 'cancel';
@@ -583,6 +602,7 @@ class Playwright extends Helper {
 
   /**
    * Dismisses the active JavaScript popup, as created by window.alert|window.confirm|window.prompt.
+   * @return {Promise<any>}
    */
   cancelPopup() {
     popupStore.assertPopupActionType('cancel');
@@ -596,7 +616,7 @@ class Playwright extends Helper {
    * I.seeInPopup('Popup text');
    * ```
    * @param {string} text value to check.
-   * 
+   * @return {Promise<any>}
    */
   async seeInPopup(text) {
     popupStore.assertPopupVisible();
@@ -607,6 +627,7 @@ class Playwright extends Helper {
   /**
    * Set current page
    * @param {object} page page to set
+   * @return {Promise<any>}
    */
   async _setPage(page) {
     page = await page;
@@ -631,6 +652,7 @@ class Playwright extends Helper {
   /**
    * Add the 'dialog' event listener to a page
    * @page {playwright.Page}
+   * @return {Promise<any>}
    *
    * The popup listener handles the dialog with the predefined action when it appears on the page.
    * It also saves a reference to the object which is used in seeInPopup.
@@ -661,6 +683,7 @@ class Playwright extends Helper {
 
   /**
    * Gets page URL including hash.
+   * @return {Promise<any>}
    */
   async _getPageUrl() {
     return this.executeScript(() => window.location.href);
@@ -777,6 +800,7 @@ class Playwright extends Helper {
    * ```
    * 
    * @param {string} url url path or global url.
+   * @return {Promise<any>}
    */
   async amOnPage(url) {
     if (this.isElectron) {
@@ -814,6 +838,7 @@ class Playwright extends Helper {
    * 
    * @param {number} width width in pixels or `maximize`.
    * @param {number} height height in pixels.
+   * @return {Promise<any>}
    *
    * Unlike other drivers Playwright changes the size of a viewport, not the window!
    * Playwright does not control the window of a browser so it can't adjust its real size.
@@ -846,6 +871,7 @@ class Playwright extends Helper {
    * ```
    *
    * @param {object} customHeaders headers to set
+   * @return {Promise<any>}
    */
   async haveRequestHeaders(customHeaders) {
     if (!customHeaders) {
@@ -863,10 +889,10 @@ class Playwright extends Helper {
    * I.moveCursorTo('#submit', 5,5);
    * ```
    * 
-   * @param {string | object} locator located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
-   * 
+   * @return {Promise<any>}
    *
    */
   async moveCursorTo(locator, offsetX = 0, offsetY = 0) {
@@ -886,11 +912,11 @@ class Playwright extends Helper {
    * I.dragAndDrop('#dragHandle', '#container');
    * ```
    * 
-   * @param {string | object} srcElement located by CSS|XPath|strict locator.
-   * @param {string | object} destElement located by CSS|XPath|strict locator.
-   * 
+   * @param {LocatorOrString} srcElement located by CSS|XPath|strict locator.
+   * @param {LocatorOrString} destElement located by CSS|XPath|strict locator.
+   * @return {Promise<any>}
    *
-   * [Additional options](https://playwright.dev/docs/api/class-page#page-drag-and-drop) can be passed as 3rd argument.
+   * @param {any} [options] [Additional options](https://playwright.dev/docs/api/class-page#page-drag-and-drop) can be passed as 3rd argument.
    *
    * ```js
    * // specify coordinates for source position
@@ -912,7 +938,7 @@ class Playwright extends Helper {
    * ```js
    * I.refreshPage();
    * ```
-   * 
+   * @return {Promise<any>}
    */
   async refreshPage() {
     return this.page.reload({ timeout: this.options.getPageTimeout, waitUntil: this.options.waitForNavigation });
@@ -924,7 +950,7 @@ class Playwright extends Helper {
    * ```js
    * I.scrollPageToTop();
    * ```
-   * 
+   * @return {Promise<any>}
    */
   scrollPageToTop() {
     return this.executeScript(() => {
@@ -938,9 +964,9 @@ class Playwright extends Helper {
    * ```js
    * I.scrollPageToBottom();
    * ```
-   * 
+   * @return {Promise<any>}
    */
-  scrollPageToBottom() {
+  async scrollPageToBottom() {
     return this.executeScript(() => {
       const body = document.body;
       const html = document.documentElement;
@@ -960,9 +986,10 @@ class Playwright extends Helper {
    * I.scrollTo('#submit', 5, 5);
    * ```
    * 
-   * @param {string | object} locator located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
+   * @return {Promise<any>}
    */
   async scrollTo(locator, offsetX = 0, offsetY = 0) {
     if (typeof locator === 'number' && typeof offsetX === 'number') {
@@ -991,6 +1018,7 @@ class Playwright extends Helper {
    * ```
    * 
    * @param {string} text text value to check.
+   * @return {Promise<any>}
    */
   async seeInTitle(text) {
     const title = await this.page.title();
@@ -1021,14 +1049,14 @@ class Playwright extends Helper {
   }
 
   /**
-   *  Checks that title is equal to provided one.
+   * Checks that title is equal to provided one.
    * 
-   *  ```js
-   *  I.seeTitleEquals('Test title.');
-   *  ```
+   * ```js
+   * I.seeTitleEquals('Test title.');
+   * ```
    * 
-   *  @param {string} text value to check.
-   * 
+   * @param {string} text value to check.
+   * @return {Promise<any>}
    */
   async seeTitleEquals(text) {
     const title = await this.page.title();
@@ -1043,6 +1071,7 @@ class Playwright extends Helper {
    * ```
    * 
    * @param {string} text value to check.
+   * @return {Promise<any>}
    */
   async dontSeeInTitle(text) {
     const title = await this.page.title();
@@ -1070,8 +1099,7 @@ class Playwright extends Helper {
    * ```js
    * const elements = await this.helpers['Playwright']._locate({name: 'password'});
    * ```
-   *
-   *
+   * @return {Promise<any>}
    */
   async _locate(locator) {
     const context = await this.context || await this._getContext();
@@ -1085,6 +1113,7 @@ class Playwright extends Helper {
    * ```js
    * this.helpers['Playwright']._locateCheckable('I agree with terms and conditions').then // ...
    * ```
+   * @return {Promise<any>}
    */
   async _locateCheckable(locator, providedContext = null) {
     const context = providedContext || await this._getContext();
@@ -1099,6 +1128,7 @@ class Playwright extends Helper {
    * ```js
    * this.helpers['Playwright']._locateClickable('Next page').then // ...
    * ```
+   * @return {Promise<any>}
    */
   async _locateClickable(locator) {
     const context = await this._getContext();
@@ -1111,6 +1141,7 @@ class Playwright extends Helper {
    * ```js
    * this.helpers['Playwright']._locateFields('Your email').then // ...
    * ```
+   * @return {Promise<any>}
    */
   async _locateFields(locator) {
     return findFields.call(this, locator);
@@ -1125,6 +1156,7 @@ class Playwright extends Helper {
    * ```
    *
    * @param {number} [num=1]
+   * @return {Promise<any>}
    */
   async switchToNextTab(num = 1) {
     if (this.isElectron) {
@@ -1151,6 +1183,7 @@ class Playwright extends Helper {
    * I.switchToPreviousTab(2);
    * ```
    * @param {number} [num=1]
+   * @return {Promise<any>}
    */
   async switchToPreviousTab(num = 1) {
     if (this.isElectron) {
@@ -1175,6 +1208,7 @@ class Playwright extends Helper {
    * ```js
    * I.closeCurrentTab();
    * ```
+   * @return {Promise<any>}
    */
   async closeCurrentTab() {
     if (this.isElectron) {
@@ -1192,6 +1226,7 @@ class Playwright extends Helper {
    * ```js
    * I.closeOtherTabs();
    * ```
+   * @return {Promise<any>}
    */
   async closeOtherTabs() {
     const pages = await this.browserContext.pages();
@@ -1216,6 +1251,7 @@ class Playwright extends Helper {
    * // enable mobile
    * I.openNewTab({ isMobile: true });
    * ```
+   * @return {Promise<any>}
    */
   async openNewTab(options) {
     if (this.isElectron) {
@@ -1248,7 +1284,8 @@ class Playwright extends Helper {
    * ```js
    * I.seeElement('#modal');
    * ```
-   * @param {string | object} locator located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @return {Promise<any>}
    *
    */
   async seeElement(locator) {
@@ -1264,7 +1301,8 @@ class Playwright extends Helper {
    * I.dontSeeElement('.modal'); // modal is not shown
    * ```
    * 
-   * @param {string | object} locator located by CSS|XPath|Strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
+   * @return {Promise<any>}
    *
    */
   async dontSeeElement(locator) {
@@ -1280,8 +1318,8 @@ class Playwright extends Helper {
    * ```js
    * I.seeElementInDOM('#modal');
    * ```
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
-   * 
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @return {Promise<any>}
    */
   async seeElementInDOM(locator) {
     const els = await this._locate(locator);
@@ -1295,7 +1333,8 @@ class Playwright extends Helper {
    * I.dontSeeElementInDOM('.nav'); // checks that element is not on page visible or not
    * ```
    * 
-   * @param {string | object} locator located by CSS|XPath|Strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
+   * @return {Promise<any>}
    */
   async dontSeeElementInDOM(locator) {
     const els = await this._locate(locator);
@@ -1317,6 +1356,7 @@ class Playwright extends Helper {
    * ```
    *
    * @param {string} [fileName] set filename for downloaded file
+   * @return {Promise<void>}
    */
   async handleDownloads(fileName = 'downloads') {
     this.page.waitForEvent('download').then(async (download) => {
@@ -1355,11 +1395,12 @@ class Playwright extends Helper {
    * I.click({css: 'nav a.login'});
    * ```
    * 
-   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?CodeceptJS.LocatorOrString | null} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @return {Promise<any>}
    * 
    *
-   * [Additional options](https://playwright.dev/docs/api/class-page#page-click) for click available as 3rd argument.
+   * @param {any} [opts] [Additional options](https://playwright.dev/docs/api/class-page#page-click) for click available as 3rd argument.
    *
    * Examples:
    *
@@ -1378,6 +1419,7 @@ class Playwright extends Helper {
 
   /**
    * Clicks link and waits for navigation (deprecated)
+   * @return {Promise<any>}
    */
   async clickLink(locator, context = null) {
     console.log('clickLink deprecated: Playwright automatically waits for navigation to happen.');
@@ -1411,8 +1453,9 @@ class Playwright extends Helper {
    * I.forceClick({css: 'nav a.login'});
    * ```
    * 
-   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @return {Promise<any>}
    * 
    */
   async forceClick(locator, context = null) {
@@ -1430,9 +1473,9 @@ class Playwright extends Helper {
    * I.doubleClick('.btn.edit');
    * ```
    * 
-   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
-   * 
+   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @return {Promise<any>}
    *
    *
    */
@@ -1452,9 +1495,9 @@ class Playwright extends Helper {
    * I.rightClick('Click me', '.context');
    * ```
    * 
-   * @param {string | object} locator clickable element located by CSS|XPath|strict locator.
-   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
-   * 
+   * @param {CodeceptJS.LocatorOrString} locator clickable element located by CSS|XPath|strict locator.
+   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
+   * @return {Promise<any>}
    *
    *
    */
@@ -1473,8 +1516,9 @@ class Playwright extends Helper {
    * I.checkOption('I Agree to Terms and Conditions');
    * I.checkOption('agree', '//form');
    * ```
-   * @param {string | object} field checkbox located by label | name | CSS | XPath | strict locator.
-   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
+   * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
+   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
+   * @return {Promise<any>}
    *
    * [Additional options](https://playwright.dev/docs/api/class-elementhandle#element-handle-check) for check available as 3rd argument.
    *
@@ -1503,8 +1547,9 @@ class Playwright extends Helper {
    * I.uncheckOption('I Agree to Terms and Conditions');
    * I.uncheckOption('agree', '//form');
    * ```
-   * @param {string | object} field checkbox located by label | name | CSS | XPath | strict locator.
-   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
+   * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
+   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
+   * @return {Promise<any>}
    *
    * [Additional options](https://playwright.dev/docs/api/class-elementhandle#element-handle-uncheck) for uncheck available as 3rd argument.
    *
@@ -1531,8 +1576,8 @@ class Playwright extends Helper {
    * I.seeCheckboxIsChecked({css: '#signup_form input[type=checkbox]'});
    * ```
    * 
-   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
-   * 
+   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @return {Promise<any>}
    */
   async seeCheckboxIsChecked(field) {
     return proceedIsChecked.call(this, 'assert', field);
@@ -1547,8 +1592,8 @@ class Playwright extends Helper {
    * I.dontSeeCheckboxIsChecked('agree'); // located by name
    * ```
    * 
-   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
-   * 
+   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @return {Promise<any>}
    */
   async dontSeeCheckboxIsChecked(field) {
     return proceedIsChecked.call(this, 'negate', field);
@@ -1566,7 +1611,7 @@ class Playwright extends Helper {
    * ```
    * 
    * @param {string} key name of key to press down.
-   * 
+   * @return {Promise<any>}
    */
   async pressKeyDown(key) {
     key = getNormalizedKey.call(this, key);
@@ -1586,7 +1631,7 @@ class Playwright extends Helper {
    * ```
    * 
    * @param {string} key name of key to release.
-   * 
+   * @return {Promise<any>}
    */
   async pressKeyUp(key) {
     key = getNormalizedKey.call(this, key);
@@ -1654,6 +1699,7 @@ class Playwright extends Helper {
    * - `'Tab'`
    * 
    * @param {string|string[]} key key or array of keys to press.
+   * @return {Promise<any>}
    * 
    *
    * _Note:_ Shortcuts like `'Meta'` + `'A'` do not work on macOS ([GoogleChrome/Puppeteer#1313](https://github.com/GoogleChrome/puppeteer/issues/1313)).
@@ -1701,7 +1747,7 @@ class Playwright extends Helper {
    * 
    * @param {string|string[]} key or array of keys to type.
    * @param {?number} [delay=null] (optional) delay in ms between key presses
-   * 
+   * @return {Promise<any>}
    */
   async type(keys, delay = null) {
     if (!Array.isArray(keys)) {
@@ -1728,9 +1774,9 @@ class Playwright extends Helper {
    * // or by strict locator
    * I.fillField({css: 'form#login input[name=username]'}, 'John');
    * ```
-   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
-   * @param {string | object} value text value to fill.
-   * 
+   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {CodeceptJS.StringOrSecret} value text value to fill.
+   * @return {Promise<any>}
    *
    */
   async fillField(field, value) {
@@ -1756,8 +1802,8 @@ class Playwright extends Helper {
    * I.clearField('user[email]');
    * I.clearField('#email');
    * ```
-   * @param {string | object} editable field located by label|name|CSS|XPath|strict locator.
-   * 
+   * @param {LocatorOrString} editable field located by label|name|CSS|XPath|strict locator.
+   * @return {Promise<any>}
    */
   async clearField(field) {
     return this.fillField(field, '');
@@ -1770,8 +1816,9 @@ class Playwright extends Helper {
    * ```js
    * I.appendField('#myTextField', 'appended');
    * ```
-   * @param {string | object} field located by label|name|CSS|XPath|strict locator
+   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator
    * @param {string} value text value to append.
+   * @return {Promise<any>}
    *
    *
    */
@@ -1793,9 +1840,9 @@ class Playwright extends Helper {
    * I.seeInField('form input[type=hidden]','hidden_value');
    * I.seeInField('#searchform input','Search');
    * ```
-   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
-   * 
+   * @return {Promise<any>}
    */
   async seeInField(field, value) {
     return proceedSeeInField.call(this, 'assert', field, value);
@@ -1810,8 +1857,9 @@ class Playwright extends Helper {
    * I.dontSeeInField({ css: 'form input.email' }, 'user@user.com'); // field by CSS
    * ```
    * 
-   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
+   * @return {Promise<any>}
    */
   async dontSeeInField(field, value) {
     return proceedSeeInField.call(this, 'negate', field, value);
@@ -1827,8 +1875,9 @@ class Playwright extends Helper {
    * I.attachFile('form input[name=avatar]', 'data/avatar.jpg');
    * ```
    * 
-   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
    * @param {string} pathToFile local file path relative to codecept.json config file.
+   * @return {Promise<any>}
    *
    */
   async attachFile(locator, pathToFile) {
@@ -1862,9 +1911,9 @@ class Playwright extends Helper {
    * ```js
    * I.selectOption('Which OS do you use?', ['Android', 'iOS']);
    * ```
-   * @param {string | object} select field located by label|name|CSS|XPath|strict locator.
+   * @param {LocatorOrString} select field located by label|name|CSS|XPath|strict locator.
    * @param {string|Array<*>} option visible text or value of option.
-   * 
+   * @return {Promise<any>}
    */
   async selectOption(select, option) {
     const els = await findFields.call(this, select);
@@ -1903,7 +1952,7 @@ class Playwright extends Helper {
    * let numOfElements = await I.grabNumberOfVisibleElements('p');
    * ```
    * 
-   * @param {string | object} locator located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
    * @returns {Promise<number>} number of visible elements
    *
    */
@@ -1921,6 +1970,7 @@ class Playwright extends Helper {
    * ```
    * 
    * @param {string} url a fragment to check
+   * @return {Promise<any>}
    */
   async seeInCurrentUrl(url) {
     stringIncludes('url').assert(url, await this._getPageUrl());
@@ -1930,6 +1980,7 @@ class Playwright extends Helper {
    * Checks that current url does not contain a provided fragment.
    * 
    * @param {string} url value to check.
+   * @return {Promise<any>}
    */
   async dontSeeInCurrentUrl(url) {
     stringIncludes('url').negate(url, await this._getPageUrl());
@@ -1946,6 +1997,7 @@ class Playwright extends Helper {
    * ```
    * 
    * @param {string} url value to check.
+   * @return {Promise<any>}
    */
   async seeCurrentUrlEquals(url) {
     urlEquals(this.options.url).assert(url, await this._getPageUrl());
@@ -1961,6 +2013,7 @@ class Playwright extends Helper {
    * ```
    * 
    * @param {string} url value to check.
+   * @return {Promise<any>}
    */
   async dontSeeCurrentUrlEquals(url) {
     urlEquals(this.options.url).negate(url, await this._getPageUrl());
@@ -1976,7 +2029,8 @@ class Playwright extends Helper {
    * I.see('Register', {css: 'form.register'}); // use strict locator
    * ```
    * @param {string} text expected on page.
-   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS|Xpath|strict locator in which to search for text.
+   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|Xpath|strict locator in which to search for text.
+   * @return {Promise<any>}
    *
    *
    */
@@ -1992,7 +2046,8 @@ class Playwright extends Helper {
    * ```
    * 
    * @param {string} text element value to check.
-   * @param {(string | object)?} [context=null]  element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString?} [context=null]  element located by CSS|XPath|strict locator.
+   * @return {Promise<any>}
    */
   async seeTextEquals(text, context = null) {
     return proceedSee.call(this, 'assert', text, context, true);
@@ -2008,8 +2063,8 @@ class Playwright extends Helper {
    * ```
    * 
    * @param {string} text which is not present.
-   * @param {string | object} [context] (optional) element located by CSS|XPath|strict locator in which to perfrom search.
-   * 
+   * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator in which to perfrom search.
+   * @return {Promise<any>}
    *
    *
    */
@@ -2068,6 +2123,7 @@ class Playwright extends Helper {
    * I.seeInSource('<h1>Green eggs &amp; ham</h1>');
    * ```
    * @param {string} text value to check.
+   * @return {Promise<any>}
    */
   async seeInSource(text) {
     const source = await this.page.content();
@@ -2082,7 +2138,7 @@ class Playwright extends Helper {
    * ```
    * 
    * @param {string} value to check.
-   * 
+   * @return {Promise<any>}
    */
   async dontSeeInSource(text) {
     const source = await this.page.content();
@@ -2098,9 +2154,9 @@ class Playwright extends Helper {
    * I.seeNumberOfElements('#submitBtn', 1);
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
-   * 
+   * @return {Promise<any>}
    *
    *
    */
@@ -2117,9 +2173,9 @@ class Playwright extends Helper {
    * I.seeNumberOfVisibleElements('.buttons', 3);
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
-   * 
+   * @return {Promise<any>}
    *
    *
    */
@@ -2144,7 +2200,7 @@ class Playwright extends Helper {
    * ```
    * 
    * @param {Cookie|Array<Cookie>} cookie a cookie object or array of cookie objects.
-   * 
+   * @return {Promise<any>}
    */
   async setCookie(cookie) {
     if (Array.isArray(cookie)) {
@@ -2161,7 +2217,7 @@ class Playwright extends Helper {
    * ```
    * 
    * @param {string} name cookie name.
-   * 
+   * @return {Promise<any>}
    *
    */
   async seeCookie(name) {
@@ -2177,6 +2233,7 @@ class Playwright extends Helper {
    * ```
    * 
    * @param {string} name cookie name.
+   * @return {Promise<any>}
    */
   async dontSeeCookie(name) {
     const cookies = await this.browserContext.cookies();
@@ -2216,6 +2273,7 @@ class Playwright extends Helper {
    * ```
    * 
    * @param {?string} [cookie=null] (optional, `null` by default) cookie name
+   * @return {Promise<any>}
    */
   async clearCookie() {
     // Playwright currently doesn't support to delete a certain cookie
@@ -2281,7 +2339,7 @@ class Playwright extends Helper {
    * ```
    * If multiple elements found returns first element.
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @returns {Promise<string>} attribute value
    * 
    *
@@ -2302,7 +2360,7 @@ class Playwright extends Helper {
    * let pins = await I.grabTextFromAll('#pin li');
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @returns {Promise<string[]>} attribute value
    * 
    *
@@ -2325,7 +2383,7 @@ class Playwright extends Helper {
    * ```js
    * let email = await I.grabValueFrom('input[name=email]');
    * ```
-   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
    * @returns {Promise<string>} attribute value
    * 
    */
@@ -2343,7 +2401,7 @@ class Playwright extends Helper {
    * ```js
    * let inputs = await I.grabValueFromAll('//form/input');
    * ```
-   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
    * @returns {Promise<string[]>} attribute value
    * 
    */
@@ -2362,7 +2420,7 @@ class Playwright extends Helper {
    * let postHTML = await I.grabHTMLFrom('#post');
    * ```
    * 
-   * @param {string | object} element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} element located by CSS|XPath|strict locator.
    * @returns {Promise<string>} HTML code for an element
    * 
    */
@@ -2381,7 +2439,7 @@ class Playwright extends Helper {
    * let postHTMLs = await I.grabHTMLFromAll('.post');
    * ```
    * 
-   * @param {string | object} element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} element located by CSS|XPath|strict locator.
    * @returns {Promise<string[]>} HTML code for an element
    * 
    */
@@ -2400,7 +2458,7 @@ class Playwright extends Helper {
    * const value = await I.grabCssPropertyFrom('h3', 'font-weight');
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {string} cssProperty CSS property name.
    * @returns {Promise<string>} CSS value
    * 
@@ -2421,7 +2479,7 @@ class Playwright extends Helper {
    * const values = await I.grabCssPropertyFromAll('h3', 'font-weight');
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {string} cssProperty CSS property name.
    * @returns {Promise<string[]>} CSS value
    * 
@@ -2442,8 +2500,9 @@ class Playwright extends Helper {
    * I.seeCssPropertiesOnElements('h3', { 'font-weight': "bold"});
    * ```
    * 
-   * @param {string | object} locator located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
    * @param {object} cssProperties object with CSS properties and their values to check.
+   * @return {Promise<any>}
    *
    */
   async seeCssPropertiesOnElements(locator, cssProperties) {
@@ -2487,8 +2546,9 @@ class Playwright extends Helper {
    * I.seeAttributesOnElements('//form', { method: "post"});
    * ```
    * 
-   * @param {string | object} locator located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
    * @param {object} attributes attributes and their values to check.
+   * @return {Promise<any>}
    *
    */
   async seeAttributesOnElements(locator, attributes) {
@@ -2525,8 +2585,9 @@ class Playwright extends Helper {
    * I.dragSlider('#slider', -70);
    * ```
    * 
-   * @param {string | object} locator located by label|name|CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator located by label|name|CSS|XPath|strict locator.
    * @param {number} offsetX position to drag.
+   * @return {Promise<any>}
    *
    */
   async dragSlider(locator, offsetX = 0) {
@@ -2555,7 +2616,7 @@ class Playwright extends Helper {
    * ```js
    * let hint = await I.grabAttributeFrom('#tooltip', 'title');
    * ```
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {string} attr attribute name.
    * @returns {Promise<string>} attribute value
    * 
@@ -2575,7 +2636,7 @@ class Playwright extends Helper {
    * ```js
    * let hints = await I.grabAttributeFromAll('.tooltip', 'title');
    * ```
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {string} attr attribute name.
    * @returns {Promise<string[]>} attribute value
    * 
@@ -2602,9 +2663,9 @@ class Playwright extends Helper {
    * I.saveElementScreenshot(`#submit`,'debug.png');
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {string} fileName file name to save.
-   * 
+   * @return {Promise<any>}
    *
    */
   async saveElementScreenshot(locator, fileName) {
@@ -2630,6 +2691,7 @@ class Playwright extends Helper {
    * 
    * @param {string} fileName file name to save.
    * @param {boolean} [fullPage=false] (optional, `false` by default) flag to enable fullscreen screenshot mode.
+   * @return {Promise<any>}
    */
   async saveScreenshot(fileName, fullPage) {
     const fullPageOption = fullPage || this.options.fullPageScreenshots;
@@ -2706,7 +2768,7 @@ class Playwright extends Helper {
       test.artifacts = {};
     }
 
-    if (this.options.recordVideo && this.page.video()) {
+    if (this.options.recordVideo && this.page && this.page.video()) {
       test.artifacts.video = await this.page.video().path();
     }
 
@@ -2718,7 +2780,7 @@ class Playwright extends Helper {
   }
 
   async _passed(test) {
-    if (this.options.recordVideo && this.page.video()) {
+    if (this.options.recordVideo && this.page && this.page.video()) {
       if (this.options.keepVideoForPassedTests) {
         test.artifacts.video = await this.page.video().path();
       } else {
@@ -2745,6 +2807,7 @@ class Playwright extends Helper {
    * ```
    * 
    * @param {number} sec number of second to wait.
+   * @return {Promise<any>}
    */
   async wait(sec) {
     return new Promise(((done) => {
@@ -2756,8 +2819,9 @@ class Playwright extends Helper {
    * Waits for element to become enabled (by default waits for 1sec).
    * Element can be located by CSS or XPath.
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional) time in seconds to wait, 1 by default.
+   * @return {Promise<any>}
    */
   async waitForEnabled(locator, sec) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
@@ -2789,10 +2853,10 @@ class Playwright extends Helper {
    * I.waitForValue('//input', "GoodValue");
    * ```
    * 
-   * @param {string | object} field input field.
+   * @param {LocatorOrString} field input field.
    * @param {string }value expected value.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * 
+   * @return {Promise<any>}
    */
   async waitForValue(field, value, sec) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
@@ -2825,9 +2889,10 @@ class Playwright extends Helper {
    * I.waitNumberOfVisibleElements('a', 3);
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
+   * @return {Promise<any>}
    *
    */
   async waitNumberOfVisibleElements(locator, num, sec) {
@@ -2866,8 +2931,9 @@ class Playwright extends Helper {
    * I.waitForClickable('.btn.continue', 5); // wait for 5 secs
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
+   * @return {Promise<any>}
    */
   async waitForClickable(locator, waitTimeout) {
     console.log('I.waitForClickable is DEPRECATED: This is no longer needed, Playwright automatically waits for element to be clickable');
@@ -2883,8 +2949,9 @@ class Playwright extends Helper {
    * I.waitForElement('.btn.continue', 5); // wait for 5 secs
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
+   * @return {Promise<any>}
    *
    */
   async waitForElement(locator, sec) {
@@ -2906,9 +2973,9 @@ class Playwright extends Helper {
    * I.waitForVisible('#popup');
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * 
+   * @return {Promise<any>}
    *
    * This method accepts [React selectors](https://codecept.io/react).
    */
@@ -2930,8 +2997,9 @@ class Playwright extends Helper {
    * I.waitForInvisible('#popup');
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
+   * @return {Promise<any>}
    */
   async waitForInvisible(locator, sec) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
@@ -2951,8 +3019,9 @@ class Playwright extends Helper {
    * I.waitToHide('#popup');
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
+   * @return {Promise<any>}
    */
   async waitToHide(locator, sec) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
@@ -2979,6 +3048,7 @@ class Playwright extends Helper {
    * 
    * @param {string} urlPart value to check.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
+   * @return {Promise<any>}
    */
   async waitInUrl(urlPart, sec = null) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
@@ -3006,6 +3076,7 @@ class Playwright extends Helper {
    * 
    * @param {string} urlPart value to check.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
+   * @return {Promise<any>}
    */
   async waitUrlEquals(urlPart, sec = null) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
@@ -3040,7 +3111,8 @@ class Playwright extends Helper {
    * 
    * @param {string }text to wait for.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @param {string | object} [context] (optional) element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator.
+   * @return {Promise<any>}
    */
   async waitForText(text, sec = null, context = null) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
@@ -3080,6 +3152,7 @@ class Playwright extends Helper {
    *
    * @param {string|function} urlOrPredicate
    * @param {?number} [sec=null] seconds to wait
+   * @return {Promise<any>}
    */
   async waitForRequest(urlOrPredicate, sec = null) {
     const timeout = sec ? sec * 1000 : this.options.waitForTimeout;
@@ -3096,6 +3169,7 @@ class Playwright extends Helper {
    *
    * @param {string|function} urlOrPredicate
    * @param {?number} [sec=null] number of seconds to wait
+   * @return {Promise<any>}
    */
   async waitForResponse(urlOrPredicate, sec = null) {
     const timeout = sec ? sec * 1000 : this.options.waitForTimeout;
@@ -3110,7 +3184,8 @@ class Playwright extends Helper {
    * I.switchTo(); // switch back to main page
    * ```
    * 
-   * @param {?string | object} [locator=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
+   * @param {?CodeceptJS.LocatorOrString} [locator=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
+   * @return {Promise<any>}
    */
   async switchTo(locator) {
     if (Number.isInteger(locator)) {
@@ -3168,7 +3243,7 @@ class Playwright extends Helper {
    * @param {string|function} fn to be executed in browser context.
    * @param {any[]|number} [argsOrSec] (optional, `1` by default) arguments for function or seconds.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
-   * 
+   * @return {Promise<any>}
    */
   async waitForFunction(fn, argsOrSec = null, sec = null) {
     let args = [];
@@ -3190,6 +3265,7 @@ class Playwright extends Helper {
    * See [Playwright's reference](https://playwright.dev/docs/api/class-page?_highlight=waitfornavi#pagewaitfornavigationoptions)
    *
    * @param {*} opts
+   * @return {Promise<any>}
    */
   async waitForNavigation(opts = {}) {
     opts = {
@@ -3215,8 +3291,9 @@ class Playwright extends Helper {
    * I.waitForDetached('#popup');
    * ```
    * 
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
+   * @return {Promise<any>}
    */
   async waitForDetached(locator, sec) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
@@ -3262,6 +3339,7 @@ class Playwright extends Helper {
    *   loadEventEnd: 241
    * }
    * ```
+   * @return {Promise<any>}
    */
   async grabDataFromPerformanceTiming() {
     return perfTiming;
@@ -3285,7 +3363,7 @@ class Playwright extends Helper {
    * const width = await I.grabElementBoundingRect('h3', 'width');
    * // width == 527
    * ```
-   * @param {string | object} locator element located by CSS|XPath|strict locator.
+   * @param {LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {string=} elementSize x, y, width or height of the given element.
    * @returns {Promise<DOMRect>|Promise<number>} Element bounding rectangle
    * 
@@ -3306,9 +3384,9 @@ class Playwright extends Helper {
   * ```
   * This method allows intercepting and mocking requests & responses. [Learn more about it](https://playwright.dev/docs/network#handle-requests)
   *
-  * @param {string} [url] URL, regex or pattern for to match URL
+  * @param {string|RegExp} [url] URL, regex or pattern for to match URL
   * @param {function} [handler] a function to process request
-  *
+  * @return {Promise<any>}
   */
   async mockRoute(url, handler) {
     return this.browserContext.route(...arguments);
@@ -3323,9 +3401,9 @@ class Playwright extends Helper {
   * ```
   * If no handler is passed, all mock requests for the rote are disabled.
   *
-  * @param {string} [url] URL, regex or pattern for to match URL
+  * @param {string|RegExp} [url] URL, regex or pattern for to match URL
   * @param {function} [handler] a function to process request
-  *
+  * @return {Promise<any>}
   */
   async stopMockingRoute(url, handler) {
     return this.browserContext.unroute(...arguments);

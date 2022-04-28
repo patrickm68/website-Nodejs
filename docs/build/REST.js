@@ -98,7 +98,7 @@ class REST extends Helper {
    * I.amBearerAuthenticated(secret('heregoestoken'))
    * ```
    *
-   * @param {string} accessToken  Bearer access token
+   * @param {string | CodeceptJS.Secret} accessToken  Bearer access token
    */
   amBearerAuthenticated(accessToken) {
     this.haveRequestHeaders({ Authorization: `Bearer ${accessToken}` });
@@ -112,6 +112,9 @@ class REST extends Helper {
    * @returns {Promise<*>} response
    */
   async _executeRequest(request) {
+    // Add custom headers. They can be set by amBearerAuthenticated() or haveRequestHeaders()
+    request.headers = { ...request.headers, ...this.headers };
+
     const _debugRequest = { ...request };
     this.axios.defaults.timeout = request.timeout || this.options.timeout;
 

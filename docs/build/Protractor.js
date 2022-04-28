@@ -456,6 +456,7 @@ class Protractor extends Helper {
    * ```
    * 
    * @param {string} url url path or global url.
+   * @return {Promise<any>}
    */
   async amOnPage(url) {
     if (!(/^\w+\:\/\//.test(url))) {
@@ -490,7 +491,8 @@ class Protractor extends Helper {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @param {?CodeceptJS.LocatorOrString | null} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @return {Promise<any>}
    * 
    */
   async click(locator, context = null) {
@@ -517,7 +519,7 @@ class Protractor extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
-   * 
+   * @return {Promise<any>}
    */
   async doubleClick(locator, context = null) {
     let matcher = this.browser;
@@ -544,7 +546,7 @@ class Protractor extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator clickable element located by CSS|XPath|strict locator.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
-   * 
+   * @return {Promise<any>}
    */
   async rightClick(locator, context = null) {
     /**
@@ -577,7 +579,7 @@ class Protractor extends Helper {
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
-   * 
+   * @return {Promise<any>}
    */
   async moveCursorTo(locator, offsetX = null, offsetY = null) {
     let offset = null;
@@ -600,6 +602,7 @@ class Protractor extends Helper {
    * ```
    * @param {string} text expected on page.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|Xpath|strict locator in which to search for text.
+   * @return {Promise<any>}
    */
   async see(text, context = null) {
     return proceedSee.call(this, 'assert', text, context);
@@ -614,6 +617,7 @@ class Protractor extends Helper {
    * 
    * @param {string} text element value to check.
    * @param {CodeceptJS.LocatorOrString?} [context=null]  element located by CSS|XPath|strict locator.
+   * @return {Promise<any>}
    */
   async seeTextEquals(text, context = null) {
     return proceedSee.call(this, 'assert', text, context, true);
@@ -630,7 +634,7 @@ class Protractor extends Helper {
    * 
    * @param {string} text which is not present.
    * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator in which to perfrom search.
-   * 
+   * @return {Promise<any>}
    */
   dontSee(text, context = null) {
     return proceedSee.call(this, 'negate', text, context);
@@ -688,7 +692,7 @@ class Protractor extends Helper {
    * ```
    * @param {LocatorOrString} select field located by label|name|CSS|XPath|strict locator.
    * @param {string|Array<*>} option visible text or value of option.
-   * 
+   * @return {Promise<any>}
    */
   async selectOption(select, option) {
     const fields = await findFields(this.browser, select);
@@ -726,7 +730,7 @@ class Protractor extends Helper {
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {CodeceptJS.StringOrSecret} value text value to fill.
-   * 
+   * @return {Promise<any>}
    */
   async fillField(field, value) {
     const els = await findFields(this.browser, field);
@@ -746,6 +750,7 @@ class Protractor extends Helper {
    * ```
    * 
    * @param {string|string[]} key key or array of keys to press.
+   * @return {Promise<any>}
    * {{ keys }}
    */
   async pressKey(key) {
@@ -779,6 +784,7 @@ class Protractor extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
    * @param {string} pathToFile local file path relative to codecept.json config file.
+   * @return {Promise<any>}
    */
   async attachFile(locator, pathToFile) {
     const file = path.join(global.codecept_dir, pathToFile);
@@ -806,7 +812,7 @@ class Protractor extends Helper {
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
-   * 
+   * @return {Promise<any>}
    */
   async seeInField(field, value) {
     return proceedSeeInField.call(this, 'assert', field, value);
@@ -823,6 +829,7 @@ class Protractor extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
+   * @return {Promise<any>}
    */
   async dontSeeInField(field, value) {
     return proceedSeeInField.call(this, 'negate', field, value);
@@ -837,6 +844,7 @@ class Protractor extends Helper {
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator
    * @param {string} value text value to append.
+   * @return {Promise<any>}
    */
   async appendField(field, value) {
     const els = await findFields(this.browser, field);
@@ -853,7 +861,7 @@ class Protractor extends Helper {
    * I.clearField('#email');
    * ```
    * @param {LocatorOrString} editable field located by label|name|CSS|XPath|strict locator.
-   * 
+   * @return {Promise<any>}
    */
   async clearField(field) {
     const els = await findFields(this.browser, field);
@@ -874,6 +882,7 @@ class Protractor extends Helper {
    * ```
    * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
+   * @return {Promise<any>}
    */
   async checkOption(field, context = null) {
     let matcher = this.browser;
@@ -901,6 +910,7 @@ class Protractor extends Helper {
    * ```
    * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
+   * @return {Promise<any>}
    */
   async uncheckOption(field, context = null) {
     let matcher = this.browser;
@@ -925,7 +935,7 @@ class Protractor extends Helper {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * 
+   * @return {Promise<any>}
    */
   async seeCheckboxIsChecked(field) {
     return proceedIsChecked.call(this, 'assert', field);
@@ -941,7 +951,7 @@ class Protractor extends Helper {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * 
+   * @return {Promise<any>}
    */
   async dontSeeCheckboxIsChecked(field) {
     return proceedIsChecked.call(this, 'negate', field);
@@ -1175,20 +1185,21 @@ class Protractor extends Helper {
    * ```
    * 
    * @param {string} text text value to check.
+   * @return {Promise<any>}
    */
   async seeInTitle(text) {
     return this.browser.getTitle().then(title => stringIncludes('web page title').assert(text, title));
   }
 
   /**
-   *  Checks that title is equal to provided one.
+   * Checks that title is equal to provided one.
    * 
-   *  ```js
-   *  I.seeTitleEquals('Test title.');
-   *  ```
+   * ```js
+   * I.seeTitleEquals('Test title.');
+   * ```
    * 
-   *  @param {string} text value to check.
-   * 
+   * @param {string} text value to check.
+   * @return {Promise<any>}
    */
   async seeTitleEquals(text) {
     const title = await this.browser.getTitle();
@@ -1203,6 +1214,7 @@ class Protractor extends Helper {
    * ```
    * 
    * @param {string} text value to check.
+   * @return {Promise<any>}
    */
   async dontSeeInTitle(text) {
     return this.browser.getTitle().then(title => stringIncludes('web page title').negate(text, title));
@@ -1233,6 +1245,7 @@ class Protractor extends Helper {
    * I.seeElement('#modal');
    * ```
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @return {Promise<any>}
    */
   async seeElement(locator) {
     let els = await this._locate(locator, true);
@@ -1248,6 +1261,7 @@ class Protractor extends Helper {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
+   * @return {Promise<any>}
    */
   async dontSeeElement(locator) {
     let els = await this._locate(locator, false);
@@ -1263,7 +1277,7 @@ class Protractor extends Helper {
    * I.seeElementInDOM('#modal');
    * ```
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
-   * 
+   * @return {Promise<any>}
    */
   async seeElementInDOM(locator) {
     return this.browser.findElements(guessLocator(locator) || global.by.css(locator)).then(els => empty('elements').negate(els.fill('ELEMENT')));
@@ -1277,6 +1291,7 @@ class Protractor extends Helper {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
+   * @return {Promise<any>}
    */
   async dontSeeElementInDOM(locator) {
     return this.browser.findElements(guessLocator(locator) || global.by.css(locator)).then(els => empty('elements').assert(els.fill('ELEMENT')));
@@ -1289,6 +1304,7 @@ class Protractor extends Helper {
    * I.seeInSource('<h1>Green eggs &amp; ham</h1>');
    * ```
    * @param {string} text value to check.
+   * @return {Promise<any>}
    */
   async seeInSource(text) {
     return this.browser.getPageSource().then(source => stringIncludes('HTML source of a page').assert(text, source));
@@ -1316,7 +1332,7 @@ class Protractor extends Helper {
    * ```
    * 
    * @param {string} value to check.
-   * 
+   * @return {Promise<any>}
    */
   async dontSeeInSource(text) {
     return this.browser.getPageSource().then(source => stringIncludes('HTML source of a page').negate(text, source));
@@ -1333,7 +1349,7 @@ class Protractor extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
-   * 
+   * @return {Promise<any>}
    */
   async seeNumberOfElements(locator, num) {
     const elements = await this._locate(locator);
@@ -1350,7 +1366,7 @@ class Protractor extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
-   * 
+   * @return {Promise<any>}
    */
   async seeNumberOfVisibleElements(locator, num) {
     const res = await this.grabNumberOfVisibleElements(locator);
@@ -1383,6 +1399,7 @@ class Protractor extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
    * @param {object} cssProperties object with CSS properties and their values to check.
+   * @return {Promise<any>}
    */
   async seeCssPropertiesOnElements(locator, cssProperties) {
     const els = await this._locate(locator);
@@ -1421,6 +1438,7 @@ class Protractor extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
    * @param {object} attributes attributes and their values to check.
+   * @return {Promise<any>}
    */
   async seeAttributesOnElements(locator, attributes) {
     const els = await this._locate(locator);
@@ -1519,6 +1537,7 @@ class Protractor extends Helper {
    * ```
    * 
    * @param {string} url a fragment to check
+   * @return {Promise<any>}
    */
   async seeInCurrentUrl(url) {
     return this.browser.getCurrentUrl().then(currentUrl => stringIncludes('url').assert(url, currentUrl));
@@ -1528,6 +1547,7 @@ class Protractor extends Helper {
    * Checks that current url does not contain a provided fragment.
    * 
    * @param {string} url value to check.
+   * @return {Promise<any>}
    */
   async dontSeeInCurrentUrl(url) {
     return this.browser.getCurrentUrl().then(currentUrl => stringIncludes('url').negate(url, currentUrl));
@@ -1544,6 +1564,7 @@ class Protractor extends Helper {
    * ```
    * 
    * @param {string} url value to check.
+   * @return {Promise<any>}
    */
   async seeCurrentUrlEquals(url) {
     return this.browser.getCurrentUrl().then(currentUrl => urlEquals(this.options.url).assert(url, currentUrl));
@@ -1559,6 +1580,7 @@ class Protractor extends Helper {
    * ```
    * 
    * @param {string} url value to check.
+   * @return {Promise<any>}
    */
   async dontSeeCurrentUrlEquals(url) {
     return this.browser.getCurrentUrl().then(currentUrl => urlEquals(this.options.url).negate(url, currentUrl));
@@ -1574,7 +1596,7 @@ class Protractor extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {string} fileName file name to save.
-   * 
+   * @return {Promise<any>}
    *
    */
   async saveElementScreenshot(locator, fileName) {
@@ -1609,6 +1631,7 @@ class Protractor extends Helper {
    * 
    * @param {string} fileName file name to save.
    * @param {boolean} [fullPage=false] (optional, `false` by default) flag to enable fullscreen screenshot mode.
+   * @return {Promise<any>}
    */
   async saveScreenshot(fileName, fullPage = false) {
     const outputFile = screenshotOutputFolder(fileName);
@@ -1650,6 +1673,7 @@ class Protractor extends Helper {
    * ```
    * 
    * @param {?string} [cookie=null] (optional, `null` by default) cookie name
+   * @return {Promise<any>}
    */
   async clearCookie(cookie = null) {
     if (!cookie) {
@@ -1666,7 +1690,7 @@ class Protractor extends Helper {
    * ```
    * 
    * @param {string} name cookie name.
-   * 
+   * @return {Promise<any>}
    */
   async seeCookie(name) {
     return this.browser.manage().getCookie(name).then(res => truth(`cookie ${name}`, 'to be set').assert(res));
@@ -1680,6 +1704,7 @@ class Protractor extends Helper {
    * ```
    * 
    * @param {string} name cookie name.
+   * @return {Promise<any>}
    */
   async dontSeeCookie(name) {
     return this.browser.manage().getCookie(name).then(res => truth(`cookie ${name}`, 'to be set').negate(res));
@@ -1730,7 +1755,7 @@ class Protractor extends Helper {
    * I.seeInPopup('Popup text');
    * ```
    * @param {string} text value to check.
-   * 
+   * @return {Promise<any>}
    */
   async seeInPopup(text) {
     const popupAlert = await this.browser.switchTo().alert();
@@ -1770,6 +1795,7 @@ class Protractor extends Helper {
    * 
    * @param {number} width width in pixels or `maximize`.
    * @param {number} height height in pixels.
+   * @return {Promise<any>}
    */
   async resizeWindow(width, height) {
     if (width === 'maximize') {
@@ -1788,7 +1814,7 @@ class Protractor extends Helper {
    * 
    * @param {LocatorOrString} srcElement located by CSS|XPath|strict locator.
    * @param {LocatorOrString} destElement located by CSS|XPath|strict locator.
-   * 
+   * @return {Promise<any>}
    */
   async dragAndDrop(srcElement, destElement) {
     const srcEl = await this._locate(srcElement, true);
@@ -1931,6 +1957,7 @@ class Protractor extends Helper {
    * ```
    * 
    * @param {?CodeceptJS.LocatorOrString} [locator=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
+   * @return {Promise<any>}
    */
   async switchTo(locator) {
     if (Number.isInteger(locator)) {
@@ -1953,6 +1980,7 @@ class Protractor extends Helper {
    * ```
    * 
    * @param {number} sec number of second to wait.
+   * @return {Promise<any>}
    */
   wait(sec) {
     return this.browser.sleep(sec * 1000);
@@ -1969,6 +1997,7 @@ class Protractor extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
+   * @return {Promise<any>}
    */
   async waitForElement(locator, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
@@ -1993,6 +2022,7 @@ class Protractor extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
+   * @return {Promise<any>}
    */
   async waitForDetached(locator, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
@@ -2027,7 +2057,7 @@ class Protractor extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * 
+   * @return {Promise<any>}
    */
   async waitForVisible(locator, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
@@ -2045,6 +2075,7 @@ class Protractor extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
+   * @return {Promise<any>}
    */
   async waitToHide(locator, sec = null) {
     return this.waitForInvisible(locator, sec);
@@ -2060,6 +2091,7 @@ class Protractor extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
+   * @return {Promise<any>}
    */
   async waitForInvisible(locator, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
@@ -2084,6 +2116,7 @@ class Protractor extends Helper {
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
+   * @return {Promise<any>}
    */
   async waitNumberOfVisibleElements(locator, num, sec = null) {
     function visibilityCountOf(loc, expectedCount) {
@@ -2110,6 +2143,7 @@ class Protractor extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional) time in seconds to wait, 1 by default.
+   * @return {Promise<any>}
    */
   async waitForEnabled(locator, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
@@ -2131,7 +2165,7 @@ class Protractor extends Helper {
    * @param {LocatorOrString} field input field.
    * @param {string }value expected value.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * 
+   * @return {Promise<any>}
    */
   async waitForValue(field, value, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
@@ -2171,7 +2205,7 @@ class Protractor extends Helper {
    * @param {string|function} fn to be executed in browser context.
    * @param {any[]|number} [argsOrSec] (optional, `1` by default) arguments for function or seconds.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
-   * 
+   * @return {Promise<any>}
    */
   async waitForFunction(fn, argsOrSec = null, sec = null) {
     let args = [];
@@ -2196,6 +2230,7 @@ class Protractor extends Helper {
    * 
    * @param {string} urlPart value to check.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
+   * @return {Promise<any>}
    */
   async waitInUrl(urlPart, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
@@ -2222,6 +2257,7 @@ class Protractor extends Helper {
    * 
    * @param {string} urlPart value to check.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
+   * @return {Promise<any>}
    */
   async waitUrlEquals(urlPart, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
@@ -2255,6 +2291,7 @@ class Protractor extends Helper {
    * @param {string }text to wait for.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator.
+   * @return {Promise<any>}
    */
   async waitForText(text, sec = null, context = null) {
     if (!context) {
@@ -2280,7 +2317,7 @@ class Protractor extends Helper {
    * ```js
    * I.refreshPage();
    * ```
-   * 
+   * @return {Promise<any>}
    */
   refreshPage() {
     return this.browser.refresh();
@@ -2306,6 +2343,7 @@ class Protractor extends Helper {
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
+   * @return {Promise<any>}
    */
   async scrollTo(locator, offsetX = 0, offsetY = 0) {
     if (typeof locator === 'number' && typeof offsetX === 'number') {
@@ -2337,7 +2375,7 @@ class Protractor extends Helper {
    * ```js
    * I.scrollPageToTop();
    * ```
-   * 
+   * @return {Promise<any>}
    */
   async scrollPageToTop() {
     return this.executeScript('window.scrollTo(0, 0);');
@@ -2349,7 +2387,7 @@ class Protractor extends Helper {
    * ```js
    * I.scrollPageToBottom();
    * ```
-   * 
+   * @return {Promise<any>}
    */
   async scrollPageToBottom() {
     /* eslint-disable prefer-arrow-callback, comma-dangle */
@@ -2431,7 +2469,7 @@ class Protractor extends Helper {
    * ```
    * 
    * @param {Cookie|Array<Cookie>} cookie a cookie object or array of cookie objects.
-   * 
+   * @return {Promise<any>}
    */
   setCookie(cookie) {
     return this.browser.manage().addCookie(cookie);

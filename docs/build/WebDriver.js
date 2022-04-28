@@ -896,7 +896,7 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {string} url url path or global url.
-   * @return {Promise<any>}
+   * @return {void} automatically synchronized promise with recorder #! 
    *
    */
   amOnPage(url) {
@@ -936,7 +936,7 @@ class WebDriver extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
    * @param {?CodeceptJS.LocatorOrString | null} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    * 
    *
    * {{ react }}
@@ -983,7 +983,7 @@ class WebDriver extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    * 
    *
    * {{ react }}
@@ -1022,7 +1022,7 @@ class WebDriver extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    * {{ react }}
    */
@@ -1054,7 +1054,7 @@ class WebDriver extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator clickable element located by CSS|XPath|strict locator.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    * {{ react }}
    */
@@ -1097,7 +1097,7 @@ class WebDriver extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    * {{ react }}
    */
@@ -1138,7 +1138,7 @@ class WebDriver extends Helper {
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {CodeceptJS.StringOrSecret} value text value to fill.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    * {{ react }}
    * {{ custom }}
    *
@@ -1159,7 +1159,7 @@ class WebDriver extends Helper {
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator
    * @param {string} value text value to append.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    * {{ react }}
    */
   async appendField(field, value) {
@@ -1178,7 +1178,7 @@ class WebDriver extends Helper {
    * I.clearField('#email');
    * ```
    * @param {LocatorOrString} editable field located by label|name|CSS|XPath|strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async clearField(field) {
@@ -1209,7 +1209,7 @@ class WebDriver extends Helper {
    * ```
    * @param {LocatorOrString} select field located by label|name|CSS|XPath|strict locator.
    * @param {string|Array<*>} option visible text or value of option.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async selectOption(select, option) {
     const res = await findFields.call(this, select);
@@ -1252,7 +1252,7 @@ class WebDriver extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
    * @param {string} pathToFile local file path relative to codecept.json config file.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    * Appium: not tested
    */
   async attachFile(locator, pathToFile) {
@@ -1292,7 +1292,7 @@ class WebDriver extends Helper {
    * ```
    * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    * Appium: not tested
    */
   async checkOption(field, context = null) {
@@ -1323,7 +1323,7 @@ class WebDriver extends Helper {
    * ```
    * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    * Appium: not tested
    */
   async uncheckOption(field, context = null) {
@@ -1566,7 +1566,7 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {string} text text value to check.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async seeInTitle(text) {
     const title = await this.browser.getTitle();
@@ -1581,7 +1581,7 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {string} text value to check.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async seeTitleEquals(text) {
     const title = await this.browser.getTitle();
@@ -1596,7 +1596,7 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {string} text value to check.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async dontSeeInTitle(text) {
     const title = await this.browser.getTitle();
@@ -1630,7 +1630,7 @@ class WebDriver extends Helper {
    * ```
    * @param {string} text expected on page.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|Xpath|strict locator in which to search for text.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    * {{ react }}
    */
@@ -1647,7 +1647,7 @@ class WebDriver extends Helper {
    * 
    * @param {string} text element value to check.
    * @param {CodeceptJS.LocatorOrString?} [context=null]  element located by CSS|XPath|strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async seeTextEquals(text, context = null) {
     return proceedSee.call(this, 'assert', text, context, true);
@@ -1664,7 +1664,7 @@ class WebDriver extends Helper {
    * 
    * @param {string} text which is not present.
    * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator in which to perfrom search.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    * {{ react }}
    */
@@ -1684,7 +1684,7 @@ class WebDriver extends Helper {
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async seeInField(field, value) {
@@ -1702,7 +1702,7 @@ class WebDriver extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async dontSeeInField(field, value) {
@@ -1719,7 +1719,7 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    * Appium: not tested
    */
   async seeCheckboxIsChecked(field) {
@@ -1736,7 +1736,7 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    * Appium: not tested
    */
   async dontSeeCheckboxIsChecked(field) {
@@ -1751,7 +1751,7 @@ class WebDriver extends Helper {
    * I.seeElement('#modal');
    * ```
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    * {{ react }}
    *
    */
@@ -1770,7 +1770,7 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    * {{ react }}
    */
   async dontSeeElement(locator) {
@@ -1790,7 +1790,7 @@ class WebDriver extends Helper {
    * I.seeElementInDOM('#modal');
    * ```
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async seeElementInDOM(locator) {
@@ -1806,7 +1806,7 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async dontSeeElementInDOM(locator) {
@@ -1821,7 +1821,7 @@ class WebDriver extends Helper {
    * I.seeInSource('<h1>Green eggs &amp; ham</h1>');
    * ```
    * @param {string} text value to check.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async seeInSource(text) {
@@ -1889,7 +1889,7 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {string} value to check.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async dontSeeInSource(text) {
     const source = await this.browser.getPageSource();
@@ -1907,7 +1907,7 @@ class WebDriver extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    * {{ react }}
    */
   async seeNumberOfElements(locator, num) {
@@ -1925,7 +1925,7 @@ class WebDriver extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    * {{ react }}
    */
   async seeNumberOfVisibleElements(locator, num) {
@@ -1942,7 +1942,7 @@ class WebDriver extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
    * @param {object} cssProperties object with CSS properties and their values to check.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async seeCssPropertiesOnElements(locator, cssProperties) {
     const res = await this._locate(locator);
@@ -1985,7 +1985,7 @@ class WebDriver extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
    * @param {object} attributes attributes and their values to check.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async seeAttributesOnElements(locator, attributes) {
     const res = await this._locate(locator);
@@ -2039,7 +2039,7 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {string} url a fragment to check
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async seeInCurrentUrl(url) {
@@ -2051,7 +2051,7 @@ class WebDriver extends Helper {
    * Checks that current url does not contain a provided fragment.
    * 
    * @param {string} url value to check.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async dontSeeInCurrentUrl(url) {
@@ -2070,7 +2070,7 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {string} url value to check.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async seeCurrentUrlEquals(url) {
@@ -2088,7 +2088,7 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {string} url value to check.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async dontSeeCurrentUrlEquals(url) {
@@ -2122,7 +2122,7 @@ class WebDriver extends Helper {
    * 
    * @param {string|function} fn function to be executed in browser context.
    * @param {...any} args to be passed to function.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    * 
    *
    *
@@ -2156,7 +2156,7 @@ class WebDriver extends Helper {
    * 
    * @param {string|function} fn function to be executed in browser context.
    * @param {...any} args to be passed to function.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    * 
    *
    */
@@ -2175,7 +2175,7 @@ class WebDriver extends Helper {
    * 
    * @param {LocatorOrString} locator located by CSS|XPath|strict locator.
    * @param {ScrollIntoViewOptions} scrollIntoViewOptions see https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async scrollIntoView(locator, scrollIntoViewOptions) {
@@ -2197,7 +2197,7 @@ class WebDriver extends Helper {
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async scrollTo(locator, offsetX = 0, offsetY = 0) {
@@ -2239,7 +2239,7 @@ class WebDriver extends Helper {
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async moveCursorTo(locator, xOffset, yOffset) {
     const res = await this._locate(withStrictLocator(locator), true);
@@ -2259,7 +2259,7 @@ class WebDriver extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {string} fileName file name to save.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async saveElementScreenshot(locator, fileName) {
@@ -2285,7 +2285,7 @@ class WebDriver extends Helper {
    * 
    * @param {string} fileName file name to save.
    * @param {boolean} [fullPage=false] (optional, `false` by default) flag to enable fullscreen screenshot mode.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async saveScreenshot(fileName, fullPage = false) {
     const outputFile = screenshotOutputFolder(fileName);
@@ -2340,7 +2340,7 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {Cookie|Array<Cookie>} cookie a cookie object or array of cookie objects.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    *
    * Uses Selenium's JSON [cookie
@@ -2360,7 +2360,7 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {?string} [cookie=null] (optional, `null` by default) cookie name
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async clearCookie(cookie) {
     return this.browser.deleteCookies(cookie);
@@ -2374,7 +2374,7 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {string} name cookie name.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async seeCookie(name) {
     const cookie = await this.browser.getCookies([name]);
@@ -2389,7 +2389,7 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {string} name cookie name.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async dontSeeCookie(name) {
     const cookie = await this.browser.getCookies([name]);
@@ -2485,7 +2485,7 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {string} key name of key to press down.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async pressKeyDown(key) {
     key = getNormalizedKey.call(this, key);
@@ -2514,7 +2514,7 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {string} key name of key to release.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async pressKeyUp(key) {
     key = getNormalizedKey.call(this, key);
@@ -2591,7 +2591,7 @@ class WebDriver extends Helper {
    * - `'Tab'`
    * 
    * @param {string|string[]} key key or array of keys to press.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    * 
    *
    * _Note:_ In case a text field or textarea is focused be aware that some browsers do not respect active modifier when combining modifier keys with other keys.
@@ -2652,7 +2652,7 @@ class WebDriver extends Helper {
    * 
    * @param {string|string[]} key or array of keys to type.
    * @param {?number} [delay=null] (optional) delay in ms between key presses
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async type(keys, delay = null) {
     if (!Array.isArray(keys)) {
@@ -2674,7 +2674,7 @@ class WebDriver extends Helper {
    * 
    * @param {number} width width in pixels or `maximize`.
    * @param {number} height height in pixels.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    * Appium: not tested in web, in apps doesn't work
    */
   async resizeWindow(width, height) {
@@ -2711,7 +2711,7 @@ class WebDriver extends Helper {
    * 
    * @param {LocatorOrString} srcElement located by CSS|XPath|strict locator.
    * @param {LocatorOrString} destElement located by CSS|XPath|strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    * Appium: not tested
    */
   async dragAndDrop(srcElement, destElement) {
@@ -2737,7 +2737,7 @@ class WebDriver extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator located by label|name|CSS|XPath|strict locator.
    * @param {number} offsetX position to drag.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async dragSlider(locator, offsetX = 0) {
     const browser = this.browser;
@@ -2824,7 +2824,7 @@ class WebDriver extends Helper {
    * I.closeOtherTabs();
    * ```
    * 
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async closeOtherTabs() {
     const handles = await this.browser.getWindowHandles();
@@ -2846,7 +2846,7 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {number} sec number of second to wait.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async wait(sec) {
     return new Promise(resolve => setTimeout(resolve, sec * 1000));
@@ -2858,7 +2858,7 @@ class WebDriver extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional) time in seconds to wait, 1 by default.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async waitForEnabled(locator, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
@@ -2902,7 +2902,7 @@ class WebDriver extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async waitForElement(locator, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
@@ -2929,7 +2929,7 @@ class WebDriver extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async waitForClickable(locator, waitTimeout) {
     waitTimeout = waitTimeout || this.options.waitForTimeout;
@@ -2952,7 +2952,7 @@ class WebDriver extends Helper {
    * 
    * @param {string} urlPart value to check.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async waitInUrl(urlPart, sec = null) {
     const client = this.browser;
@@ -2996,7 +2996,7 @@ class WebDriver extends Helper {
    * 
    * @param {string} urlPart value to check.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async waitUrlEquals(urlPart, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
@@ -3031,7 +3031,7 @@ class WebDriver extends Helper {
    * @param {string }text to wait for.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async waitForText(text, sec = null, context = null) {
@@ -3078,7 +3078,7 @@ class WebDriver extends Helper {
    * @param {LocatorOrString} field input field.
    * @param {string }value expected value.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async waitForValue(field, value, sec = null) {
     const client = this.browser;
@@ -3123,7 +3123,7 @@ class WebDriver extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async waitForVisible(locator, sec = null) {
@@ -3160,7 +3160,7 @@ class WebDriver extends Helper {
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async waitNumberOfVisibleElements(locator, num, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
@@ -3196,7 +3196,7 @@ class WebDriver extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async waitForInvisible(locator, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
@@ -3226,7 +3226,7 @@ class WebDriver extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async waitToHide(locator, sec = null) {
     return this.waitForInvisible(locator, sec);
@@ -3242,7 +3242,7 @@ class WebDriver extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async waitForDetached(locator, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
@@ -3281,7 +3281,7 @@ class WebDriver extends Helper {
    * @param {string|function} fn to be executed in browser context.
    * @param {any[]|number} [argsOrSec] (optional, `1` by default) arguments for function or seconds.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async waitForFunction(fn, argsOrSec = null, sec = null) {
     let args = [];
@@ -3309,7 +3309,7 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {?CodeceptJS.LocatorOrString} [locator=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async switchTo(locator) {
     this.browser.isInsideFrame = true;
@@ -3336,7 +3336,7 @@ class WebDriver extends Helper {
    * 
    * @param {number} [num] (optional) number of tabs to switch forward, default: 1.
    * @param {number | null} [sec] (optional) time in seconds to wait.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async switchToNextTab(num = 1, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
@@ -3376,7 +3376,7 @@ class WebDriver extends Helper {
    * 
    * @param {number} [num] (optional) number of tabs to switch backward, default: 1.
    * @param {number?} [sec] (optional) time in seconds to wait.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async switchToPreviousTab(num = 1, sec = null) {
     const aSec = sec || this.options.waitForTimeout;
@@ -3413,7 +3413,7 @@ class WebDriver extends Helper {
    * I.closeCurrentTab();
    * ```
    * 
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async closeCurrentTab() {
     await this.browser.closeWindow();
@@ -3428,7 +3428,7 @@ class WebDriver extends Helper {
    * I.openNewTab();
    * ```
    * 
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async openNewTab(url = 'about:blank', windowName = null) {
     const client = this.browser;
@@ -3462,7 +3462,7 @@ class WebDriver extends Helper {
    * ```js
    * I.refreshPage();
    * ```
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async refreshPage() {
     const client = this.browser;
@@ -3475,7 +3475,7 @@ class WebDriver extends Helper {
    * ```js
    * I.scrollPageToTop();
    * ```
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   scrollPageToTop() {
     const client = this.browser;
@@ -3492,7 +3492,7 @@ class WebDriver extends Helper {
    * ```js
    * I.scrollPageToBottom();
    * ```
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   scrollPageToBottom() {
     const client = this.browser;
@@ -3543,7 +3543,7 @@ class WebDriver extends Helper {
    * @param {number} latitude to set.
    * @param {number} longitude to set
    * @param {number=} altitude (optional, null by default) to set
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async setGeoLocation(latitude, longitude, altitude = null) {
     if (altitude) {
@@ -3607,7 +3607,6 @@ class WebDriver extends Helper {
    * Placeholder for ~ locator only test case write once run on both Appium and WebDriver.
    * @param {*} caps
    * @param {*} fn
-   * @return {Promise<any>}
    */
   /* eslint-disable */
   runOnIOS(caps, fn) {
@@ -3617,7 +3616,6 @@ class WebDriver extends Helper {
    * Placeholder for ~ locator only test case write once run on both Appium and WebDriver.
    * @param {*} caps
    * @param {*} fn
-   * @return {Promise<any>}
    */
   runOnAndroid(caps, fn) {
   }

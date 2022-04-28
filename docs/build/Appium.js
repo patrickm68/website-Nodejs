@@ -332,7 +332,6 @@ class Appium extends Webdriver {
    *
    * @param {*} caps
    * @param {*} fn
-   * @return {Promise<any>}
    */
   async runOnIOS(caps, fn) {
     if (this.platform !== 'ios') return;
@@ -375,7 +374,6 @@ class Appium extends Webdriver {
    *
    * @param {*} caps
    * @param {*} fn
-   * @return {Promise<any>}
    */
   async runOnAndroid(caps, fn) {
     if (this.platform !== 'android') return;
@@ -396,7 +394,6 @@ class Appium extends Webdriver {
    * ```
    *
    * @param {*} fn
-   * @return {Promise<any>}
    */
   /* eslint-disable */
   async runInWeb(fn) {
@@ -493,7 +490,6 @@ class Appium extends Webdriver {
    *
    * @param {string} appId
    * @param {string} [bundleId] ID of bundle
-   * @return {Promise<any>}
    */
   async removeApp(appId, bundleId) {
     onlyForApps.call(this, 'Android');
@@ -601,7 +597,6 @@ class Appium extends Webdriver {
    * ```
    *
    * @param {'LANDSCAPE'|'PORTRAIT'} orientation LANDSCAPE or PORTRAIT
-   * @return {Promise<any>}
    *
    * Appium: support Android and iOS
    */
@@ -730,7 +725,6 @@ class Appium extends Webdriver {
    * Switch to the specified context.
    *
    * @param {*} context the context to switch to
-   * @return {Promise<any>}
    */
   async _switchToContext(context) {
     return this.browser.switchContext(context);
@@ -836,7 +830,6 @@ class Appium extends Webdriver {
    * ```
    *
    * @param {object} settings object
-   * @return {Promise<any>}
    *
    * Appium: support Android and iOS
    */
@@ -861,7 +854,6 @@ class Appium extends Webdriver {
    *
    * @param {'tapOutside' | 'pressKey'} [strategy] Desired strategy to close keyboard (‘tapOutside’ or ‘pressKey’)
    * @param {string} [key] Optional key
-   * @return {Promise<any>}
    */
   async hideDeviceKeyboard(strategy, key) {
     onlyForApps.call(this);
@@ -984,7 +976,6 @@ class Appium extends Webdriver {
    *
    * @param {object} from
    * @param {object} to
-   * @return {Promise<any>}
    *
    * Appium: support Android and iOS
    */
@@ -1217,7 +1208,6 @@ class Appium extends Webdriver {
    * Appium: support Android and iOS
    *
    * @param {Array} actions Array of touch actions
-   * @return {Promise<any>}
    */
   async touchPerform(actions) {
     onlyForApps.call(this);
@@ -1342,7 +1332,7 @@ class Appium extends Webdriver {
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator
    * @param {string} value text value to append.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async appendField(field, value) {
@@ -1363,7 +1353,7 @@ class Appium extends Webdriver {
    * ```
    * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async checkOption(field) {
@@ -1396,7 +1386,7 @@ class Appium extends Webdriver {
    * 
    * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
    * @param {?CodeceptJS.LocatorOrString | null} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    * 
    *
    */
@@ -1415,7 +1405,7 @@ class Appium extends Webdriver {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async dontSeeCheckboxIsChecked(field) {
@@ -1431,7 +1421,7 @@ class Appium extends Webdriver {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async dontSeeElement(locator) {
     if (this.isWeb) return super.dontSeeElement(locator);
@@ -1449,7 +1439,7 @@ class Appium extends Webdriver {
    * 
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async dontSeeInField(field, value) {
@@ -1468,7 +1458,7 @@ class Appium extends Webdriver {
    * 
    * @param {string} text which is not present.
    * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator in which to perfrom search.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async dontSee(text, context = null) {
     if (this.isWeb) return super.dontSee(text, context);
@@ -1491,7 +1481,7 @@ class Appium extends Webdriver {
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {CodeceptJS.StringOrSecret} value text value to fill.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async fillField(field, value) {
@@ -1652,7 +1642,7 @@ class Appium extends Webdriver {
    * 
    * @param {LocatorOrString} locator located by CSS|XPath|strict locator.
    * @param {ScrollIntoViewOptions} scrollIntoViewOptions see https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    * Supported only for web testing
    */
@@ -1670,7 +1660,7 @@ class Appium extends Webdriver {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async seeCheckboxIsChecked(field) {
@@ -1686,7 +1676,7 @@ class Appium extends Webdriver {
    * I.seeElement('#modal');
    * ```
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async seeElement(locator) {
@@ -1706,7 +1696,7 @@ class Appium extends Webdriver {
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async seeInField(field, value) {
@@ -1725,7 +1715,7 @@ class Appium extends Webdriver {
    * ```
    * @param {string} text expected on page.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|Xpath|strict locator in which to search for text.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async see(text, context) {
@@ -1754,7 +1744,7 @@ class Appium extends Webdriver {
    * ```
    * @param {LocatorOrString} select field located by label|name|CSS|XPath|strict locator.
    * @param {string|Array<*>} option visible text or value of option.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    * Supported only for web testing
    */
@@ -1774,7 +1764,7 @@ class Appium extends Webdriver {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async waitForElement(locator, sec = null) {
@@ -1792,7 +1782,7 @@ class Appium extends Webdriver {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async waitForVisible(locator, sec = null) {
@@ -1810,7 +1800,7 @@ class Appium extends Webdriver {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async waitForInvisible(locator, sec = null) {
@@ -1831,7 +1821,7 @@ class Appium extends Webdriver {
    * @param {string }text to wait for.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async waitForText(text, sec = null, context = null) {

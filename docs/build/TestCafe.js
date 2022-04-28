@@ -334,7 +334,7 @@ class TestCafe extends Helper {
    * ```
    * 
    * @param {string} url url path or global url.
-   * @return {Promise<any>}
+   * @return {void} automatically synchronized promise with recorder #! 
    */
   async amOnPage(url) {
     if (!(/^\w+\:\/\//.test(url))) {
@@ -351,7 +351,7 @@ class TestCafe extends Helper {
    * 
    * @param {number} width width in pixels or `maximize`.
    * @param {number} height height in pixels.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async resizeWindow(width, height) {
     if (width === 'maximize') {
@@ -386,7 +386,7 @@ class TestCafe extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
    * @param {?CodeceptJS.LocatorOrString | null} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    * 
    *
    */
@@ -400,7 +400,7 @@ class TestCafe extends Helper {
    * ```js
    * I.refreshPage();
    * ```
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async refreshPage() {
     // eslint-disable-next-line no-restricted-globals
@@ -417,7 +417,7 @@ class TestCafe extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async waitForVisible(locator, sec) {
@@ -444,7 +444,7 @@ class TestCafe extends Helper {
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {CodeceptJS.StringOrSecret} value text value to fill.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async fillField(field, value) {
     const els = await findFields.call(this, field);
@@ -464,7 +464,7 @@ class TestCafe extends Helper {
    * I.clearField('#email');
    * ```
    * @param {LocatorOrString} editable field located by label|name|CSS|XPath|strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async clearField(field) {
     const els = await findFields.call(this, field);
@@ -486,7 +486,7 @@ class TestCafe extends Helper {
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator
    * @param {string} value text value to append.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async appendField(field, value) {
@@ -511,7 +511,7 @@ class TestCafe extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
    * @param {string} pathToFile local file path relative to codecept.json config file.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async attachFile(field, pathToFile) {
@@ -537,7 +537,7 @@ class TestCafe extends Helper {
    * ```
    * 
    * @param {string|string[]} key key or array of keys to press.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    * {{ keys }}
    */
@@ -561,7 +561,7 @@ class TestCafe extends Helper {
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async moveCursorTo(locator, offsetX = 0, offsetY = 0) {
@@ -586,7 +586,7 @@ class TestCafe extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async doubleClick(locator, context = null) {
@@ -617,7 +617,7 @@ class TestCafe extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator clickable element located by CSS|XPath|strict locator.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async rightClick(locator, context = null) {
@@ -647,7 +647,7 @@ class TestCafe extends Helper {
    * ```
    * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async checkOption(field, context = null) {
     const el = await findCheckable.call(this, field, context);
@@ -670,7 +670,7 @@ class TestCafe extends Helper {
    * ```
    * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async uncheckOption(field, context = null) {
     const el = await findCheckable.call(this, field, context);
@@ -692,7 +692,7 @@ class TestCafe extends Helper {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async seeCheckboxIsChecked(field) {
     return proceedIsChecked.call(this, 'assert', field);
@@ -708,7 +708,7 @@ class TestCafe extends Helper {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async dontSeeCheckboxIsChecked(field) {
     return proceedIsChecked.call(this, 'negate', field);
@@ -735,7 +735,7 @@ class TestCafe extends Helper {
    * ```
    * @param {LocatorOrString} select field located by label|name|CSS|XPath|strict locator.
    * @param {string|Array<*>} option visible text or value of option.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async selectOption(select, option) {
     const els = await findFields.call(this, select);
@@ -787,7 +787,7 @@ class TestCafe extends Helper {
    * ```
    * 
    * @param {string} url a fragment to check
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async seeInCurrentUrl(url) {
     stringIncludes('url').assert(url, await getPageUrl(this.t)().catch(mapError));
@@ -797,7 +797,7 @@ class TestCafe extends Helper {
    * Checks that current url does not contain a provided fragment.
    * 
    * @param {string} url value to check.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async dontSeeInCurrentUrl(url) {
     stringIncludes('url').negate(url, await getPageUrl(this.t)().catch(mapError));
@@ -814,7 +814,7 @@ class TestCafe extends Helper {
    * ```
    * 
    * @param {string} url value to check.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async seeCurrentUrlEquals(url) {
     urlEquals(this.options.url).assert(url, await getPageUrl(this.t)().catch(mapError));
@@ -830,7 +830,7 @@ class TestCafe extends Helper {
    * ```
    * 
    * @param {string} url value to check.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async dontSeeCurrentUrlEquals(url) {
     urlEquals(this.options.url).negate(url, await getPageUrl(this.t)().catch(mapError));
@@ -847,7 +847,7 @@ class TestCafe extends Helper {
    * ```
    * @param {string} text expected on page.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|Xpath|strict locator in which to search for text.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async see(text, context = null) {
@@ -874,7 +874,7 @@ class TestCafe extends Helper {
    * 
    * @param {string} text which is not present.
    * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator in which to perfrom search.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async dontSee(text, context = null) {
@@ -898,7 +898,7 @@ class TestCafe extends Helper {
    * I.seeElement('#modal');
    * ```
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async seeElement(locator) {
     const exists = (await findElements.call(this, this.context, locator)).filterVisible().exists;
@@ -915,7 +915,7 @@ class TestCafe extends Helper {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async dontSeeElement(locator) {
     const exists = (await findElements.call(this, this.context, locator)).filterVisible().exists;
@@ -932,7 +932,7 @@ class TestCafe extends Helper {
    * I.seeElementInDOM('#modal');
    * ```
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async seeElementInDOM(locator) {
     const exists = (await findElements.call(this, this.context, locator)).exists;
@@ -949,7 +949,7 @@ class TestCafe extends Helper {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async dontSeeElementInDOM(locator) {
     const exists = (await findElements.call(this, this.context, locator)).exists;
@@ -968,7 +968,7 @@ class TestCafe extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async seeNumberOfVisibleElements(locator, num) {
@@ -1006,7 +1006,7 @@ class TestCafe extends Helper {
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async seeInField(field, value) {
     // const expectedValue = findElements.call(this, this.context, field).value;
@@ -1030,7 +1030,7 @@ class TestCafe extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async dontSeeInField(field, value) {
     // const expectedValue = findElements.call(this, this.context, field).value;
@@ -1064,7 +1064,7 @@ class TestCafe extends Helper {
    * I.seeInSource('<h1>Green eggs &amp; ham</h1>');
    * ```
    * @param {string} text value to check.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async seeInSource(text) {
     const source = await getHtmlSource(this.t)();
@@ -1079,7 +1079,7 @@ class TestCafe extends Helper {
    * ```
    * 
    * @param {string} value to check.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async dontSeeInSource(text) {
     const source = await getHtmlSource(this.t)();
@@ -1096,7 +1096,7 @@ class TestCafe extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {string} fileName file name to save.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async saveElementScreenshot(locator, fileName) {
@@ -1122,7 +1122,7 @@ class TestCafe extends Helper {
    * 
    * @param {string} fileName file name to save.
    * @param {boolean} [fullPage=false] (optional, `false` by default) flag to enable fullscreen screenshot mode.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   // TODO Implement full page screenshots
   async saveScreenshot(fileName) {
@@ -1141,7 +1141,7 @@ class TestCafe extends Helper {
    * ```
    * 
    * @param {number} sec number of second to wait.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async wait(sec) {
     return new Promise(((done) => {
@@ -1175,7 +1175,7 @@ class TestCafe extends Helper {
    * 
    * @param {string|function} fn function to be executed in browser context.
    * @param {...any} args to be passed to function.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    * 
    *
    * If a function returns a Promise It will wait for it resolution.
@@ -1388,7 +1388,7 @@ class TestCafe extends Helper {
    * ```js
    * I.scrollPageToTop();
    * ```
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   scrollPageToTop() {
     return ClientFunction(() => window.scrollTo(0, 0)).with({ boundTestRun: this.t })().catch(mapError);
@@ -1400,7 +1400,7 @@ class TestCafe extends Helper {
    * ```js
    * I.scrollPageToBottom();
    * ```
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   scrollPageToBottom() {
     return ClientFunction(() => {
@@ -1425,7 +1425,7 @@ class TestCafe extends Helper {
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async scrollTo(locator, offsetX = 0, offsetY = 0) {
     if (typeof locator === 'number' && typeof offsetX === 'number') {
@@ -1464,7 +1464,7 @@ class TestCafe extends Helper {
    * ```
    * 
    * @param {?CodeceptJS.LocatorOrString} [locator=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async switchTo(locator) {
     if (Number.isInteger(locator)) {
@@ -1497,7 +1497,7 @@ class TestCafe extends Helper {
    * ```
    * 
    * @param {Cookie|Array<Cookie>} cookie a cookie object or array of cookie objects.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async setCookie(cookie) {
     if (Array.isArray(cookie)) {
@@ -1522,7 +1522,7 @@ class TestCafe extends Helper {
    * ```
    * 
    * @param {string} name cookie name.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async seeCookie(name) {
@@ -1538,7 +1538,7 @@ class TestCafe extends Helper {
    * ```
    * 
    * @param {string} name cookie name.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async dontSeeCookie(name) {
     const cookie = await this.grabCookie(name);
@@ -1588,7 +1588,7 @@ class TestCafe extends Helper {
    * ```
    * 
    * @param {?string} [cookie=null] (optional, `null` by default) cookie name
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async clearCookie(cookieName) {
     const clearCookies = ClientFunction(() => {
@@ -1616,7 +1616,7 @@ class TestCafe extends Helper {
    * 
    * @param {string} urlPart value to check.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async waitInUrl(urlPart, sec = null) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
@@ -1642,7 +1642,7 @@ class TestCafe extends Helper {
    * 
    * @param {string} urlPart value to check.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async waitUrlEquals(urlPart, sec = null) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
@@ -1680,7 +1680,7 @@ class TestCafe extends Helper {
    * @param {string|function} fn to be executed in browser context.
    * @param {any[]|number} [argsOrSec] (optional, `1` by default) arguments for function or seconds.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async waitForFunction(fn, argsOrSec = null, sec = null) {
     let args = [];
@@ -1708,7 +1708,7 @@ class TestCafe extends Helper {
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async waitNumberOfVisibleElements(locator, num, sec) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
@@ -1730,7 +1730,7 @@ class TestCafe extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async waitForElement(locator, sec) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
@@ -1750,7 +1750,7 @@ class TestCafe extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async waitToHide(locator, sec) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
@@ -1770,7 +1770,7 @@ class TestCafe extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    */
   async waitForInvisible(locator, sec) {
     const waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
@@ -1793,7 +1793,7 @@ class TestCafe extends Helper {
    * @param {string }text to wait for.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator.
-   * @return {Promise<any>}
+   * [!] returns a _promise_ which is synchronized internally by recorder
    *
    */
   async waitForText(text, sec = null, context = null) {

@@ -1,7 +1,8 @@
 <template>
   <header class="sub-bar">
     <div class="message">
-        <a target="_blank" href="https://uahelp.monobank.ua/">🇺🇦 Ukraine needs your support!</a>
+        <a target="_blank" href="https://stand-with-ukraine.pp.ua">🇺🇦 CodeceptJS was created in Ukraine.
+        #StandWithUkraine</a>
       </p>
     </div>
   </header>

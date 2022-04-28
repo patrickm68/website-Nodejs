@@ -65,6 +65,16 @@
         </div>
       </slide>
 
+      <slide
+          :is="slideComp"
+          aria-hidden="false"
+      >
+
+        <div class="slide" >
+          <img src="/img/companies/BC_LogoScreen_C.jpg" title="Betclick"  alt="Betclick" class="rounded" >
+        </div>
+      </slide>
+
     </carousel>
   </div>
 </template>

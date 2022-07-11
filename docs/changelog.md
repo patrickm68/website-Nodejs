@@ -7,6 +7,44 @@ layout: Section
 
 # Releases
 
+## 3.3.4
+
+* Added support for masking fields in objects via `secret` function:
+
+```js
+I.sendPostRequest('/auth', secret({ name: 'jon', password: '123456' }, 'password'));
+```
+* Added [a guide about using of `secret`](/secrets) function
+* **[Appium]** Use `touchClick` when interacting with elements in iOS. See [#3317](https://github.com/codeceptjs/CodeceptJS/issues/3317) by **[mikk150](https://github.com/mikk150)**
+* **[Playwright]** Added `cdpConnection` option to connect over CDP. See [#3309](https://github.com/codeceptjs/CodeceptJS/issues/3309) by **[Hmihaly](https://github.com/Hmihaly)** 
+* [customLocator plugin] Allowed to specify multiple attributes for custom locator. Thanks to **[aruiz-caritsqa](https://github.com/aruiz-caritsqa)**
+
+```js
+plugins: {
+ customLocator: {
+   enabled: true,
+   prefix: '$',
+   attribute: ['data-qa', 'data-test'],
+ }
+}
+```
+* [retryTo plugin] Fixed [#3147](https://github.com/codeceptjs/CodeceptJS/issues/3147) using `pollInterval` option. See [#3351](https://github.com/codeceptjs/CodeceptJS/issues/3351) by **[cyonkee](https://github.com/cyonkee)**
+* **[Playwright]** Fixed grabbing of browser console messages and window resize in new tab. Thanks to **[mirao](https://github.com/mirao)**
+* **[REST]** Added `prettyPrintJson` option to print JSON in nice way by **[PeterNgTr](https://github.com/PeterNgTr)** 
+* **[JSONResponse]** Updated response validation to iterate over array items if response is array. Thanks to **[PeterNgTr](https://github.com/PeterNgTr)**
+
+```js
+// response.data == [
+//   { user: { name: 'jon', email: 'jon@doe.com' } },
+//   { user: { name: 'matt', email: 'matt@doe.com' } },
+//]
+
+I.seeResponseContainsKeys(['user']);
+I.seeResponseContainsJson({ user: { email: 'jon@doe.com' } });
+I.seeResponseContainsJson({ user: { email: 'matt@doe.com' } });
+I.dontSeeResponseContainsJson({ user: 2 });
+```
+
 ## 3.3.3
 
 * Fixed `DataCloneError: () => could not be cloned` when running data tests in run-workers

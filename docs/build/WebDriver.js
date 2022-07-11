@@ -942,7 +942,7 @@ class WebDriver extends Helper {
    * {{ react }}
    */
   async click(locator, context = null) {
-    const clickMethod = this.browser.isMobile ? 'touchClick' : 'elementClick';
+    const clickMethod = this.browser.isMobile && this.browser.capabilities.platformName !== 'android' ? 'touchClick' : 'elementClick';
     const locateFn = prepareLocateFn.call(this, context);
 
     const res = await findClickable.call(this, locator, locateFn);
@@ -1296,7 +1296,7 @@ class WebDriver extends Helper {
    * Appium: not tested
    */
   async checkOption(field, context = null) {
-    const clickMethod = this.browser.isMobile ? 'touchClick' : 'elementClick';
+    const clickMethod = this.browser.isMobile && this.browser.capabilities.platformName !== 'android' ? 'touchClick' : 'elementClick';
     const locateFn = prepareLocateFn.call(this, context);
 
     const res = await findCheckable.call(this, field, locateFn);
@@ -1327,7 +1327,7 @@ class WebDriver extends Helper {
    * Appium: not tested
    */
   async uncheckOption(field, context = null) {
-    const clickMethod = this.browser.isMobile ? 'touchClick' : 'elementClick';
+    const clickMethod = this.browser.isMobile && this.browser.capabilities.platformName !== 'android' ? 'touchClick' : 'elementClick';
     const locateFn = prepareLocateFn.call(this, context);
 
     const res = await findCheckable.call(this, field, locateFn);
@@ -2212,7 +2212,7 @@ class WebDriver extends Helper {
       assertElementExists(res);
       const elem = usingFirstElement(res);
       const elementId = getElementId(elem);
-      if (this.browser.isMobile) return this.browser.touchScroll(offsetX, offsetY, elementId);
+      if (this.browser.isMobile && this.browser.capabilities.platformName !== 'android') return this.browser.touchScroll(offsetX, offsetY, elementId);
       const location = await elem.getLocation();
       assertElementExists(location, 'Failed to receive', 'location');
       /* eslint-disable prefer-arrow-callback */
@@ -2220,7 +2220,7 @@ class WebDriver extends Helper {
       /* eslint-enable */
     }
 
-    if (this.browser.isMobile) return this.browser.touchScroll(locator, offsetX, offsetY);
+    if (this.browser.isMobile && this.browser.capabilities.platformName !== 'android') return this.browser.touchScroll(locator, offsetX, offsetY);
 
     /* eslint-disable prefer-arrow-callback, comma-dangle */
     return this.browser.execute(function (x, y) { return window.scrollTo(x, y); }, offsetX, offsetY);

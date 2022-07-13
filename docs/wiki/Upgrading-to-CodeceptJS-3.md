@@ -1,7 +1,7 @@
-🚀 CodeceptJS 3 is in beta now. Install it:
+🚀 CodeceptJS 3 is out now. Install it:
 
 ```
-npm i codeceptjs@3.0.0-beta.3
+npm i codeceptjs
 ```
 
 * [COMPLETE CHANGELOG](https://github.com/Codeception/CodeceptJS/blob/codeceptjs-v3.0/CHANGELOG.md#300-beta)

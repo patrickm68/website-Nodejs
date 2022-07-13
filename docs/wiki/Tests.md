@@ -1,6 +1,6 @@
 Created by [Testomat.io](https://testomat.io/)
 
-📝 [test/graphql/GraphQL_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/graphql/GraphQL_test.js) <!-- check-tests: Add test docs below id=b3e81bbe4f49f89853a5ac74595649c23faee434 -->
+📝 [test/graphql/GraphQL_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/graphql/GraphQL_test.js) <!-- check-tests: Add test docs below id=b3e81bbe4f49f89853a5ac74595649c23faee434 -->
 * 📎 **GraphQL** <!-- check-tests: Add test docs below id=d1e8ea235c7de883e3c688b5950ad02610e50d8c -->
   * 📎 **basic queries** <!-- check-tests: Add test docs below id=2315eafab566e3c1a212bedaac8549b08c88413a -->
     * ✔️ `should send a query: read` <!-- check-tests: Add test docs below id=1eb87ebff97c682fe358904a7f3780af6b406506 -->
@@ -8,7 +8,7 @@ Created by [Testomat.io](https://testomat.io/)
     * ✔️ `should send a mutation: create` <!-- check-tests: Add test docs below id=8d3ae1f12052f60983a2994c5edbf09a0565f913 -->
     * ✔️ `should send a mutation: delete` <!-- check-tests: Add test docs below id=a11cdbd9238373101612d67150f2d8d83df4576f -->
 
-📝 [test/graphql/GraphQLDataFactory_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/graphql/GraphQLDataFactory_test.js) <!-- check-tests: Add test docs below id=b1cc186fb8bfbcc2ffbc8f07227031a9a4c9004a -->
+📝 [test/graphql/GraphQLDataFactory_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/graphql/GraphQLDataFactory_test.js) <!-- check-tests: Add test docs below id=b1cc186fb8bfbcc2ffbc8f07227031a9a4c9004a -->
 * 📎 **GraphQLDataFactory** <!-- check-tests: Add test docs below id=55a25c0e3340d3fbf4e9ad99cf3b48cefd9f48a0 -->
   * 📎 **create and cleanup records** <!-- check-tests: Add test docs below id=a57426a3008dbe2ba5ab5097341cef829a80e944 -->
     * ✔️ `should create a new user` <!-- check-tests: Add test docs below id=5ab16eb434e7b956d88d06324ad369aaabc01eee -->
@@ -18,7 +18,7 @@ Created by [Testomat.io](https://testomat.io/)
     * ✔️ `should create multiple users and cleanup after` <!-- check-tests: Add test docs below id=a06811cf99b48d642328d7ebc3424019549cb684 -->
     * ✔️ `should not remove records if cleanup:false` <!-- check-tests: Add test docs below id=01d838f43be8ebf7256a391c7c9f4a902bd1ecd2 -->
 
-📝 [test/helper/Appium_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/helper/Appium_test.js) <!-- check-tests: Add test docs below id=e9213a06eaf81e3ef68b3ea57277e8b3ab667366 -->
+📝 [test/helper/Appium_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/helper/Appium_test.js) <!-- check-tests: Add test docs below id=e9213a06eaf81e3ef68b3ea57277e8b3ab667366 -->
 * 📎 **Appium** <!-- check-tests: Add test docs below id=37b5a5d5a373d66eabb825137ddd6e62bc280cbf -->
   * 📎 **app installation : #seeAppIsInstalled, #installApp, #removeApp, #seeAppIsNotInstalled** <!-- check-tests: Add test docs below id=ad8e0b434a42981794eba207507c1760a4853f58 -->
     * 📎 **#grabAllContexts, #grabContext, #grabCurrentActivity, #grabNetworkConnection, #grabOrientation, #grabSettings** <!-- check-tests: Add test docs below id=d73bba83c7a68b07284faf8a41dbca22ea197adc -->
@@ -103,7 +103,7 @@ Created by [Testomat.io](https://testomat.io/)
     * ✔️ `should execute only on Android >= 5.0 @quick` <!-- check-tests: Add test docs below id=dc787af6779cc856cd8441d0e48262d33b0e9bae -->
     * ✔️ `should execute only in Web` <!-- check-tests: Add test docs below id=bf886426df323bee999ab683e90e09ab315e4a7b -->
 
-📝 [test/helper/AppiumWeb_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/helper/AppiumWeb_test.js) <!-- check-tests: Add test docs below id=2dc4b3cd18804d5eadde867f033437f36ed4b537 -->
+📝 [test/helper/AppiumWeb_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/helper/AppiumWeb_test.js) <!-- check-tests: Add test docs below id=2dc4b3cd18804d5eadde867f033437f36ed4b537 -->
 * 📎 **Appium Web** <!-- check-tests: Add test docs below id=fe386e9035dd2f5d8545906c9dc2e8f9a0abb773 -->
   * 📎 **current url : #seeInCurrentUrl, #seeCurrentUrlEquals, ...** <!-- check-tests: Add test docs below id=423999bfc6d1c3389600705547a15b47df4fa21b -->
     * ✔️ `should check for url fragment` <!-- check-tests: Add test docs below id=db168afb546b0642772a33e74f46a8ae2f5658f5 -->
@@ -128,7 +128,7 @@ Created by [Testomat.io](https://testomat.io/)
   * 📎 **#within** <!-- check-tests: Add test docs below id=553d673536080c2647b41d1b8ddc70e93632a869 -->
     * ✔️ `should work using within operator` <!-- check-tests: Add test docs below id=f927e7f5625944e1ce4141ace2568e3fa094c469 -->
 
-📝 [test/helper/Nightmare_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/helper/Nightmare_test.js) <!-- check-tests: Add test docs below id=7e9c772e9ab900cfbc49ffbb9ffe1cd0d1ba8fc4 -->
+📝 [test/helper/Nightmare_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/helper/Nightmare_test.js) <!-- check-tests: Add test docs below id=7e9c772e9ab900cfbc49ffbb9ffe1cd0d1ba8fc4 -->
 * 📎 **Nightmare** <!-- check-tests: Add test docs below id=52f819810cf69d916fbb550ef989f1e3e93dbec6 -->
   * 📎 **open page : #amOnPage** <!-- check-tests: Add test docs below id=ca724bc8ea98e9b70a9930b9e4fd2c6135805443 -->
     * ✔️ `should open main page of configured site` <!-- check-tests: Add test docs below id=b9ae0ec42decf0749300e3e47cefc9f5a673180a -->
@@ -157,7 +157,7 @@ Created by [Testomat.io](https://testomat.io/)
   * 📎 **#seeNumberOfElements** <!-- check-tests: Add test docs below id=b9918a252767903f3578ac264142777b97e0edb3 -->
     * ✔️ `should return 1 as count` <!-- check-tests: Add test docs below id=3a9643738f130be149b303ada46fc0ff33b0d0de -->
 
-📝 [test/helper/Playwright_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/helper/Playwright_test.js) <!-- check-tests: Add test docs below id=8db5a5f3124b4d06a23741606c260ce92e1ee446 -->
+📝 [test/helper/Playwright_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/helper/Playwright_test.js) <!-- check-tests: Add test docs below id=8db5a5f3124b4d06a23741606c260ce92e1ee446 -->
 * 📎 **Playwright** <!-- check-tests: Add test docs below id=48b9e3d1b453a72cf6ba2f78724514c9f518b474 -->
   * 📎 **open page : #amOnPage** <!-- check-tests: Add test docs below id=ca724bc8ea98e9b70a9930b9e4fd2c6135805443 -->
     * ✔️ `should open main page of configured site` <!-- check-tests: Add test docs below id=4c4125ab114d80a2c65c8c02787c760cfbb7fb3f -->
@@ -247,9 +247,9 @@ Created by [Testomat.io](https://testomat.io/)
     * ✔️ `should grab browser logs` <!-- check-tests: Add test docs below id=19e1b07b06b4e49c62381275bb6c7adeca2337f1 -->
   * 📎 **#dragAndDrop** <!-- check-tests: Add test docs below id=07bebbd2d86e5f923cae7cd9775fbf614e977852 -->
     * ✔️ `Drag item from source to target (no iframe) @dragNdrop` <!-- check-tests: Add test docs below id=f47551dd1ef732bb993f5023d87413ec0fdee08e -->
-     [~~Drag and drop from within an iframe~~](https://github.com/codeceptjs/CodeceptJS/tree/598394b1b7498738fbcb495617b756ab48ea6af5/test/helper/Playwright_test.js#L580) ⚠
+     [~~Drag and drop from within an iframe~~](https://github.com/codeceptjs/CodeceptJS/tree/598394b1b7498738fbcb495617b756ab48ea6af5/test/helper/Playwright_test.js#L580) ⚠     [~~Drag and drop from within an iframe~~](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/helper/Playwright_test.js#L580) ⚠     [~~Drag and drop from within an iframe~~](https://github.com/codeceptjs/CodeceptJS/tree/5164f0090748d2eca00c152d82a55338ac1e21ec/test/helper/Playwright_test.js#L580) ⚠     [~~Drag and drop from within an iframe~~](https://github.com/codeceptjs/CodeceptJS/tree/85fe5397629172c36cd70e35bd4c14bb6746a832/test/helper/Playwright_test.js#L580) ⚠     [~~Drag and drop from within an iframe~~](https://github.com/codeceptjs/CodeceptJS/tree/265dcb3a44f2fea26351992728a4f31bc3249290/test/helper/Playwright_test.js#L580) ⚠     [~~Drag and drop from within an iframe~~](https://github.com/codeceptjs/CodeceptJS/tree/22f28d62df741a9dbf0e9b2e35d27d0dcbc98024/test/helper/Playwright_test.js#L580) ⚠     [~~Drag and drop from within an iframe~~](https://github.com/codeceptjs/CodeceptJS/tree/4825f53e0cc308c57bf6e55d9aed7da58bc99161/test/helper/Playwright_test.js#L580) ⚠     [~~Drag and drop from within an iframe~~](https://github.com/codeceptjs/CodeceptJS/tree/12d55f9271591c85f95fa6d017f30b5f9922aa33/test/helper/Playwright_test.js#L580) ⚠
 
-    * [~~Drag and drop from within an iframe~~](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/helper/Playwright_test.js#L580) ⚠️ *skipped*
+    * [~~Drag and drop from within an iframe~~](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/helper/Playwright_test.js#L580) ⚠️ *skipped*
   * 📎 **#switchTo frame** <!-- check-tests: Add test docs below id=c4fd6e74171854870d0afdf308cf4db2e73982ad -->
     * ✔️ `should switch to frame using name` <!-- check-tests: Add test docs below id=dca13125063298952167545b8a81acd5670e0dbe -->
     * ✔️ `should switch to root frame` <!-- check-tests: Add test docs below id=98cf562a33433773d6527662a9e35289d1f1c451 -->
@@ -274,7 +274,7 @@ Created by [Testomat.io](https://testomat.io/)
 * 📎 **Playwright - Emulation** <!-- check-tests: Add test docs below id=3037cadcb537966a2ef39bdf3f875c0daf483b2b -->
   * ✔️ `should open page as iPhone ` <!-- check-tests: Add test docs below id=d4aa312adedb82c5ce6c6587f340cda4e4adc153 -->
 
-📝 [test/helper/Protractor_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/helper/Protractor_test.js) <!-- check-tests: Add test docs below id=65cf3e408c761a3fdba080a6e8b98522fda10c53 -->
+📝 [test/helper/Protractor_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/helper/Protractor_test.js) <!-- check-tests: Add test docs below id=65cf3e408c761a3fdba080a6e8b98522fda10c53 -->
 * 📎 **Protractor** <!-- check-tests: Add test docs below id=4319920ee7775ff4dee9d282e32daa45f6083293 -->
   * 📎 **open page : #amOnPage** <!-- check-tests: Add test docs below id=ca724bc8ea98e9b70a9930b9e4fd2c6135805443 -->
     * ✔️ `should open main page of configured site` <!-- check-tests: Add test docs below id=45aabcfe14706b18e6199208262583dce516234e -->
@@ -365,7 +365,7 @@ Created by [Testomat.io](https://testomat.io/)
     * 📎 **#seeNumberOfElements** <!-- check-tests: Add test docs below id=b9918a252767903f3578ac264142777b97e0edb3 -->
       * ✔️ `should return 1 as count` <!-- check-tests: Add test docs below id=417ca1affe0393370bbb81a482b131ca5c82b250 -->
 
-📝 [test/helper/ProtractorWeb_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/helper/ProtractorWeb_test.js) <!-- check-tests: Add test docs below id=a8fa20a7cb23dbd96fca46150246a0bf252fd338 -->
+📝 [test/helper/ProtractorWeb_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/helper/ProtractorWeb_test.js) <!-- check-tests: Add test docs below id=a8fa20a7cb23dbd96fca46150246a0bf252fd338 -->
 * 📎 **Protractor-NonAngular** <!-- check-tests: Add test docs below id=1aacd891d3215affac93edd99d816b064ef96dda -->
   * 📎 **window size #resizeWindow** <!-- check-tests: Add test docs below id=48ccadf08ab1b237e4fef6b2a314da80df489805 -->
     * ✔️ `should set initial window size` <!-- check-tests: Add test docs below id=9572e930ddab891a509707c983e7b7ed2501749b -->
@@ -432,7 +432,7 @@ Created by [Testomat.io](https://testomat.io/)
     * ✔️ `should locate a field` <!-- check-tests: Add test docs below id=c7818fa761e4b8cb523dd80a53cc3326f3e2d897 -->
     * ✔️ `should not locate a non-existing field` <!-- check-tests: Add test docs below id=43df32466405e6384f954423fe9c5b4f1d5a420d -->
 
-📝 [test/helper/Puppeteer_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/helper/Puppeteer_test.js) <!-- check-tests: Add test docs below id=e01277d78d825248c8caf65b218459af8fcdf878 -->
+📝 [test/helper/Puppeteer_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/helper/Puppeteer_test.js) <!-- check-tests: Add test docs below id=e01277d78d825248c8caf65b218459af8fcdf878 -->
 * 📎 **Puppeteer - BasicAuth** <!-- check-tests: Add test docs below id=8e91d94f954a9172f7c0ce7065ec0e248b0d9978 -->
   * 📎 **open page with provided basic auth** <!-- check-tests: Add test docs below id=7ea1ce14ebe3dab79ac53994ae0dcb7d617a6f19 -->
     * ✔️ `should be authenticated ` <!-- check-tests: Add test docs below id=140ca5ba0b055dcc4f020c830ef4cdef6c1dd24e -->
@@ -566,7 +566,7 @@ Created by [Testomat.io](https://testomat.io/)
     * ✔️ `should throw an exception when endpoint is unreachable` <!-- check-tests: Add test docs below id=639bec6dc5865831166dd77947c59934b78e8dd9 -->
     * ✔️ `should clear any prior existing pages on remote browser` <!-- check-tests: Add test docs below id=6d9c175f8b87835e16ec37be5a6e06da511c1fce -->
 
-📝 [test/helper/TestCafe_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/helper/TestCafe_test.js) <!-- check-tests: Add test docs below id=754a25e93cad08bb0fbd55e50cbca0c078b76624 -->
+📝 [test/helper/TestCafe_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/helper/TestCafe_test.js) <!-- check-tests: Add test docs below id=754a25e93cad08bb0fbd55e50cbca0c078b76624 -->
 * 📎 **TestCafe** <!-- check-tests: Add test docs below id=b4d2b384929cc113aa560cd08e114504921e4bcc -->
   * 📎 **open page : #amOnPage** <!-- check-tests: Add test docs below id=ca724bc8ea98e9b70a9930b9e4fd2c6135805443 -->
     * ✔️ `should open main page of configured site` <!-- check-tests: Add test docs below id=17ed6258989969b658feb7aaca33525f60d4de1e -->
@@ -576,7 +576,7 @@ Created by [Testomat.io](https://testomat.io/)
     * ✔️ `should wait for function returns true` <!-- check-tests: Add test docs below id=1ac9934700895111cda027c88ca45bf84fc22f24 -->
     * ✔️ `should pass arguments and wait for function returns true` <!-- check-tests: Add test docs below id=9d6e07153b5fe917f5e9f02102fa913567bdcfc6 -->
 
-📝 [test/helper/WebDriver_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/helper/WebDriver_test.js) <!-- check-tests: Add test docs below id=6489fd7e8eab8a877da73284fa429110a08d6bc4 -->
+📝 [test/helper/WebDriver_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/helper/WebDriver_test.js) <!-- check-tests: Add test docs below id=6489fd7e8eab8a877da73284fa429110a08d6bc4 -->
 * 📎 **WebDriver** <!-- check-tests: Add test docs below id=18fae0f0ae86a94950b70eb6b562cae8d2f46b2f -->
   * 📎 **open page : #amOnPage** <!-- check-tests: Add test docs below id=ca724bc8ea98e9b70a9930b9e4fd2c6135805443 -->
     * ✔️ `should open main page of configured site` <!-- check-tests: Add test docs below id=f743ee94c52f5774f289c8b5ff81f43f7a1ca4bc -->
@@ -670,9 +670,9 @@ Created by [Testomat.io](https://testomat.io/)
     * ✔️ `should set initial window size` <!-- check-tests: Add test docs below id=0c55f0addec248da545a42ec952cdfaa923757b7 -->
     * ✔️ `should set window size on new session` <!-- check-tests: Add test docs below id=31936a588baf9b9c9e7329e5f1eec0ad586d98a2 -->
     * ✔️ `should resize window to specific dimensions` <!-- check-tests: Add test docs below id=36797fe111216afde9aace722abf7716b50787fd -->
-     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/59ded499e787cdd32e7c4f7ad965c98a20b501ec/test/helper/WebDriver_test.js#L786) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/59ded499e787cdd32e7c4f7ad965c98a20b501ec/test/helper/WebDriver_test.js#L786) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/f9c655b79852df30e188176a457c240fa6cb4c75/test/helper/WebDriver_test.js#L786) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/b6f01ba546c821ea05a8ea8e2185155f7f0ebfcf/test/helper/WebDriver_test.js#L786) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/f114b323d09f8f68b55595ad89d5eecaba309411/test/helper/WebDriver_test.js#L786) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/4a6ef74e7e8e367de29d261475d939e66b9b8536/test/helper/WebDriver_test.js#L786) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/dfa8c88f30a3dfa714f43f4932f8b38643d0b43d/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/85df33744833444ca2dd19b30947726b2906d68a/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/b201e460f351f415b8f268cbaa2a56e6f2df95e7/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/987cf85da8de8464f54b463c3c979e4af19a697d/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/bc736c915f4d071cd0eaba6696f048d10e515ce6/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/96278920e6312f2d6c1ed5569d40fa9039a1d796/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/b7bc6cdd8b6550284e50ecc0886dd1dfb9972a6b/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/8c3e79fccf01ab2d3da8b2d6ce902d96d8a83265/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/0e5247789852ec4806dc4365d6ce4a96e84494bc/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/8bc6cf9cdb5cdb26eb8b2d97a333c7f1d5a6fa48/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/7e354b75015bd2bdcdcbe41a97e0c74fdbfc45e3/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/fa84f3f91b2d625a2064adac067ac5401714a2e2/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/974f45cbc54367d92f6a87426d115a2fa854fbb6/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/b7ed4181246cf7f0d03e81cd76c0cdb1bb401204/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/18ff28932c3bc2ef5513a6074c5541a383315b22/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/7df680264b6b0d079651d7cabb818926e53d494b/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/ba86940746ef8c5d37506ff405c2f6f6ee488241/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/52282851b4f4582a1aa7091ebb1a8628ffafcee2/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/41edf4dfb10586d405eee363daf04814342c955c/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/e4dd9a2f1bbf92249ca54b6982a37f1cd45a0be8/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/41936638272091400d4d239769300bd730e5b108/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/63ed1f1d9b1e3a80dffe6fc5f2da50b44e291d6c/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/4a31d20ae19522cc250120f5e4ee4bdf7e0dc455/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/10c7443ae71f32d5ff8c5426f55e4ea2efc194b8/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/a1c9a18ab78d28b3284eba01ed64e00714fcd7b0/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/a7f9f41fc65a2e316730feadd2ed797caefe0b53/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/9c839bd9ab311fa4d92fb01fda29322bbd0982d1/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/37e5ae857521c3f92553d3bde3206e8640c01aba/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/29b942fba620ed48423fc5d4d799c8d49b28273a/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/d1686fb303ee46bb5c1e5f52373167062225a5a9/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/b2affe824f31fc565d0f92d8cdc1471e660611f4/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/416cd2cd3b4c6ec439a4e085a1ccc20a6eb10326/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/9808e71c4ac7c6798f1f2dd54dd6be3d7e7c4a91/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/598394b1b7498738fbcb495617b756ab48ea6af5/test/helper/WebDriver_test.js#L794) ⚠
+     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/59ded499e787cdd32e7c4f7ad965c98a20b501ec/test/helper/WebDriver_test.js#L786) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/59ded499e787cdd32e7c4f7ad965c98a20b501ec/test/helper/WebDriver_test.js#L786) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/f9c655b79852df30e188176a457c240fa6cb4c75/test/helper/WebDriver_test.js#L786) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/b6f01ba546c821ea05a8ea8e2185155f7f0ebfcf/test/helper/WebDriver_test.js#L786) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/f114b323d09f8f68b55595ad89d5eecaba309411/test/helper/WebDriver_test.js#L786) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/4a6ef74e7e8e367de29d261475d939e66b9b8536/test/helper/WebDriver_test.js#L786) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/dfa8c88f30a3dfa714f43f4932f8b38643d0b43d/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/85df33744833444ca2dd19b30947726b2906d68a/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/b201e460f351f415b8f268cbaa2a56e6f2df95e7/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/987cf85da8de8464f54b463c3c979e4af19a697d/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/bc736c915f4d071cd0eaba6696f048d10e515ce6/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/96278920e6312f2d6c1ed5569d40fa9039a1d796/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/b7bc6cdd8b6550284e50ecc0886dd1dfb9972a6b/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/8c3e79fccf01ab2d3da8b2d6ce902d96d8a83265/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/0e5247789852ec4806dc4365d6ce4a96e84494bc/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/8bc6cf9cdb5cdb26eb8b2d97a333c7f1d5a6fa48/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/7e354b75015bd2bdcdcbe41a97e0c74fdbfc45e3/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/fa84f3f91b2d625a2064adac067ac5401714a2e2/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/974f45cbc54367d92f6a87426d115a2fa854fbb6/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/b7ed4181246cf7f0d03e81cd76c0cdb1bb401204/test/helper/WebDriver_test.js#L809) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/18ff28932c3bc2ef5513a6074c5541a383315b22/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/7df680264b6b0d079651d7cabb818926e53d494b/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/ba86940746ef8c5d37506ff405c2f6f6ee488241/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/52282851b4f4582a1aa7091ebb1a8628ffafcee2/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/41edf4dfb10586d405eee363daf04814342c955c/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/e4dd9a2f1bbf92249ca54b6982a37f1cd45a0be8/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/41936638272091400d4d239769300bd730e5b108/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/63ed1f1d9b1e3a80dffe6fc5f2da50b44e291d6c/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/4a31d20ae19522cc250120f5e4ee4bdf7e0dc455/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/10c7443ae71f32d5ff8c5426f55e4ea2efc194b8/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/a1c9a18ab78d28b3284eba01ed64e00714fcd7b0/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/a7f9f41fc65a2e316730feadd2ed797caefe0b53/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/9c839bd9ab311fa4d92fb01fda29322bbd0982d1/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/37e5ae857521c3f92553d3bde3206e8640c01aba/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/29b942fba620ed48423fc5d4d799c8d49b28273a/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/d1686fb303ee46bb5c1e5f52373167062225a5a9/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/b2affe824f31fc565d0f92d8cdc1471e660611f4/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/416cd2cd3b4c6ec439a4e085a1ccc20a6eb10326/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/9808e71c4ac7c6798f1f2dd54dd6be3d7e7c4a91/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/598394b1b7498738fbcb495617b756ab48ea6af5/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/5164f0090748d2eca00c152d82a55338ac1e21ec/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/85fe5397629172c36cd70e35bd4c14bb6746a832/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/265dcb3a44f2fea26351992728a4f31bc3249290/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/22f28d62df741a9dbf0e9b2e35d27d0dcbc98024/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/4825f53e0cc308c57bf6e55d9aed7da58bc99161/test/helper/WebDriver_test.js#L794) ⚠     [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/12d55f9271591c85f95fa6d017f30b5f9922aa33/test/helper/WebDriver_test.js#L794) ⚠
 
-    * [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/helper/WebDriver_test.js#L794) ⚠️ *skipped*
+    * [~~should resize window to maximum screen dimensions~~](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/helper/WebDriver_test.js#L794) ⚠️ *skipped*
   * 📎 **SmartWait** <!-- check-tests: Add test docs below id=42cb0ca7c09c6fdafccf89801e29d199757717f4 -->
     * ✔️ `should wait for element to appear` <!-- check-tests: Add test docs below id=daa57da692f785ef35e56505bef9f9e58e8bd6f4 -->
     * ✔️ `should wait for clickable element appear` <!-- check-tests: Add test docs below id=fec4a68f447119b2ba7aa1dcbd842d6b5045e32c -->
@@ -729,7 +729,7 @@ Created by [Testomat.io](https://testomat.io/)
   * 📎 **open page : #amOnPage** <!-- check-tests: Add test docs below id=ca724bc8ea98e9b70a9930b9e4fd2c6135805443 -->
     * ✔️ `should be authenticated` <!-- check-tests: Add test docs below id=09deb8fce207e6e4d47ad940084447551ef32e22 -->
 
-📝 [test/helper/WebDriverIO_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/helper/WebDriverIO_test.js) <!-- check-tests: Add test docs below id=4eb3b9da0f076142886e85cdd5e86eab313cdf0f -->
+📝 [test/helper/WebDriverIO_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/helper/WebDriverIO_test.js) <!-- check-tests: Add test docs below id=4eb3b9da0f076142886e85cdd5e86eab313cdf0f -->
 * 📎 **WebDriverIO** <!-- check-tests: Add test docs below id=1d693c6639b9054da2315a0d847a2ea37034a0d9 -->
   * 📎 **open page : #amOnPage** <!-- check-tests: Add test docs below id=ca724bc8ea98e9b70a9930b9e4fd2c6135805443 -->
     * ✔️ `should open main page of configured site` <!-- check-tests: Add test docs below id=74fa475c3068b9e7efab7f84897c42826163bbc1 -->
@@ -855,7 +855,7 @@ Created by [Testomat.io](https://testomat.io/)
     * ✔️ `should switch to root frame` <!-- check-tests: Add test docs below id=9083e9f6d35cddd3f1c8bd8f3b9ac931cc0faacc -->
     * ✔️ `should switch to frame using frame number` <!-- check-tests: Add test docs below id=13970f12d67b576e0df26f33d6cf968dc1bb7c37 -->
 
-📝 [test/rest/ApiDataFactory_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/rest/ApiDataFactory_test.js) <!-- check-tests: Add test docs below id=831461fde7bdf0a60752efb043cc96b98bb89993 -->
+📝 [test/rest/ApiDataFactory_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/rest/ApiDataFactory_test.js) <!-- check-tests: Add test docs below id=831461fde7bdf0a60752efb043cc96b98bb89993 -->
 * 📎 **ApiDataFactory** <!-- check-tests: Add test docs below id=2aeaaa58a2875ec62f98660df9192daa319d191d -->
   * 📎 **create and cleanup records** <!-- check-tests: Add test docs below id=a57426a3008dbe2ba5ab5097341cef829a80e944 -->
     * ✔️ `should create a new post` <!-- check-tests: Add test docs below id=c4c281d666ba30858c98536ed8b4d641e00faf1f -->
@@ -869,7 +869,7 @@ Created by [Testomat.io](https://testomat.io/)
     * ✔️ `should not remove records if cleanup:false` <!-- check-tests: Add test docs below id=7f49a67611aa69268f4e8e8cc24f0b4a06d0cfc6 -->
     * ✔️ `should send default headers` <!-- check-tests: Add test docs below id=3d46f9909ba87f9996c88ef6a9fbcde344c4409b -->
 
-📝 [test/rest/REST_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/rest/REST_test.js) <!-- check-tests: Add test docs below id=c89d1583146de7463a5a24e58ae5ff89c5042db5 -->
+📝 [test/rest/REST_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/rest/REST_test.js) <!-- check-tests: Add test docs below id=c89d1583146de7463a5a24e58ae5ff89c5042db5 -->
 * 📎 **REST** <!-- check-tests: Add test docs below id=002ce0b2319cfcb955ac0a43e9702fd3fc1d4bd0 -->
   * 📎 **basic requests** <!-- check-tests: Add test docs below id=12cfd6f3ecfb555ee7251a5b7ba9fa5834361359 -->
     * ✔️ `should send GET requests` <!-- check-tests: Add test docs below id=bc1fcda4423232fd24e3bbfef44f4fb6c1b08757 -->
@@ -892,7 +892,7 @@ Created by [Testomat.io](https://testomat.io/)
     * ✔️ `should prepend base url, when url is not absolute` <!-- check-tests: Add test docs below id=360d4e8978284430a47262713ece4e856f593f10 -->
     * ✔️ `should prepend base url, when url is not absolute, and "http" in request` <!-- check-tests: Add test docs below id=f7cebee43cd4cc17572fd161780a6a9799859c4f -->
 
-📝 [test/runner/allure_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/runner/allure_test.js) <!-- check-tests: Add test docs below id=f8b2cf72f4862aab73da911cf2c561cdff5b5146 -->
+📝 [test/runner/allure_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/runner/allure_test.js) <!-- check-tests: Add test docs below id=f8b2cf72f4862aab73da911cf2c561cdff5b5146 -->
 * 📎 **CodeceptJS Allure Plugin** <!-- check-tests: Add test docs below id=ea72a8e4cc2eba9088bbc15adea34fa19bd9f684 -->
   * ✔️ `should enable allure reports` <!-- check-tests: Add test docs below id=1d48c2ba997cd327c93e9ac85c1a10cea788a51e -->
   * ✔️ `should create xml file when assert message has ansi symbols` <!-- check-tests: Add test docs below id=90c5c02f7fb3f40bbceb855478c4c29baa95736d -->
@@ -900,7 +900,7 @@ Created by [Testomat.io](https://testomat.io/)
   * ✔️ `should report BeforeSuite errors when executing via run command` <!-- check-tests: Add test docs below id=8ae526fd23b1ff2c640e093257fbeae39c4d5199 -->
   * ✔️ `should report BeforeSuite errors when executing via run-workers command` <!-- check-tests: Add test docs below id=0cce430e7f95f9898d6ee97e26c34cd53e8cede0 -->
 
-📝 [test/runner/bdd_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/runner/bdd_test.js) <!-- check-tests: Add test docs below id=b2e5a0c5584228a863eae208c439de93a611e125 -->
+📝 [test/runner/bdd_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/runner/bdd_test.js) <!-- check-tests: Add test docs below id=b2e5a0c5584228a863eae208c439de93a611e125 -->
 * 📎 **BDD Gherkin** <!-- check-tests: Add test docs below id=dd2caab1ebf40241c2f767c737e5d84ff386cd59 -->
   * ✔️ `should run feature files` <!-- check-tests: Add test docs below id=e38acd34d2d424e5af33363798304196a46a0cab -->
   * ✔️ `should print substeps in debug mode` <!-- check-tests: Add test docs below id=ad20606e044981d120317f54ff832a018d6a4a0b -->
@@ -920,13 +920,13 @@ Created by [Testomat.io](https://testomat.io/)
   * ✔️ `should generate snippets for missing steps` <!-- check-tests: Add test docs below id=e554102091e5d9329b2647b84db7253fc870905c -->
   * ✔️ `should not generate duplicated steps` <!-- check-tests: Add test docs below id=c039bf9fbbd8c7d37472823a9bdd534f95cfe09e -->
 
-📝 [test/runner/before_failure_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/runner/before_failure_test.js) <!-- check-tests: Add test docs below id=4600ac8b0a911ccf2d6702fb911d886ea971945d -->
+📝 [test/runner/before_failure_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/runner/before_failure_test.js) <!-- check-tests: Add test docs below id=4600ac8b0a911ccf2d6702fb911d886ea971945d -->
 * 📎 **Failure in before** <!-- check-tests: Add test docs below id=70b31c19d06745a3138e88b355cd54d8c9d7bf7d -->
   * ✔️ `should skip tests that are skipped because of failure in before hook` <!-- check-tests: Add test docs below id=c9d3e2c95a2ed5929f1123165aac4fa0b089fee2 -->
   * ✔️ `should skip tests correctly with grep options` <!-- check-tests: Add test docs below id=f77dde62d83e184621a428fb0f34c6e35618d4f9 -->
   * ✔️ `should trigger skipped events` <!-- check-tests: Add test docs below id=029c554f6a98bdb97bfe2414f391b0878e97bcc1 -->
 
-📝 [test/runner/bootstrap_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/runner/bootstrap_test.js) <!-- check-tests: Add test docs below id=9efeed9e54fa926126e1fad8a168b1273dd15ebd -->
+📝 [test/runner/bootstrap_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/runner/bootstrap_test.js) <!-- check-tests: Add test docs below id=9efeed9e54fa926126e1fad8a168b1273dd15ebd -->
 * 📎 **CodeceptJS Bootstrap and Teardown** <!-- check-tests: Add test docs below id=34c4b99e011ed39c84256f72d3bcf797dcbe6ee0 -->
   * ✔️ `should run bootstrap` <!-- check-tests: Add test docs below id=9505b17f0f384e393c4ed25798e49cdaaf54b89c -->
   * ✔️ `should run teardown` <!-- check-tests: Add test docs below id=80492862e0d21e0da70507e81569f87c336ceafe -->
@@ -947,7 +947,7 @@ Created by [Testomat.io](https://testomat.io/)
   * ✔️ `should fail with code 1 when async bootstrap with args failed and not call teardown` <!-- check-tests: Add test docs below id=b9c7da689f630bdc970f682505498dd141580872 -->
   * ✔️ `should fail with code 1 when async bootstrap without args failed and not call teardown` <!-- check-tests: Add test docs below id=0f5c7c2ca829149c57547208345ec2b1924e03b4 -->
 
-📝 [test/runner/codecept_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/runner/codecept_test.js) <!-- check-tests: Add test docs below id=6fb3f9f51e4bb3e3a225ade2856814b2620de3b0 -->
+📝 [test/runner/codecept_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/runner/codecept_test.js) <!-- check-tests: Add test docs below id=6fb3f9f51e4bb3e3a225ade2856814b2620de3b0 -->
 * 📎 **CodeceptJS Runner** <!-- check-tests: Add test docs below id=5034ac42c56613477f2cc4e4c4320d95adc504a5 -->
   * ✔️ `should be executed in current dir` <!-- check-tests: Add test docs below id=303b05ebac35ebe32f4446f6dd202deee318b8dc -->
   * ✔️ `should be executed with glob` <!-- check-tests: Add test docs below id=bc02f01c21a499447e4a7a26414f2ce5afff8fec -->
@@ -981,12 +981,12 @@ Created by [Testomat.io](https://testomat.io/)
   * ✔️ `should fire events with only passing tests` <!-- check-tests: Add test docs below id=e14bbbbaa1549a8ade9fba23563d987553a1feb1 -->
   * ✔️ `should fire events with passing and failing tests` <!-- check-tests: Add test docs below id=64a1884697e7772ead19288b2b3833fbbeefd7ff -->
 
-📝 [test/runner/comment_step_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/runner/comment_step_test.js) <!-- check-tests: Add test docs below id=b708593ab834f4a85ac99fa53c96a64aeb492a51 -->
+📝 [test/runner/comment_step_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/runner/comment_step_test.js) <!-- check-tests: Add test docs below id=b708593ab834f4a85ac99fa53c96a64aeb492a51 -->
 * 📎 **CodeceptJS commentStep plugin** <!-- check-tests: Add test docs below id=77b713553fc497a47cf56178639693ef5fa2dd53 -->
   * ✔️ `should print nested steps when global var comments used` <!-- check-tests: Add test docs below id=ad8588b338e8fc11fc48008e3c7d0989fa17cdb6 -->
   * ✔️ `should print nested steps when local var comments used` <!-- check-tests: Add test docs below id=a2ca4bb301f36d895060a5ba487711bd8530f720 -->
 
-📝 [test/runner/definitions_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/runner/definitions_test.js) <!-- check-tests: Add test docs below id=25622b4e8db8e69699eca7f6c355a3fa76dbac5f -->
+📝 [test/runner/definitions_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/runner/definitions_test.js) <!-- check-tests: Add test docs below id=25622b4e8db8e69699eca7f6c355a3fa76dbac5f -->
 * 📎 **Definitions** <!-- check-tests: Add test docs below id=a3733452e6b45dc89e7208eaefae235a5238d3a8 -->
   * 📎 **Static files** <!-- check-tests: Add test docs below id=5662942d9a9524a0059633e8e0d642452fb630bb -->
     * ✔️ `should have internal object that is available as variable codeceptjs` <!-- check-tests: Add test docs below id=116282b89092b15b1c0faedcbb7b523de51b5f39 -->
@@ -999,7 +999,7 @@ Created by [Testomat.io](https://testomat.io/)
     * ✔️ `def should create definition file with inject which contains I object from helpers` <!-- check-tests: Add test docs below id=f77476d2fcf9797807d2d5aa8a813b5d818d9981 -->
     * ✔️ `def should create definition file with callback params` <!-- check-tests: Add test docs below id=03ff81b4afc9648517b3bb707ff8881c46342084 -->
 
-📝 [test/runner/dry_run_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/runner/dry_run_test.js) <!-- check-tests: Add test docs below id=21263b9aefb7c22d192f8277b104cfaa48ce5f8e -->
+📝 [test/runner/dry_run_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/runner/dry_run_test.js) <!-- check-tests: Add test docs below id=21263b9aefb7c22d192f8277b104cfaa48ce5f8e -->
 * 📎 **dry-run command** <!-- check-tests: Add test docs below id=a75cb836103ad664e54a0e3b1e2a3a5852f83b3a -->
   * ✔️ `should be executed with config path` <!-- check-tests: Add test docs below id=492919dcedfcbb5d024627ba4748c1e2a884cf78 -->
   * ✔️ `should list all tests` <!-- check-tests: Add test docs below id=b06d9da8257cc6e49c785f76509cca1428027f28 -->
@@ -1013,7 +1013,7 @@ Created by [Testomat.io](https://testomat.io/)
   * ✔️ `should work with inject() keyword` <!-- check-tests: Add test docs below id=c7ea10d895cdc02f5b9b4ec2d24f9fafcb9bf62c -->
   * ✔️ `should inject page objects via proxy` <!-- check-tests: Add test docs below id=c33de08b3a23aa503cf876adc415446c50598be3 -->
 
-📝 [test/runner/interface_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/runner/interface_test.js) <!-- check-tests: Add test docs below id=27a2ac825f1fd9a723c9fc0c7a9277b54697f603 -->
+📝 [test/runner/interface_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/runner/interface_test.js) <!-- check-tests: Add test docs below id=27a2ac825f1fd9a723c9fc0c7a9277b54697f603 -->
 * 📎 **CodeceptJS Interface** <!-- check-tests: Add test docs below id=dec310124def7914174d51117c543da02d08627b -->
   * ✔️ `should rerun flaky tests` <!-- check-tests: Add test docs below id=b2dfbc858e7f2c79bf48917b2835c2d3c1fae595 -->
   * ✔️ `should rerun retried steps` <!-- check-tests: Add test docs below id=ba4a6d5b689d2cb8e02dd14c2f8916bf400274f8 -->
@@ -1030,16 +1030,16 @@ Created by [Testomat.io](https://testomat.io/)
   * ✔️ `should work with inject() keyword` <!-- check-tests: Add test docs below id=3938b2b971c664bf6f81891ccc8237b8d52d2d76 -->
   * ✔️ `should inject page objects via proxy` <!-- check-tests: Add test docs below id=287a717a06b759d6a01c13cdb77d0950a1604c11 -->
 
-📝 [test/runner/list_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/runner/list_test.js) <!-- check-tests: Add test docs below id=6cf727b4bf4fdb245ea5507cb4e99b4540a6cc41 -->
+📝 [test/runner/list_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/runner/list_test.js) <!-- check-tests: Add test docs below id=6cf727b4bf4fdb245ea5507cb4e99b4540a6cc41 -->
 * 📎 **list commands** <!-- check-tests: Add test docs below id=2da1698ba47be0f3e37e71929bb1c7255af7c127 -->
   * ✔️ `list should print actions` <!-- check-tests: Add test docs below id=31351b29ac13dbcbdc74db00e09bb13175ca0b06 -->
 
-📝 [test/runner/pageobject_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/runner/pageobject_test.js) <!-- check-tests: Add test docs below id=4df95c73a8227afbcd8afecd9978c1bb58a006bc -->
+📝 [test/runner/pageobject_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/runner/pageobject_test.js) <!-- check-tests: Add test docs below id=4df95c73a8227afbcd8afecd9978c1bb58a006bc -->
 * 📎 **CodeceptJS Interface** <!-- check-tests: Add test docs below id=dec310124def7914174d51117c543da02d08627b -->
   * ✔️ `should inject page objects by class` <!-- check-tests: Add test docs below id=907bf36847357d3573909076a710a30c1972db59 -->
   * ✔️ `should inject page objects by class which nested base clas` <!-- check-tests: Add test docs below id=d46742055a2c67c138ce953b2f955ff63d30330a -->
 
-📝 [test/runner/run_multiple_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/runner/run_multiple_test.js) <!-- check-tests: Add test docs below id=80d82801f584481382c6d75d4498943af1866595 -->
+📝 [test/runner/run_multiple_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/runner/run_multiple_test.js) <!-- check-tests: Add test docs below id=80d82801f584481382c6d75d4498943af1866595 -->
 * 📎 **CodeceptJS Multiple Runner** <!-- check-tests: Add test docs below id=0a99c2f619b888be36148ba600d93706abccbddf -->
   * ✔️ `should execute one suite with browser` <!-- check-tests: Add test docs below id=afacd610ea23f948e22624589eb6c3f585502345 -->
   * ✔️ `should execute all suites` <!-- check-tests: Add test docs below id=b15c5eeba5a7ac9a6318c92dc85cb95833467e2f -->
@@ -1064,7 +1064,7 @@ Created by [Testomat.io](https://testomat.io/)
     * ✔️ `should be executed with several module when described` <!-- check-tests: Add test docs below id=4f342d2ae9f4963e7323399b172bb80eddd638dd -->
     * ✔️ `should not be executed without module when not described` <!-- check-tests: Add test docs below id=85a199667838738c8a8f9f1d708e3b1bccb6332c -->
 
-📝 [test/runner/run_rerun_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/runner/run_rerun_test.js) <!-- check-tests: Add test docs below id=b9d2f26093bdf43907e34f4d1d94cdf93338e8c0 -->
+📝 [test/runner/run_rerun_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/runner/run_rerun_test.js) <!-- check-tests: Add test docs below id=b9d2f26093bdf43907e34f4d1d94cdf93338e8c0 -->
 * 📎 **run-rerun command** <!-- check-tests: Add test docs below id=834c8e7664ebc14c30155542b02e892ded05fd1c -->
   * ✔️ `should display count of attemps` <!-- check-tests: Add test docs below id=d1dd0be1a95630b3ec87af0abb5bdcec97cdfe5d -->
   * ✔️ `should display 2 success count of attemps` <!-- check-tests: Add test docs below id=b8c9d20ea7400050c75f70a01cf254de42dec924 -->
@@ -1072,7 +1072,7 @@ Created by [Testomat.io](https://testomat.io/)
   * ✔️ `should display errors if test is fail always` <!-- check-tests: Add test docs below id=51d88de268c64ace722a596eb1ac21a45c466cbe -->
   * ✔️ `should display success run if test was fail one time of two attepmts and 3 reruns` <!-- check-tests: Add test docs below id=b92758942c6f86e444d10c35e2c2b02bd4ed8025 -->
 
-📝 [test/runner/run_workers_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/runner/run_workers_test.js) <!-- check-tests: Add test docs below id=0bd15e21672c88043f3a8b6ca55e8ab58513fa66 -->
+📝 [test/runner/run_workers_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/runner/run_workers_test.js) <!-- check-tests: Add test docs below id=0bd15e21672c88043f3a8b6ca55e8ab58513fa66 -->
 * 📎 **CodeceptJS Workers Runner** <!-- check-tests: Add test docs below id=860d2bf499eaf6c6619c4c145948ef39ebf2f0b9 -->
   * ✔️ `should run tests in 3 workers` <!-- check-tests: Add test docs below id=cc93f9c3603249ab645946a271e00b9b09bc5f0e -->
   * ✔️ `should print positive or zero failures with same name tests` <!-- check-tests: Add test docs below id=08a8262651dccba1e8cc6c3f58c3b6a6057d51e6 -->
@@ -1084,29 +1084,29 @@ Created by [Testomat.io](https://testomat.io/)
   * ✔️ `should retry test` <!-- check-tests: Add test docs below id=a4ad9e9729139af7de146f6c4a3d5261c8acb9a7 -->
   * ✔️ `should create output folder with custom name` <!-- check-tests: Add test docs below id=db4e8f9ca2cd1702c65b459d064316d7dca96b09 -->
 
-📝 [test/runner/session_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/runner/session_test.js) <!-- check-tests: Add test docs below id=ad7d30a0b527e502f83c80be45fe9f5b2abed93f -->
+📝 [test/runner/session_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/runner/session_test.js) <!-- check-tests: Add test docs below id=ad7d30a0b527e502f83c80be45fe9f5b2abed93f -->
 * 📎 **CodeceptJS session** <!-- check-tests: Add test docs below id=844ad0fa61a522dba8412367c593bd5655940b9f -->
   * ✔️ `should run with 3 sessions` <!-- check-tests: Add test docs below id=ab26487f8d408daa86910edfe99de8686d2ccedf -->
   * ✔️ `should run session defined before executing` <!-- check-tests: Add test docs below id=69da48f6a76b73e297f7e7ef2357f3bd1e1618a3 -->
   * ✔️ `should run all session tests` <!-- check-tests: Add test docs below id=70619d1c6fcd66320a59651bd5fea0264b1fce3b -->
 
-📝 [test/runner/todo_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/runner/todo_test.js) <!-- check-tests: Add test docs below id=79e898bfb223c6aa4d8e29168c2a7ee067a07837 -->
+📝 [test/runner/todo_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/runner/todo_test.js) <!-- check-tests: Add test docs below id=79e898bfb223c6aa4d8e29168c2a7ee067a07837 -->
 * 📎 **Todo** <!-- check-tests: Add test docs below id=69569c73487f86e38b9988304164cf625f66860c -->
   * ✔️ `should skip test with todo` <!-- check-tests: Add test docs below id=5b7b43860eb2e658e939b9bcc1d2158afffe1344 -->
   * ✔️ `should skip inject skipinfo to todo test` <!-- check-tests: Add test docs below id=4a144b3f733328b24eee855f10423e00d7642fb8 -->
   * ✔️ `should correctly pass custom opts for todo test` <!-- check-tests: Add test docs below id=b042afbcb43fee048bca751b5b147982307a2280 -->
 
-📝 [test/runner/translation_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/runner/translation_test.js) <!-- check-tests: Add test docs below id=257fc62b07543f2f4a8fa76cc8ea2be9d436176c -->
+📝 [test/runner/translation_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/runner/translation_test.js) <!-- check-tests: Add test docs below id=257fc62b07543f2f4a8fa76cc8ea2be9d436176c -->
 * 📎 **Translation** <!-- check-tests: Add test docs below id=11163c4ef2f0288234bed68bf53f1e406211945a -->
   * ✔️ `Should run translated test file` <!-- check-tests: Add test docs below id=91ecdfed6d25d963357b355ed5133830c602f77e -->
 
-📝 [test/runner/within_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/runner/within_test.js) <!-- check-tests: Add test docs below id=f83c55062894e7342c875edacadbdd87beb16e00 -->
+📝 [test/runner/within_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/runner/within_test.js) <!-- check-tests: Add test docs below id=f83c55062894e7342c875edacadbdd87beb16e00 -->
 * 📎 **CodeceptJS within** <!-- check-tests: Add test docs below id=4b827ee050a769fe7179b7352fd73547a30079fb -->
   * ✔️ `should execute if no generators` <!-- check-tests: Add test docs below id=645296c65629abbeaf62a23b89c2171ef80b225c -->
   * ✔️ `should execute with async/await. Await is first in order` <!-- check-tests: Add test docs below id=5ab55f61a5527d24e2da6e94fa41f2d48fd16aa2 -->
   * ✔️ `should execute with async/await. Await is second in order` <!-- check-tests: Add test docs below id=83c0f4c4b7669ac9ca65f3f3a97faddc7284a780 -->
 
-📝 [test/unit/actor_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/unit/actor_test.js) <!-- check-tests: Add test docs below id=17fdd6b3bda292f4d5f9fcec952e5014ab804480 -->
+📝 [test/unit/actor_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/unit/actor_test.js) <!-- check-tests: Add test docs below id=17fdd6b3bda292f4d5f9fcec952e5014ab804480 -->
 * 📎 **Actor** <!-- check-tests: Add test docs below id=961837ff82fc4d42ea96264c19bc345614acec81 -->
   * ✔️ `should take all methods from helpers and built in` <!-- check-tests: Add test docs below id=08ec80fd2e17aabef66479da77d2407d2450e36e -->
   * ✔️ `should return promise` <!-- check-tests: Add test docs below id=c51c56bc5ca722a3c68256d1610cb7ab71b78e47 -->
@@ -1115,33 +1115,33 @@ Created by [Testomat.io](https://testomat.io/)
   * ✔️ `should retry once step with #retry` <!-- check-tests: Add test docs below id=784c48f4c08c304e109ad82b04891c8916495337 -->
   * ✔️ `should print handle failed steps` <!-- check-tests: Add test docs below id=20bbd41935d886943551013bc23c160d0389c5d1 -->
 
-📝 [test/unit/assert_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/unit/assert_test.js) <!-- check-tests: Add test docs below id=7cba4ad46677d3d5059a228611acb97c12816d94 -->
+📝 [test/unit/assert_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/unit/assert_test.js) <!-- check-tests: Add test docs below id=7cba4ad46677d3d5059a228611acb97c12816d94 -->
 * 📎 **Assertion** <!-- check-tests: Add test docs below id=d534a7e6501006154fb8bfe8b348be8fce644b18 -->
   * ✔️ `should handle asserts` <!-- check-tests: Add test docs below id=376eb6d81d95469c9839049d29225e4c58268f06 -->
   * ✔️ `should handle negative asserts` <!-- check-tests: Add test docs below id=729c541e4cd0498254c8ce34bc111adff7410ea3 -->
 
-📝 [test/unit/assert/empty_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/unit/assert/empty_test.js) <!-- check-tests: Add test docs below id=f6bb99710c3326defdc08b20cef56980bb84193b -->
+📝 [test/unit/assert/empty_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/unit/assert/empty_test.js) <!-- check-tests: Add test docs below id=f6bb99710c3326defdc08b20cef56980bb84193b -->
 * 📎 **empty assertion** <!-- check-tests: Add test docs below id=4951e881cb81276a5d81134fbca061729cd282a4 -->
   * ✔️ `should check for something to be empty` <!-- check-tests: Add test docs below id=fd3d2b96f05bc828024e7dcbabb74a13896b784c -->
   * ✔️ `should check for something not to be empty` <!-- check-tests: Add test docs below id=ff99973f827b4537c9e249d10f89f9f99afbb284 -->
   * ✔️ `should provide nice assert error message` <!-- check-tests: Add test docs below id=135a7fbc49f407e2adb534451d421ec35af459c4 -->
   * ✔️ `should provide nice negate error message` <!-- check-tests: Add test docs below id=af912ad982b36228edd665075aff8080904d7208 -->
 
-📝 [test/unit/assert/equal_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/unit/assert/equal_test.js) <!-- check-tests: Add test docs below id=4c420c7bb943d4057db4410cabc80d067cdce196 -->
+📝 [test/unit/assert/equal_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/unit/assert/equal_test.js) <!-- check-tests: Add test docs below id=4c420c7bb943d4057db4410cabc80d067cdce196 -->
 * 📎 **equal assertion** <!-- check-tests: Add test docs below id=5c12012357384945e008d9607c7510de5e8d3001 -->
   * ✔️ `should check for equality` <!-- check-tests: Add test docs below id=a1f085ce8f21581fd5e061faf0f9c054c12d5397 -->
   * ✔️ `should check for something not to be equal` <!-- check-tests: Add test docs below id=f8513c14971122424cccbbbb25ef22296b30067b -->
   * ✔️ `should provide nice assert error message` <!-- check-tests: Add test docs below id=b3a226f4e9006034968828fc620070fb889ebc1c -->
   * ✔️ `should provide nice negate error message` <!-- check-tests: Add test docs below id=1b70bf51314246441b3901d0079b9ab7fcb9810e -->
 
-📝 [test/unit/assert/include_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/unit/assert/include_test.js) <!-- check-tests: Add test docs below id=cf8f71c87c8727a1af3e930cf1833d5d02027fc0 -->
+📝 [test/unit/assert/include_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/unit/assert/include_test.js) <!-- check-tests: Add test docs below id=cf8f71c87c8727a1af3e930cf1833d5d02027fc0 -->
 * 📎 **equal assertion** <!-- check-tests: Add test docs below id=5c12012357384945e008d9607c7510de5e8d3001 -->
   * ✔️ `should check for inclusion` <!-- check-tests: Add test docs below id=4ab158052c5e14bed3a963cfdd0601614d057bc8 -->
   * ✔️ `should check !include` <!-- check-tests: Add test docs below id=1f4f4959060abcb6687bdda9d82d90b02f41ceed -->
   * ✔️ `should provide nice assert error message` <!-- check-tests: Add test docs below id=f1da6bbb4e9272544ac005d306745f3f93cf9066 -->
   * ✔️ `should provide nice negate error message` <!-- check-tests: Add test docs below id=622c60792c94dbe157513ecdfa1a2c10608c3ead -->
 
-📝 [test/unit/bdd_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/unit/bdd_test.js) <!-- check-tests: Add test docs below id=5d9f3851806a2e5197ba0cd9cdf78ba166276ad7 -->
+📝 [test/unit/bdd_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/unit/bdd_test.js) <!-- check-tests: Add test docs below id=5d9f3851806a2e5197ba0cd9cdf78ba166276ad7 -->
 * 📎 **BDD** <!-- check-tests: Add test docs below id=a10b94e29f24d9eb002cb4f1d579897e993f07ef -->
   * ✔️ `should parse gherkin input` <!-- check-tests: Add test docs below id=125378af0afe511548c2be590595a44c1288726a -->
   * ✔️ `should load step definitions` <!-- check-tests: Add test docs below id=4ed5f09537c9aecd8fe81d54f99065684f6bd53d -->
@@ -1156,14 +1156,14 @@ Created by [Testomat.io](https://testomat.io/)
   * ✔️ `should execute scenario outlines` <!-- check-tests: Add test docs below id=a1adb8385d9d0e777f73d81af8953d7880252b25 -->
   * ✔️ `should provide a parsed DataTable` <!-- check-tests: Add test docs below id=c4961c5d365fe7ba304864bdce563f28498bc8e5 -->
 
-📝 [test/unit/config_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/unit/config_test.js) <!-- check-tests: Add test docs below id=79a1978c2580d19fc82f5e701fbc07ed4f115b55 -->
+📝 [test/unit/config_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/unit/config_test.js) <!-- check-tests: Add test docs below id=79a1978c2580d19fc82f5e701fbc07ed4f115b55 -->
 * 📎 **Config** <!-- check-tests: Add test docs below id=1a323149574cd7a3837ca90f7270ab691af59913 -->
   * ✔️ `should be created` <!-- check-tests: Add test docs below id=f27e66183edfee98e6b89164688bab63930d5ad2 -->
   * ✔️ `should be completely reset` <!-- check-tests: Add test docs below id=13835b2a2f36b9620542bc66de32aa63604191db -->
   * ✔️ `can be updated` <!-- check-tests: Add test docs below id=f3971f112f06ddee8717cd8063705b876727ca72 -->
   * ✔️ `should use config hooks to enhance configs` <!-- check-tests: Add test docs below id=00ff879c6bec59744b26ed09419c3a889c79aef2 -->
 
-📝 [test/unit/container_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/unit/container_test.js) <!-- check-tests: Add test docs below id=684204b3cbefebeba952ecee0d9435da56ee91e6 -->
+📝 [test/unit/container_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/unit/container_test.js) <!-- check-tests: Add test docs below id=684204b3cbefebeba952ecee0d9435da56ee91e6 -->
 * 📎 **Container** <!-- check-tests: Add test docs below id=e1e71faa3c1d873fc44aecc07e53a54a294e0d96 -->
   * 📎 **#translation** <!-- check-tests: Add test docs below id=fe4673385d83718fda77f23c1a5eac6d60948d53 -->
     * ✔️ `should create empty translation` <!-- check-tests: Add test docs below id=3fc1dd4b639641a74e49b5bb23c1fbe6dcf4b115 -->
@@ -1193,13 +1193,13 @@ Created by [Testomat.io](https://testomat.io/)
     * ✔️ `should be able to add new helper` <!-- check-tests: Add test docs below id=e29c7c2749f22dcfff0c4cef8120f0afe1368184 -->
     * ✔️ `should be able to add new support object` <!-- check-tests: Add test docs below id=b54bda334d28572da9675de23543d6e19605d430 -->
 
-📝 [test/unit/data/dataTableArgument_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/unit/data/dataTableArgument_test.js) <!-- check-tests: Add test docs below id=6488c7d01189ed0dc510303d89d24e9b7fa6d6f1 -->
+📝 [test/unit/data/dataTableArgument_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/unit/data/dataTableArgument_test.js) <!-- check-tests: Add test docs below id=6488c7d01189ed0dc510303d89d24e9b7fa6d6f1 -->
 * 📎 **DataTableArgument** <!-- check-tests: Add test docs below id=fbc383ea3cdc2e5595414fcf88d457f16a4ff85d -->
   * ✔️ `should return a 2D array containing each row` <!-- check-tests: Add test docs below id=83def2b1e74c2c1c848683715294284ca04dc641 -->
   * ✔️ `should return a 2D array containing each row without the header (first one)` <!-- check-tests: Add test docs below id=3f69792d9ca7eacc9c6726f5980d873b0366d654 -->
   * ✔️ `should return an of object where properties is the header` <!-- check-tests: Add test docs below id=097cf6b20831015b26d89b7329c836a57d2780e2 -->
 
-📝 [test/unit/data/table_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/unit/data/table_test.js) <!-- check-tests: Add test docs below id=63d514e7bbb0a766230df071b535de68d58956fb -->
+📝 [test/unit/data/table_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/unit/data/table_test.js) <!-- check-tests: Add test docs below id=63d514e7bbb0a766230df071b535de68d58956fb -->
 * 📎 **DataTable** <!-- check-tests: Add test docs below id=e8236209a2e1ce0e05b0731696f077b56058a869 -->
   * ✔️ `should take an array for creation` <!-- check-tests: Add test docs below id=083b169189f0556fe6749df322a5fc331986702c -->
   * ✔️ `should allow arrays to be added` <!-- check-tests: Add test docs below id=91848bbe88731d0ec53e7c319c9f0f145bd1dc4a -->
@@ -1209,7 +1209,7 @@ Created by [Testomat.io](https://testomat.io/)
   * ✔️ `should filter an array` <!-- check-tests: Add test docs below id=9acc8da1a1085d22f3675ff98841230ff4341f1e -->
   * ✔️ `should filter an array with skips` <!-- check-tests: Add test docs below id=8e21dd6e54b772438296033989e591f2e55dd575 -->
 
-📝 [test/unit/data/ui_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/unit/data/ui_test.js) <!-- check-tests: Add test docs below id=3c006908f2c08b177ebb28099c125fa8b1147acc -->
+📝 [test/unit/data/ui_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/unit/data/ui_test.js) <!-- check-tests: Add test docs below id=3c006908f2c08b177ebb28099c125fa8b1147acc -->
 * 📎 **ui** <!-- check-tests: Add test docs below id=af657e4cd48fdce32debcfc52f754a0d920ef0d7 -->
   * 📎 **Data** <!-- check-tests: Add test docs below id=8774ca9bad57e6c049bbeee5583f38a8c614f468 -->
     * ✔️ `can add a tag to all scenarios` <!-- check-tests: Add test docs below id=be333f9e07d14f63d0a48d2070e1def7b1029443 -->
@@ -1221,7 +1221,7 @@ Created by [Testomat.io](https://testomat.io/)
     * ✔️ `should shows object's toString() method in each scenario's name if the toString() method is overrided` <!-- check-tests: Add test docs below id=e988e81d1b03663daa959f9a2efed02149e2b1ab -->
     * ✔️ `should shows JSON.stringify() in each scenario's name if the toString() method isn't overrided` <!-- check-tests: Add test docs below id=64e14f4995e59aaaf53165424a1bb8818b9e3b52 -->
 
-📝 [test/unit/helper/element_not_found_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/unit/helper/element_not_found_test.js) <!-- check-tests: Add test docs below id=7a9a3316f6b1c042f97a803ad5aaf1ddcb164886 -->
+📝 [test/unit/helper/element_not_found_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/unit/helper/element_not_found_test.js) <!-- check-tests: Add test docs below id=7a9a3316f6b1c042f97a803ad5aaf1ddcb164886 -->
 * 📎 **ElementNotFound error** <!-- check-tests: Add test docs below id=b5b391067b7822bbbb1b91289a7b8181ef01e411 -->
   * ✔️ `should throw error` <!-- check-tests: Add test docs below id=b360f943b568137db033ba55fe8ecb3a8ae3bcaf -->
   * ✔️ `should provide default message` <!-- check-tests: Add test docs below id=30f009c94cf1b25b21e0076175bf064fd12a3485 -->
@@ -1229,14 +1229,14 @@ Created by [Testomat.io](https://testomat.io/)
   * ✔️ `should use postfix for message` <!-- check-tests: Add test docs below id=ce5e63d2c8579f212d023e7335897f684dd743df -->
   * ✔️ `should stringify locator object` <!-- check-tests: Add test docs below id=abc558e754b73c0561536424cd247f95acd90ae4 -->
 
-📝 [test/unit/helper/FileSystem_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/unit/helper/FileSystem_test.js) <!-- check-tests: Add test docs below id=31357785c2b75ace147425c85df4f44a2a227ceb -->
+📝 [test/unit/helper/FileSystem_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/unit/helper/FileSystem_test.js) <!-- check-tests: Add test docs below id=31357785c2b75ace147425c85df4f44a2a227ceb -->
 * 📎 **FileSystem** <!-- check-tests: Add test docs below id=581a6aa7ae109ef1fbdbf57ab252b484d25c4fc0 -->
   * ✔️ `should be initialized before tests` <!-- check-tests: Add test docs below id=aa3a34ed813b7b17eb12916c1b58a9a56f641222 -->
   * ✔️ `should open dirs` <!-- check-tests: Add test docs below id=1b51c1aecd9922413f0764308595de035c47744f -->
   * ✔️ `should see file` <!-- check-tests: Add test docs below id=88116449214011904eeeb7f53678f114f1697e36 -->
   * ✔️ `should check file contents` <!-- check-tests: Add test docs below id=f79e804f983a2ef01902e101ba10fdcc73aeb337 -->
 
-📝 [test/unit/locator_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/unit/locator_test.js) <!-- check-tests: Add test docs below id=db5d72b6e9d480dc7aafcbcdfca9c4f2c8f377fd -->
+📝 [test/unit/locator_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/unit/locator_test.js) <!-- check-tests: Add test docs below id=db5d72b6e9d480dc7aafcbcdfca9c4f2c8f377fd -->
 * 📎 **Locator** <!-- check-tests: Add test docs below id=145126c639c70ea92b8993cfb9955dd10d7bcdf0 -->
   * 📎 **constructor** <!-- check-tests: Add test docs below id=20e11c34a82cda44606a759c795ef6654b02806c -->
     * 📎 **with string argument** <!-- check-tests: Add test docs below id=9bedf31bdf27c5e01245522500b8011d0aeeff02 -->
@@ -1265,26 +1265,26 @@ Created by [Testomat.io](https://testomat.io/)
       * ✔️ `should be able to add custom locator strategy` <!-- check-tests: Add test docs below id=7ec264fc2894208b24619b4dc7af0288bb65c07f -->
       * ✔️ `should be able to add custom locator strategy` <!-- check-tests: Add test docs below id=7ec264fc2894208b24619b4dc7af0288bb65c07f -->
 
-📝 [test/unit/output_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/unit/output_test.js) <!-- check-tests: Add test docs below id=dd36dc5eff91a02846d684ec9a67cbf8e06cb1f9 -->
+📝 [test/unit/output_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/unit/output_test.js) <!-- check-tests: Add test docs below id=dd36dc5eff91a02846d684ec9a67cbf8e06cb1f9 -->
 * 📎 **Output** <!-- check-tests: Add test docs below id=78a00b66b2cf25365dd58f7437670dc28714ad6c -->
   * ✔️ `should allow the output level to be set` <!-- check-tests: Add test docs below id=bc2525529331e1c303fcd59afbb34300ec754e73 -->
   * ✔️ `should allow the process to be set` <!-- check-tests: Add test docs below id=63437ab6a49e5c6e5a8cbac558861d1b78268b90 -->
   * ✔️ `should allow debug messages when output level >= 2` <!-- check-tests: Add test docs below id=33bab1ccd86b73dcdf0450b3376cc9f59265e141 -->
 
-📝 [test/unit/parser_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/unit/parser_test.js) <!-- check-tests: Add test docs below id=95dc8e30930a221415ada70629b9e74de0fa4557 -->
+📝 [test/unit/parser_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/unit/parser_test.js) <!-- check-tests: Add test docs below id=95dc8e30930a221415ada70629b9e74de0fa4557 -->
 * 📎 **parser** <!-- check-tests: Add test docs below id=9c703d009940e2808f8410eab3f26919698def41 -->
   * 📎 **#getParamsToString** <!-- check-tests: Add test docs below id=a613c8b6f1945331a99ed8f093215dad5cdc14ca -->
     * ✔️ `should get params for normal function` <!-- check-tests: Add test docs below id=ef7dbfe5a3a9899f43d17e5ad7c068069d222919 -->
     * ✔️ `should get params for async function` <!-- check-tests: Add test docs below id=4709e6e4716c8065f9c492d8980cbc75a4726a10 -->
 
-📝 [test/unit/plugin/customLocator_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/unit/plugin/customLocator_test.js) <!-- check-tests: Add test docs below id=72023f06505d23c631c731ff247762515662a87e -->
+📝 [test/unit/plugin/customLocator_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/unit/plugin/customLocator_test.js) <!-- check-tests: Add test docs below id=72023f06505d23c631c731ff247762515662a87e -->
 * 📎 **customLocator** <!-- check-tests: Add test docs below id=0145ba2cbc7c9edb0b3c8c270087a93815e73da9 -->
   * ✔️ `add a custom locator by $ -> data-qa` <!-- check-tests: Add test docs below id=aa4e5c7e44a42bbdbdb1797d80c644274257c029 -->
   * ✔️ `add a custom locator by = -> data-test-id` <!-- check-tests: Add test docs below id=9926a3d3908f322972d1bbd6ed4ba2a110d71460 -->
   * ✔️ `add a custom locator with multple char prefix = -> data-test-id` <!-- check-tests: Add test docs below id=7ca616302cfbffca85f07cb838fbca61eaef0d91 -->
   * ✔️ `add a custom locator with CSS` <!-- check-tests: Add test docs below id=61bfae9811df1cccb44907e23524f5b8311960a0 -->
 
-📝 [test/unit/plugin/retryFailedStep_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/unit/plugin/retryFailedStep_test.js) <!-- check-tests: Add test docs below id=0b7f5f61bea1eeeb73fd2097de755b1eff09bfe4 -->
+📝 [test/unit/plugin/retryFailedStep_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/unit/plugin/retryFailedStep_test.js) <!-- check-tests: Add test docs below id=0b7f5f61bea1eeeb73fd2097de755b1eff09bfe4 -->
 * 📎 **retryFailedStep** <!-- check-tests: Add test docs below id=b985c12331fab04b2b938fdac5d465fc41330d35 -->
   * ✔️ `should retry failed step` <!-- check-tests: Add test docs below id=07db67eb12b9d6a8252f1efb28295cf383a8f987 -->
   * ✔️ `should not retry within` <!-- check-tests: Add test docs below id=132172a1dd4cd7f3959c20a278758e66127ce16b -->
@@ -1293,14 +1293,14 @@ Created by [Testomat.io](https://testomat.io/)
   * ✔️ `should add custom steps to ignore` <!-- check-tests: Add test docs below id=6cb7b806988e25c5bd0c6c81cbeff682a656d8c3 -->
   * ✔️ `should not retry session` <!-- check-tests: Add test docs below id=0de9292df4d43b43573f8572b833f1735746c896 -->
 
-📝 [test/unit/plugin/screenshotOnFail_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/unit/plugin/screenshotOnFail_test.js) <!-- check-tests: Add test docs below id=e3bce637caba443d51a248e679e08bb80f84d5fb -->
+📝 [test/unit/plugin/screenshotOnFail_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/unit/plugin/screenshotOnFail_test.js) <!-- check-tests: Add test docs below id=e3bce637caba443d51a248e679e08bb80f84d5fb -->
 * 📎 **screenshotOnFail** <!-- check-tests: Add test docs below id=acbaece5e216730e00deb557ff4cfed34ceca756 -->
   * ✔️ `should exclude the data driven in failed screenshot file name` <!-- check-tests: Add test docs below id=5381c26387fe30f05c755d4e2c38ec18505af9dc -->
   * ✔️ `should create screenshot on fail` <!-- check-tests: Add test docs below id=481780442483bfdb89cf08864944c2ba704c9e41 -->
   * ✔️ `should create screenshot with unique name` <!-- check-tests: Add test docs below id=6dea82dc0a216602aa6ca179aec191aba287e0e6 -->
   * ✔️ `should create screenshot with unique name when uuid is null` <!-- check-tests: Add test docs below id=c91eb1c604048c3d720448a65ad41f510614a253 -->
 
-📝 [test/unit/recorder_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/unit/recorder_test.js) <!-- check-tests: Add test docs below id=9b6ea4c369aef293c8044ac329a9374e2e0db140 -->
+📝 [test/unit/recorder_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/unit/recorder_test.js) <!-- check-tests: Add test docs below id=9b6ea4c369aef293c8044ac329a9374e2e0db140 -->
 * 📎 **Recorder** <!-- check-tests: Add test docs below id=5e83a3e91da7c6ee48605c10e6eb35714dd57331 -->
   * ✔️ `should create a promise` <!-- check-tests: Add test docs below id=c2fff3a2d7ed07c04e86dc8424e55640e9e59013 -->
   * ✔️ `should execute error handler on error` <!-- check-tests: Add test docs below id=50564f57a7d1081ac03308dd0469d62f79935887 -->
@@ -1313,7 +1313,7 @@ Created by [Testomat.io](https://testomat.io/)
     * ✔️ `should retry failed steps when asked` <!-- check-tests: Add test docs below id=cc08ebe11e4aa4776001ff3873d452b87050c291 -->
     * ✔️ `should create a chain of retries` <!-- check-tests: Add test docs below id=8111a2257479a7c3b5fd94002d8f53f6c0c04cb1 -->
 
-📝 [test/unit/scenario_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/unit/scenario_test.js) <!-- check-tests: Add test docs below id=d7cc6532d6fb0154f4c24c940d32476ffc732294 -->
+📝 [test/unit/scenario_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/unit/scenario_test.js) <!-- check-tests: Add test docs below id=d7cc6532d6fb0154f4c24c940d32476ffc732294 -->
 * 📎 **Scenario** <!-- check-tests: Add test docs below id=a1655361d7b3d309ebc59dd2dd740338840662ea -->
   * ✔️ `should wrap test function` <!-- check-tests: Add test docs below id=6e64bf3e99af617e9b89d00fefab636395e8f816 -->
   * ✔️ `should work with async func` <!-- check-tests: Add test docs below id=4a5f62b2a5a636735be76b1ecb45743cdc48386a -->
@@ -1322,7 +1322,7 @@ Created by [Testomat.io](https://testomat.io/)
     * ✔️ `should fire failed event on error` <!-- check-tests: Add test docs below id=adbf0593040a2f974a8253a67f4022191dd72a6a -->
     * ✔️ `should fire failed event on async error` <!-- check-tests: Add test docs below id=48a78e8b0f7c1b67e082bcd3c65391d53c81e7b4 -->
 
-📝 [test/unit/steps_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/unit/steps_test.js) <!-- check-tests: Add test docs below id=d1fa1e1d338bd7f72a6e76b3eb1ac4264c6a2af2 -->
+📝 [test/unit/steps_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/unit/steps_test.js) <!-- check-tests: Add test docs below id=d1fa1e1d338bd7f72a6e76b3eb1ac4264c6a2af2 -->
 * 📎 **Step** <!-- check-tests: Add test docs below id=559e4ef713003b2865e6a2d91c5ca67a39b82082 -->
   * ✔️ `has name` <!-- check-tests: Add test docs below id=3fd266ddbb5b762b688cdfd1d6de867241928313 -->
   * ✔️ `should convert method names for output` <!-- check-tests: Add test docs below id=e039a4407218849addc369e81f1bc3bb5e61d261 -->
@@ -1332,8 +1332,10 @@ Created by [Testomat.io](https://testomat.io/)
   * 📎 **#run** <!-- check-tests: Add test docs below id=a0793ec0d11e1edd3bb6b126f40732a26583c4ed -->
     * ✔️ `should run step` <!-- check-tests: Add test docs below id=3a461b87eca049a5485e123881c3c1dcaac5a8c0 -->
 
-📝 [test/unit/ui_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/unit/ui_test.js) <!-- check-tests: Add test docs below id=9dd365d57029a7309d8d9a0a815c90287340c8ed -->
+📝 [test/unit/ui_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/unit/ui_test.js) <!-- check-tests: Add test docs below id=9dd365d57029a7309d8d9a0a815c90287340c8ed -->
 * 📎 **ui** <!-- check-tests: Add test docs below id=af657e4cd48fdce32debcfc52f754a0d920ef0d7 -->
+  * 📎 **basic constants** <!-- check-tests: Add test docs below id=d85ba7c95a5b600c00160f6e28f4bf1cc24b91a2 -->
+    * ✔️ `context should contain ` <!-- check-tests: Add test docs below id=c055ad927ab0e5f706af163a9258da5a9ea7bbcb -->
   * 📎 **Feature** <!-- check-tests: Add test docs below id=4dffc2e7e135d3b89a7ab7415ae328872ce370ed -->
     * ✔️ `Feature should return featureConfig` <!-- check-tests: Add test docs below id=94114cf469e62c82f194531bf66c2d53e6153162 -->
     * ✔️ `should contain title` <!-- check-tests: Add test docs below id=5a512637ff0945b14f2b284fd19656c7d3227c98 -->
@@ -1356,7 +1358,7 @@ Created by [Testomat.io](https://testomat.io/)
       * ✔️ `should inject custom opts to opts and without callback` <!-- check-tests: Add test docs below id=494969b1de1e2902517c3670b98a4b08e6e62cb8 -->
       * ✔️ `should inject custom opts to opts and with callback` <!-- check-tests: Add test docs below id=54a127615f2552b5cc4602f67a9c98d7fca76214 -->
 
-📝 [test/unit/utils_test.js](https://github.com/codeceptjs/CodeceptJS/tree/ef5c8da6b66bff845a4a37a1ab0c69f3c46ffb65/test/unit/utils_test.js) <!-- check-tests: Add test docs below id=645ed189d4e3fa28e6795dcb1617ec2ada00f30d -->
+📝 [test/unit/utils_test.js](https://github.com/codeceptjs/CodeceptJS/tree/d60dde173b5aecc06e45de0a6b86a43dec69f8ef/test/unit/utils_test.js) <!-- check-tests: Add test docs below id=645ed189d4e3fa28e6795dcb1617ec2ada00f30d -->
 * 📎 **utils** <!-- check-tests: Add test docs below id=d83b5fd444b48193a438de0cd119a587385fadf0 -->
   * 📎 **#fileExists** <!-- check-tests: Add test docs below id=35580d7d8d1a4c9e88ec8ae8f6efc0b59a36fb74 -->
     * ✔️ `exists` <!-- check-tests: Add test docs below id=53b79a29cfa6bb80d18a10caa09be789503faeb1 -->

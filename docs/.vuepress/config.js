@@ -184,7 +184,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           items: [
             { text: "GitHub", link: "https://github.com/codeceptjs/CodeceptJS" },
             { text: "Discussions", link: "https://github.com/codeceptjs/CodeceptJS/discussions" },
-            { text: "Slack Chat", link: "http://bit.ly/chat-codeceptjs" },
+            { text: "Slack Chat", link: "https://bit.ly/codeceptjs-slack" },
             { text: "Forum", link: "https://codecept.discourse.group/" },
             { text: "Twitter", link: "https://twitter.com/codeceptjs" },
             { text: "Stack Overflow", link: "https://stackoverflow.com/questions/tagged/codeceptjs" },

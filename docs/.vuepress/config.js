@@ -264,6 +264,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             "parallel",
             'visual',
             'email',
+            'secrets',
             'hooks',
             'internal-api',
             'react',

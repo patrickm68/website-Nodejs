@@ -11,15 +11,15 @@
   "license": "ISC",
   "dependencies": {
     "autoprefixer": "^10.4.8",
-    "npm": "^8.17.0",
+    "npm": "^8.18.0",
     "postcss": "^8.4.16",
     "sass": "^1.54.4",
-    "sass-loader": "^10.2.0",
+    "sass-loader": "^10.3.1",
     "tailwindcss": "^1.9.6",
     "vue": "^2.6.14",
     "vue-carousel": "^0.18.0",
     "vue-slider-component": "^3.2.20",
-    "vueperslides": "^2.15.2",
+    "vueperslides": "^2.15.3",
     "vuepress": "^1.9.7",
     "vuepress-plugin-sitemap": "^2.3.1"
   },

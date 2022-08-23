@@ -577,6 +577,18 @@ I.retry({
 
 Pass a function to the `when` option to retry only when an error matches the expected one.
 
+### Retry Multiple Steps
+
+To retry a group of steps enable [retryTo plugin](/plugins/#retryto):
+
+```js
+// retry these steps 5 times before failing
+await retryTo((tryNum) => {
+  I.switchTo('#editor frame');
+  I.click('Open');
+  I.see('Opened')
+}, 5);
+```
 
 ### Retry Scenario
 

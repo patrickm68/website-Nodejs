@@ -202,8 +202,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         {
           group: 'commerce',
           items: [
-            { text: "Commercial Support", link: "http://sdclabs.com/" },
-            { text: "Trainings", link: "http://sdclabs.com/trainings/web-automation-codeceptjs?utm_source=codecept.io&utm_medium=top_menu&utm_term=link&utm_campaign=reference" },
+            { text: "Commercial Support", link: "https://sdclabs.com/" },
+            { text: "Trainings", link: "https://sdclabs.com/trainings/web-automation-codeceptjs?utm_source=codecept.io&utm_medium=top_menu&utm_term=link&utm_campaign=reference" },
           ]
         },
         {

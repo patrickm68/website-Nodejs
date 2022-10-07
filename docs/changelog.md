@@ -7,6 +7,34 @@ layout: Section
 
 # Releases
 
+## 3.3.6
+
+* [`run-rerun`](https://codecept.io/commands/#run-rerun) command was re-introduced by **[dwentland24](https://github.com/dwentland24)** in [#3436](https://github.com/codeceptjs/CodeceptJS/issues/3436). Use it to perform run multiple times and detect flaky tests
+* Enabled `retryFailedStep` by default in `@codeceptjs/configure` v 0.10. See https://github.com/codeceptjs/configure/pull/26
+* **[Playwright]** Fixed properties types "waitForNavigation" and "firefox" by **[mirao](https://github.com/mirao)** in [#3401](https://github.com/codeceptjs/CodeceptJS/issues/3401)
+* **[REST]** Changed "endpoint" to optional by **[mirao](https://github.com/mirao)** in [#3404](https://github.com/codeceptjs/CodeceptJS/issues/3404)
+* **[REST]** Use [`secret`]() for form encoded string by **[PeterNgTr](https://github.com/PeterNgTr)**:
+
+```js
+const secretData = secret('name=john&password=123456');
+const response = await I.sendPostRequest('/user', secretData);
+```
+
+* [Playwright]Fixed docs related to fixed properties types "waitForNavigation" and "firefox" by **[mirao](https://github.com/mirao)** in [#3407](https://github.com/codeceptjs/CodeceptJS/issues/3407)
+* [Playwright]Fixed parameters of startActivity() by **[mirao](https://github.com/mirao)** in [#3408](https://github.com/codeceptjs/CodeceptJS/issues/3408)
+* Move semver to prod dependencies by **[timja](https://github.com/timja)** in [#3413](https://github.com/codeceptjs/CodeceptJS/issues/3413)
+* check if browser is W3C instead of Android by **[mikk150](https://github.com/mikk150)** in [#3414](https://github.com/codeceptjs/CodeceptJS/issues/3414)
+* Pass service configs with options and caps as array for browsers… by **[07souravkunda](https://github.com/07souravkunda)** in [#3418](https://github.com/codeceptjs/CodeceptJS/issues/3418)
+* fix for type of "webdriver.port" by **[ngraf](https://github.com/ngraf)** in [#3421](https://github.com/codeceptjs/CodeceptJS/issues/3421)
+* fix for type of "webdriver.smartWait" by **[pmajewski24](https://github.com/pmajewski24)** in [#3426](https://github.com/codeceptjs/CodeceptJS/issues/3426)
+* fix(datatable): mask secret text by **[PeterNgTr](https://github.com/PeterNgTr)** in [#3432](https://github.com/codeceptjs/CodeceptJS/issues/3432)
+* fix(playwright) - video name and missing type by **[PeterNgTr](https://github.com/PeterNgTr)** in [#3430](https://github.com/codeceptjs/CodeceptJS/issues/3430)
+* fix for expected type of "bootstrap", "teardown", "bootstrapAll" and "teardownAll" by **[ngraf](https://github.com/ngraf)** in [#3424](https://github.com/codeceptjs/CodeceptJS/issues/3424)
+* Improve generate pageobject `gpo` command to work with TypeScript by **[PeterNgTr](https://github.com/PeterNgTr)** in [#3411](https://github.com/codeceptjs/CodeceptJS/issues/3411)
+* Fixed dry-run to always return 0 code and exit 
+* Added minimal version notice for NodeJS >= 12
+* fix(utils): remove . of test title to avoid confusion by **[PeterNgTr](https://github.com/PeterNgTr)** in [#3431](https://github.com/codeceptjs/CodeceptJS/issues/3431)
+
 ## 3.3.5
 
 🛩️ Features
@@ -582,7 +610,7 @@ MyPage.hasFiles('first arg', 'second arg');
 
 // OUTPUT:
 MyPage: hasFile "First arg", "Second arg"
-  I see file "codecept.json"
+  I see file "codecept.js"
   I see file "codecept.po.json"
 ```
 * Introduced official [TypeScript boilerplate](https://github.com/codeceptjs/typescript-boilerplate). Started by **[Vorobeyko](https://github.com/Vorobeyko)**.
@@ -2178,7 +2206,7 @@ module.exports = function(done) {
 ```js
 // inside codecept.conf.js
 exports.config = {
-  // contents of codecept.json
+  // contents of codecept.js
 }
 ```
 * Added `--profile` option to pass its value to `codecept.conf.js` as `process.profile` for [dynamic configuration](http://codecept.io/configuration#dynamic-configuration).

@@ -35,7 +35,7 @@ let withinStatus = false;
  *
  * ## Configuration
  *
- * This helper should be configured in codecept.json or codecept.conf.js
+ * This helper should be configured in codecept.conf.ts or codecept.conf.js
  *
  * * `url` - base url of website to be tested
  * * `restart` (optional, default: true) - restart browser between tests.
@@ -434,7 +434,8 @@ class Nightmare extends Helper {
    * ```
    * 
    * @param {string} text text value to check.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async seeInTitle(text) {
     const title = await this.browser.title();
@@ -449,7 +450,8 @@ class Nightmare extends Helper {
    * ```
    * 
    * @param {string} text value to check.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async dontSeeInTitle(text) {
     const title = await this.browser.title();
@@ -493,7 +495,8 @@ class Nightmare extends Helper {
    * ```
    * 
    * @param {string} url a fragment to check
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async seeInCurrentUrl(url) {
     const currentUrl = await this.browser.url();
@@ -504,7 +507,8 @@ class Nightmare extends Helper {
    * Checks that current url does not contain a provided fragment.
    * 
    * @param {string} url value to check.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async dontSeeInCurrentUrl(url) {
     const currentUrl = await this.browser.url();
@@ -522,7 +526,8 @@ class Nightmare extends Helper {
    * ```
    * 
    * @param {string} url value to check.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async seeCurrentUrlEquals(url) {
     const currentUrl = await this.browser.url();
@@ -539,7 +544,8 @@ class Nightmare extends Helper {
    * ```
    * 
    * @param {string} url value to check.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async dontSeeCurrentUrlEquals(url) {
     const currentUrl = await this.browser.url();
@@ -557,7 +563,8 @@ class Nightmare extends Helper {
    * ```
    * @param {string} text expected on page.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|Xpath|strict locator in which to search for text.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async see(text, context = null) {
     return proceedSee.call(this, 'assert', text, context);
@@ -574,7 +581,8 @@ class Nightmare extends Helper {
    * 
    * @param {string} text which is not present.
    * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator in which to perfrom search.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   dontSee(text, context = null) {
     return proceedSee.call(this, 'negate', text, context);
@@ -588,7 +596,8 @@ class Nightmare extends Helper {
    * I.seeElement('#modal');
    * ```
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async seeElement(locator) {
     locator = new Locator(locator, 'css');
@@ -606,7 +615,8 @@ class Nightmare extends Helper {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async dontSeeElement(locator) {
     locator = new Locator(locator, 'css');
@@ -625,7 +635,8 @@ class Nightmare extends Helper {
    * I.seeElementInDOM('#modal');
    * ```
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async seeElementInDOM(locator) {
     locator = new Locator(locator, 'css');
@@ -641,7 +652,8 @@ class Nightmare extends Helper {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async dontSeeElementInDOM(locator) {
     locator = new Locator(locator, 'css');
@@ -656,7 +668,8 @@ class Nightmare extends Helper {
    * I.seeInSource('<h1>Green eggs &amp; ham</h1>');
    * ```
    * @param {string} text value to check.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async seeInSource(text) {
     const source = await this.browser.evaluate(() => document.documentElement.outerHTML);
@@ -671,7 +684,8 @@ class Nightmare extends Helper {
    * ```
    * 
    * @param {string} value to check.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async dontSeeInSource(text) {
     const source = await this.browser.evaluate(() => document.documentElement.outerHTML);
@@ -689,7 +703,8 @@ class Nightmare extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async seeNumberOfElements(locator, num) {
     const elements = await this._locate(locator);
@@ -706,7 +721,8 @@ class Nightmare extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async seeNumberOfVisibleElements(locator, num) {
     const res = await this.grabNumberOfVisibleElements(locator);
@@ -760,7 +776,7 @@ class Nightmare extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
    * @param {?CodeceptJS.LocatorOrString | null} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    */
   async click(locator, context = null) {
@@ -783,7 +799,8 @@ class Nightmare extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async doubleClick(locator, context = null) {
     const el = await findClickable.call(this, locator, context);
@@ -806,7 +823,8 @@ class Nightmare extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator clickable element located by CSS|XPath|strict locator.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async rightClick(locator, context = null) {
     const el = await findClickable.call(this, locator, context);
@@ -827,7 +845,8 @@ class Nightmare extends Helper {
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async moveCursorTo(locator, offsetX = 0, offsetY = 0) {
     locator = new Locator(locator, 'css');
@@ -863,7 +882,7 @@ class Nightmare extends Helper {
    * 
    * @param {string|function} fn function to be executed in browser context.
    * @param {...any} args to be passed to function.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    *
    * Wrapper for synchronous [evaluate](https://github.com/segmentio/nightmare#evaluatefn-arg1-arg2)
@@ -897,7 +916,7 @@ class Nightmare extends Helper {
    * 
    * @param {string|function} fn function to be executed in browser context.
    * @param {...any} args to be passed to function.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    *
    * Wrapper for asynchronous [evaluate](https://github.com/segmentio/nightmare#evaluatefn-arg1-arg2).
@@ -914,7 +933,8 @@ class Nightmare extends Helper {
    * 
    * @param {number} width width in pixels or `maximize`.
    * @param {number} height height in pixels.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async resizeWindow(width, height) {
     if (width === 'maximize') {
@@ -936,7 +956,8 @@ class Nightmare extends Helper {
    * ```
    * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async checkOption(field, context = null) {
     const els = await findCheckable.call(this, field, context);
@@ -958,7 +979,8 @@ class Nightmare extends Helper {
    * ```
    * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async uncheckOption(field, context = null) {
     const els = await findCheckable.call(this, field, context);
@@ -983,7 +1005,8 @@ class Nightmare extends Helper {
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {CodeceptJS.StringOrSecret} value text value to fill.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async fillField(field, value) {
     const el = await findField.call(this, field);
@@ -1001,7 +1024,8 @@ class Nightmare extends Helper {
    * I.clearField('#email');
    * ```
    * @param {LocatorOrString} editable field located by label|name|CSS|XPath|strict locator.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder.
+   * 
    */
   async clearField(field) {
     return this.fillField(field, '');
@@ -1016,7 +1040,8 @@ class Nightmare extends Helper {
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator
    * @param {string} value text value to append.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async appendField(field, value) {
     const el = await findField.call(this, field);
@@ -1037,7 +1062,8 @@ class Nightmare extends Helper {
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async seeInField(field, value) {
     return proceedSeeInField.call(this, 'assert', field, value);
@@ -1054,7 +1080,8 @@ class Nightmare extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async dontSeeInField(field, value) {
     return proceedSeeInField.call(this, 'negate', field, value);
@@ -1098,7 +1125,8 @@ class Nightmare extends Helper {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async seeCheckboxIsChecked(field) {
     return proceedIsChecked.call(this, 'assert', field);
@@ -1114,7 +1142,8 @@ class Nightmare extends Helper {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async dontSeeCheckboxIsChecked(field) {
     return proceedIsChecked.call(this, 'negate', field);
@@ -1122,7 +1151,7 @@ class Nightmare extends Helper {
 
   /**
    * Attaches a file to element located by label, name, CSS or XPath
-   * Path to file is relative current codecept directory (where codecept.json or codecept.conf.js is located).
+   * Path to file is relative current codecept directory (where codecept.conf.ts or codecept.conf.js is located).
    * File will be uploaded to remote system (if tests are running remotely).
    * 
    * ```js
@@ -1131,8 +1160,9 @@ class Nightmare extends Helper {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
-   * @param {string} pathToFile local file path relative to codecept.json config file.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * @param {string} pathToFile local file path relative to codecept.conf.ts or codecept.conf.js config file.
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    *
    * Doesn't work if the Chromium DevTools panel is open (as Chromium allows only one attachment to the debugger at a time. [See more](https://github.com/rosshinkley/nightmare-upload#important-note-about-setting-file-upload-inputs))
    */
@@ -1406,7 +1436,8 @@ class Nightmare extends Helper {
    * ```
    * @param {LocatorOrString} select field located by label|name|CSS|XPath|strict locator.
    * @param {string|Array<*>} option visible text or value of option.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async selectOption(select, option) {
     const fetchAndCheckOption = function (el, locator) {
@@ -1463,7 +1494,8 @@ class Nightmare extends Helper {
    * ```
    * 
    * @param {Cookie|Array<Cookie>} cookie a cookie object or array of cookie objects.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    *
    * Wrapper for `.cookies.set(cookie)`.
    * [See more](https://github.com/segmentio/nightmare/blob/master/Readme.md#cookiessetcookie)
@@ -1480,7 +1512,8 @@ class Nightmare extends Helper {
    * ```
    * 
    * @param {string} name cookie name.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    *
    */
   async seeCookie(name) {
@@ -1496,7 +1529,8 @@ class Nightmare extends Helper {
    * ```
    * 
    * @param {string} name cookie name.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async dontSeeCookie(name) {
     const res = await this.browser.cookies.get(name);
@@ -1535,7 +1569,8 @@ class Nightmare extends Helper {
    * ```
    * 
    * @param {?string} [cookie=null] (optional, `null` by default) cookie name
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async clearCookie(cookie) {
     if (!cookie) {
@@ -1561,7 +1596,8 @@ class Nightmare extends Helper {
    * @param {string|function} fn to be executed in browser context.
    * @param {any[]|number} [argsOrSec] (optional, `1` by default) arguments for function or seconds.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async waitForFunction(fn, argsOrSec = null, sec = null) {
     let args = [];
@@ -1584,7 +1620,8 @@ class Nightmare extends Helper {
    * ```
    * 
    * @param {number} sec number of second to wait.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async wait(sec) {
     return new Promise(((done) => {
@@ -1605,7 +1642,8 @@ class Nightmare extends Helper {
    * @param {string }text to wait for.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async waitForText(text, sec, context = null) {
     if (!context) {
@@ -1634,7 +1672,8 @@ class Nightmare extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   waitForVisible(locator, sec) {
     this.browser.options.waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
@@ -1661,7 +1700,8 @@ class Nightmare extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async waitToHide(locator, sec = null) {
     return this.waitForInvisible(locator, sec);
@@ -1677,7 +1717,8 @@ class Nightmare extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   waitForInvisible(locator, sec) {
     this.browser.options.waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
@@ -1705,7 +1746,8 @@ class Nightmare extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async waitForElement(locator, sec) {
     this.browser.options.waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
@@ -1735,7 +1777,8 @@ class Nightmare extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async waitForDetached(locator, sec) {
     this.browser.options.waitTimeout = sec ? sec * 1000 : this.options.waitForTimeout;
@@ -1755,7 +1798,8 @@ class Nightmare extends Helper {
    * ```js
    * I.refreshPage();
    * ```
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async refreshPage() {
     return this.browser.refresh();
@@ -1770,7 +1814,7 @@ class Nightmare extends Helper {
   }
 
   /**
-   * Saves screenshot of the specified locator to ouput folder (set in codecept.json or codecept.conf.js).
+   * Saves screenshot of the specified locator to ouput folder (set in codecept.conf.ts or codecept.conf.js).
    * Filename is relative to output folder.
    * 
    * ```js
@@ -1779,7 +1823,8 @@ class Nightmare extends Helper {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {string} fileName file name to save.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    *
    */
   async saveElementScreenshot(locator, fileName) {
@@ -1848,7 +1893,7 @@ class Nightmare extends Helper {
   }
 
   /**
-   * Saves a screenshot to ouput folder (set in codecept.json or codecept.conf.js).
+   * Saves a screenshot to ouput folder (set in codecept.conf.ts or codecept.conf.js).
    * Filename is relative to output folder.
    * Optionally resize the window to the full available page `scrollHeight` and `scrollWidth` to capture the entire page by passing `true` in as the second argument.
    * 
@@ -1859,7 +1904,8 @@ class Nightmare extends Helper {
    * 
    * @param {string} fileName file name to save.
    * @param {boolean} [fullPage=false] (optional, `false` by default) flag to enable fullscreen screenshot mode.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async saveScreenshot(fileName, fullPage = this.options.fullPageScreenshots) {
     const outputFile = screenshotOutputFolder(fileName);
@@ -1892,7 +1938,8 @@ class Nightmare extends Helper {
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async scrollTo(locator, offsetX = 0, offsetY = 0) {
     if (typeof locator === 'number' && typeof offsetX === 'number') {
@@ -1919,7 +1966,8 @@ class Nightmare extends Helper {
    * ```js
    * I.scrollPageToTop();
    * ```
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async scrollPageToTop() {
     return this.executeScript(() => window.scrollTo(0, 0));
@@ -1931,7 +1979,8 @@ class Nightmare extends Helper {
    * ```js
    * I.scrollPageToBottom();
    * ```
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async scrollPageToBottom() {
     /* eslint-disable prefer-arrow-callback, comma-dangle */

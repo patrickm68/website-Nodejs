@@ -34,7 +34,7 @@ const webRoot = 'body';
  *
  * ## Helper configuration
  *
- * This helper should be configured in codecept.json or codecept.conf.js
+ * This helper should be configured in codecept.conf.ts or codecept.conf.js
  *
  * * `app`: Application path. Local path or remote URL to an .ipa or .apk file, or a .zip containing one of these. Alias to desiredCapabilities.appPackage
  * * `host`: (default: 'localhost') Appium host
@@ -788,9 +788,11 @@ class Appium extends Webdriver {
    * I.startActivity('io.selendroid.testapp', '.RegisterUserActivity');
    * ```
    *
-   * @return {Promise<void>}
-   *
    * Appium: support only Android
+   *
+   * @param {string} appPackage
+   * @param {string} appActivity
+   * @return {Promise<void>}
    */
   async startActivity(appPackage, appActivity) {
     onlyForApps.call(this, 'Android');
@@ -1332,7 +1334,8 @@ class Appium extends Webdriver {
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator
    * @param {string} value text value to append.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    *
    */
   async appendField(field, value) {
@@ -1353,7 +1356,8 @@ class Appium extends Webdriver {
    * ```
    * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    *
    */
   async checkOption(field) {
@@ -1386,7 +1390,7 @@ class Appium extends Webdriver {
    * 
    * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
    * @param {?CodeceptJS.LocatorOrString | null} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    *
    */
@@ -1405,7 +1409,8 @@ class Appium extends Webdriver {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    *
    */
   async dontSeeCheckboxIsChecked(field) {
@@ -1421,7 +1426,8 @@ class Appium extends Webdriver {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async dontSeeElement(locator) {
     if (this.isWeb) return super.dontSeeElement(locator);
@@ -1439,7 +1445,8 @@ class Appium extends Webdriver {
    * 
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    *
    */
   async dontSeeInField(field, value) {
@@ -1458,7 +1465,8 @@ class Appium extends Webdriver {
    * 
    * @param {string} text which is not present.
    * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator in which to perfrom search.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    */
   async dontSee(text, context = null) {
     if (this.isWeb) return super.dontSee(text, context);
@@ -1481,7 +1489,8 @@ class Appium extends Webdriver {
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {CodeceptJS.StringOrSecret} value text value to fill.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    *
    */
   async fillField(field, value) {
@@ -1617,7 +1626,7 @@ class Appium extends Webdriver {
   }
 
   /**
-   * Saves a screenshot to ouput folder (set in codecept.json or codecept.conf.js).
+   * Saves a screenshot to ouput folder (set in codecept.conf.ts or codecept.conf.js).
    * Filename is relative to output folder.
    *
    * ```js
@@ -1642,7 +1651,8 @@ class Appium extends Webdriver {
    * 
    * @param {LocatorOrString} locator located by CSS|XPath|strict locator.
    * @param {ScrollIntoViewOptions} scrollIntoViewOptions see https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    *
    * Supported only for web testing
    */
@@ -1660,7 +1670,8 @@ class Appium extends Webdriver {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    *
    */
   async seeCheckboxIsChecked(field) {
@@ -1676,7 +1687,8 @@ class Appium extends Webdriver {
    * I.seeElement('#modal');
    * ```
    * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    *
    */
   async seeElement(locator) {
@@ -1696,7 +1708,8 @@ class Appium extends Webdriver {
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    *
    */
   async seeInField(field, value) {
@@ -1715,7 +1728,8 @@ class Appium extends Webdriver {
    * ```
    * @param {string} text expected on page.
    * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|Xpath|strict locator in which to search for text.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    *
    */
   async see(text, context) {
@@ -1744,7 +1758,8 @@ class Appium extends Webdriver {
    * ```
    * @param {LocatorOrString} select field located by label|name|CSS|XPath|strict locator.
    * @param {string|Array<*>} option visible text or value of option.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    *
    * Supported only for web testing
    */
@@ -1764,7 +1779,8 @@ class Appium extends Webdriver {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    *
    */
   async waitForElement(locator, sec = null) {
@@ -1782,7 +1798,8 @@ class Appium extends Webdriver {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    *
    */
   async waitForVisible(locator, sec = null) {
@@ -1800,7 +1817,8 @@ class Appium extends Webdriver {
    * 
    * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    *
    */
   async waitForInvisible(locator, sec = null) {
@@ -1821,7 +1839,8 @@ class Appium extends Webdriver {
    * @param {string }text to wait for.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator.
-   * [!] returns a _promise_ which is synchronized internally by recorder
+   * ⚠️ returns a _promise_ which is synchronized internally by recorder
+   * 
    *
    */
   async waitForText(text, sec = null, context = null) {

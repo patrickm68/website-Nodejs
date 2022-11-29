@@ -44,6 +44,8 @@ const {
 } = require('./extras/PlaywrightRestartOpts');
 const { createValueEngine, createDisabledEngine } = require('./extras/PlaywrightPropEngine');
 
+const pathSeparator = path.sep;
+
 /**
  * ## Configuration
  *
@@ -52,7 +54,7 @@ const { createValueEngine, createDisabledEngine } = require('./extras/Playwright
  * @typedef PlaywrightConfig
  * @type {object}
  * @prop {string} url - base url of website to be tested
- * @prop {string} browser - a browser to test on, either: `chromium`, `firefox`, `webkit`, `electron`. Default: chromium.
+ * @prop {string} [browser] - a browser to test on, either: `chromium`, `firefox`, `webkit`, `electron`. Default: chromium.
  * @prop {boolean} [show=false] - show browser window.
  * @prop {string|boolean} [restart=false] - restart strategy between tests. Possible values:
  *   * 'context' or **false** - restarts [browser context](https://playwright.dev/docs/api/class-browsercontext) but keeps running browser. Recommended by Playwright team to keep tests isolated.
@@ -80,8 +82,11 @@ const { createValueEngine, createDisabledEngine } = require('./extras/Playwright
  * @prop {string} [locale] - locale string. Example: 'en-GB', 'de-DE', 'fr-FR', ...
  * @prop {boolean} [manualStart] - do not start browser before a test, start it manually inside a helper with `this.helpers["Playwright"]._startBrowser()`.
  * @prop {object} [chromium] - pass additional chromium options
+ * @prop {object} [firefox] - pass additional firefox options
  * @prop {object} [electron] - (pass additional electron options
  * @prop {any} [channel] - (While Playwright can operate against the stock Google Chrome and Microsoft Edge browsers available on the machine. In particular, current Playwright version will support Stable and Beta channels of these browsers. See [Google Chrome & Microsoft Edge](https://playwright.dev/docs/browsers/#google-chrome--microsoft-edge).
+ * @prop {string[]} [ignoreLog] - An array with console message types that are not logged to debug log. Default value is `['warning', 'log']`. E.g. you can set `[]` to log all messages. See all possible [values](https://playwright.dev/docs/api/class-consolemessage#console-message-type).
+ * @prop {boolean} [ignoreHTTPSErrors] - Allows access to untrustworthy pages, e.g. to a page with an expired certificate. Default value is `false`
  */
 const config = {};
 
@@ -448,7 +453,7 @@ class Playwright extends Helper {
       const existingPages = await this.browserContext.pages();
       mainPage = existingPages[0] || await this.browserContext.newPage();
     }
-    targetCreatedHandler.call(this, mainPage);
+    await targetCreatedHandler.call(this, mainPage);
 
     await this._setPage(mainPage);
 
@@ -513,12 +518,13 @@ class Playwright extends Helper {
           browserContext = browser.context();
           page = await browser.firstWindow();
         } else {
-          browserContext = await this.browser.newContext(config);
+          browserContext = await this.browser.newContext(Object.assign(this.options, config));
           page = await browserContext.newPage();
         }
 
-        targetCreatedHandler.call(this, page);
-        this._setPage(page);
+        if (this.options.trace) await browserContext.tracing.start({ screenshots: true, snapshots: true });
+        await targetCreatedHandler.call(this, page);
+        await this._setPage(page);
         // Create a new page inside context.
         return browserContext;
       },
@@ -740,6 +746,19 @@ class Playwright extends Helper {
     });
 
     this.isRunning = true;
+    return this.browser;
+  }
+
+  /**
+   * Create a new browser context with a page. \
+   * Usually it should be run from a custom helper after call of `_startBrowser()`
+   * @param {object} [contextOptions] See https://playwright.dev/docs/api/class-browser#browser-new-context
+   */
+  async _createContextPage(contextOptions) {
+    this.browserContext = await this.browser.newContext(contextOptions);
+    const page = await this.browserContext.newPage();
+    targetCreatedHandler.call(this, page);
+    await this._setPage(page);
   }
 
   _getType() {
@@ -818,8 +837,8 @@ class Playwright extends Helper {
     if (this.isElectron) {
       throw new Error('Cannot open pages inside an Electron container');
     }
-    if (!(/^\w+\:\/\//.test(url))) {
-      url = this.options.url + url;
+    if (!(/^\w+\:(\/\/|.+)/.test(url))) {
+      url = this.options.url + (url.startsWith('/') ? url : `/${url}`);
     }
 
     if (this.options.basicAuth && (this.isAuthenticated !== true)) {
@@ -910,7 +929,7 @@ class Playwright extends Helper {
    */
   async moveCursorTo(locator, offsetX = 0, offsetY = 0) {
     const els = await this._locate(locator);
-    assertElementExists(els);
+    assertElementExists(els, locator);
 
     // Use manual mouse.move instead of .hover() so the offset can be added to the coordinates
     const { x, y } = await clickablePoint(els[0]);
@@ -944,6 +963,26 @@ class Playwright extends Helper {
     const dst = new Locator(destElement, 'css');
 
     return this.page.dragAndDrop(buildLocatorString(src), buildLocatorString(dst), options);
+  }
+
+  /**
+   * Restart browser with a new context and a new page
+   *
+   * ```js
+   * // Restart browser and use a new timezone
+   * I.restartBrowser({ timezoneId: 'America/Phoenix' });
+   * // Open URL in a new page in changed timezone
+   * I.amOnPage('/');
+   * // Restart browser, allow reading/copying of text from/into clipboard in Chrome
+   * I.restartBrowser({ permissions: ['clipboard-read', 'clipboard-write'] });
+   * ```
+   *
+   * @param {object} [contextOptions] [Options for browser context](https://playwright.dev/docs/api/class-browser#browser-new-context) when starting new browser
+   */
+  async restartBrowser(contextOptions) {
+    await this._stopBrowser();
+    await this._startBrowser();
+    await this._createContextPage(contextOptions);
   }
 
   /**
@@ -1187,7 +1226,7 @@ class Playwright extends Helper {
     if (!page) {
       throw new Error(`There is no ability to switch to next tab with offset ${num}`);
     }
-    targetCreatedHandler.call(this, page);
+    await targetCreatedHandler.call(this, page);
     await this._setPage(page);
     return this._waitForAction();
   }
@@ -1271,7 +1310,7 @@ class Playwright extends Helper {
       throw new Error('Cannot open new tabs inside an Electron container');
     }
     const page = await this.browserContext.newPage(options);
-    targetCreatedHandler.call(this, page);
+    await targetCreatedHandler.call(this, page);
     await this._setPage(page);
     return this._waitForAction();
   }
@@ -1361,7 +1400,7 @@ class Playwright extends Helper {
   }
 
   /**
-   * Handles a file download.Aa file name is required to save the file on disk.
+   * Handles a file download. A file name is required to save the file on disk.
    * Files are saved to "output" directory.
    *
    * Should be used with [FileSystem helper](https://codecept.io/helpers/FileSystem) to check that file were downloaded correctly.
@@ -1370,17 +1409,19 @@ class Playwright extends Helper {
    * I.handleDownloads('downloads/avatar.jpg');
    * I.click('Download Avatar');
    * I.amInPath('output/downloads');
-   * I.waitForFile('downloads/avatar.jpg', 5);
+   * I.waitForFile('avatar.jpg', 5);
    *
    * ```
    *
    * @param {string} [fileName] set filename for downloaded file
    * @return {Promise<void>}
    */
-  async handleDownloads(fileName = 'downloads') {
+  async handleDownloads(fileName) {
     this.page.waitForEvent('download').then(async (download) => {
       const filePath = await download.path();
-      const downloadPath = path.join(global.output_dir, fileName || path.basename(filePath));
+      fileName = fileName || `downloads/${path.basename(filePath)}`;
+
+      const downloadPath = path.join(global.output_dir, fileName);
       if (!fs.existsSync(path.dirname(downloadPath))) {
         fs.mkdirSync(path.dirname(downloadPath), '0777');
       }
@@ -1920,7 +1961,7 @@ class Playwright extends Helper {
       throw new Error(`File at ${file} can not be found on local system`);
     }
     const els = await findFields.call(this, locator);
-    assertElementExists(els, 'Field');
+    assertElementExists(els, locator, 'Field');
     await els[0].setInputFiles(file);
     return this._waitForAction();
   }
@@ -2208,7 +2249,7 @@ class Playwright extends Helper {
    */
   async seeNumberOfElements(locator, num) {
     const elements = await this._locate(locator);
-    return equals(`expected number of elements (${locator}) is ${num}, but found ${elements.length}`).assert(elements.length, num);
+    return equals(`expected number of elements (${(new Locator(locator))}) is ${num}, but found ${elements.length}`).assert(elements.length, num);
   }
 
   /**
@@ -2228,7 +2269,7 @@ class Playwright extends Helper {
    */
   async seeNumberOfVisibleElements(locator, num) {
     const res = await this.grabNumberOfVisibleElements(locator);
-    return equals(`expected number of visible elements (${locator}) is ${num}, but found ${res}`).assert(res, num);
+    return equals(`expected number of visible elements (${(new Locator(locator))}) is ${num}, but found ${res}`).assert(res, num);
   }
 
   /**
@@ -2355,6 +2396,7 @@ class Playwright extends Helper {
    *
    * @param {string|function} fn function to be executed in browser context.
    * @param {any} [arg] optional argument to pass to the function
+   * @returns {Promise<any>}
    */
   async executeScript(fn, arg) {
     let context = this.page;
@@ -2587,7 +2629,7 @@ class Playwright extends Helper {
       }
       return true;
     });
-    return equals(`all elements (${locator}) to have CSS property ${JSON.stringify(cssProperties)}`).assert(chunked.length, elemAmount);
+    return equals(`all elements (${(new Locator(locator))}) to have CSS property ${JSON.stringify(cssProperties)}`).assert(chunked.length, elemAmount);
   }
 
   /**
@@ -2625,7 +2667,7 @@ class Playwright extends Helper {
       }
       return true;
     });
-    return equals(`all elements (${locator}) to have attributes ${JSON.stringify(attributes)}`).assert(chunked.length, elemAmount);
+    return equals(`all elements (${(new Locator(locator))}) to have attributes ${JSON.stringify(attributes)}`).assert(chunked.length, elemAmount);
   }
 
   /**
@@ -2729,7 +2771,7 @@ class Playwright extends Helper {
     assertElementExists(res, locator);
     if (res.length > 1) this.debug(`[Elements] Using first element out of ${res.length}`);
     const elem = res[0];
-    this.debug(`Screenshot of ${locator} element has been saved to ${outputFile}`);
+    this.debug(`Screenshot of ${(new Locator(locator))} element has been saved to ${outputFile}`);
     return elem.screenshot({ path: outputFile, type: 'png' });
   }
 
@@ -2824,29 +2866,28 @@ class Playwright extends Helper {
     }
 
     if (this.options.recordVideo && this.page && this.page.video()) {
-      const videoPath = `${global.output_dir}/videos/${clearString(test.title)}.failed.webm`;
-      test.artifacts.video = await this.page.video().path();
-      fs.rename(test.artifacts.video, videoPath, (() => {
-        test.artifacts.video = videoPath;
-      }));
+      test.artifacts.video = await saveVideoForPage(this.page, `${test.title}.failed`);
+      for (const sessionName in this.sessionPages) {
+        test.artifacts[`video_${sessionName}`] = await saveVideoForPage(this.sessionPages[sessionName], `${test.title}_${sessionName}.failed`);
+      }
     }
 
     if (this.options.trace) {
-      const path = `${`${global.output_dir}/trace/${clearString(test.title)}`.slice(0, 251)}.zip`;
-      await this.browserContext.tracing.stop({ path });
-      test.artifacts.trace = path;
+      test.artifacts.trace = await saveTraceForContext(this.browserContext, `${test.title}.failed`);
+      for (const sessionName in this.sessionPages) {
+        if (!this.sessionPages[sessionName].context) continue;
+        test.artifacts[`trace_${sessionName}`] = await saveTraceForContext(this.sessionPages[sessionName].context(), `${test.title}_${sessionName}.failed`);
+      }
     }
   }
 
   async _passed(test) {
     if (this.options.recordVideo && this.page && this.page.video()) {
-      const videoPath = `${global.output_dir}/videos/${clearString(test.title)}.passed.webm`;
-
       if (this.options.keepVideoForPassedTests) {
-        test.artifacts.video = await this.page.video().path();
-        fs.rename(test.artifacts.video, videoPath, (() => {
-          test.artifacts.video = videoPath;
-        }));
+        test.artifacts.video = await saveVideoForPage(this.page, `${test.title}.passed`);
+        for (const sessionName of Object.keys(this.sessionPages)) {
+          test.artifacts[`video_${sessionName}`] = await saveVideoForPage(this.sessionPages[sessionName], `${test.title}_${sessionName}.passed`);
+        }
       } else {
         this.page.video().delete().catch(e => {});
       }
@@ -2854,9 +2895,13 @@ class Playwright extends Helper {
 
     if (this.options.trace) {
       if (this.options.keepTraceForPassedTests) {
-        const path = `${global.output_dir}/trace/${clearString(test.title)}.zip`;
-        await this.browserContext.tracing.stop({ path });
-        test.artifacts.trace = path;
+        if (this.options.trace) {
+          test.artifacts.trace = await saveTraceForContext(this.browserContext, `${test.title}.passed`);
+          for (const sessionName in this.sessionPages) {
+            if (!this.sessionPages[sessionName].context) continue;
+            test.artifacts[`trace_${sessionName}`] = await saveTraceForContext(this.sessionPages[sessionName].context(), `${test.title}_${sessionName}.passed`);
+          }
+        }
       } else {
         await this.browserContext.tracing.stop();
       }
@@ -3770,7 +3815,7 @@ async function targetCreatedHandler(page) {
   page.on('load', () => {
     page.$('body')
       .catch(() => null)
-      .then(async context => {
+      .then(async () => {
         if (this.context && this.context._type === 'Frame') {
           // we are inside iframe?
           const frameEl = await this.context.frameElement();
@@ -3795,7 +3840,7 @@ async function targetCreatedHandler(page) {
     try {
       await page.setViewportSize(parseWindowSize(this.options.windowSize));
     } catch (err) {
-      // target can be already closed, ignoring...
+      this.debug('Target can be already closed, ignoring...');
     }
   }
 }
@@ -3919,4 +3964,22 @@ async function refreshContextSession() {
       if (!(err.message.indexOf("Storage is disabled inside 'data:' URLs.") > -1)) throw err;
     });
   }
+}
+
+async function saveVideoForPage(page, name) {
+  if (!page.video()) return null;
+  const fileName = `${global.output_dir}${pathSeparator}videos${pathSeparator}${Date.now()}_${clearString(name).slice(0, 245)}.webm`;
+  page.video().saveAs(fileName).then(() => {
+    if (!page) return;
+    page.video().delete().catch(e => {});
+  });
+  return fileName;
+}
+
+async function saveTraceForContext(context, name) {
+  if (!context) return;
+  if (!context.tracing) return;
+  const fileName = `${`${global.output_dir}${pathSeparator}trace${pathSeparator}${Date.now()}_${clearString(name)}`.slice(0, 245)}.zip`;
+  await context.tracing.stop({ path: fileName });
+  return fileName;
 }

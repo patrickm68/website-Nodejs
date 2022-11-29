@@ -46,7 +46,7 @@ let version;
  * @prop {string} [host=localhost] - WebDriver host to connect.
  * @prop {number} [port=4444] - WebDriver port to connect.
  * @prop {string} [protocol=http] - protocol for WebDriver server.
- * @prop {string} [path=/wd/hub] - path to WebDriver server,
+ * @prop {string} [path=/wd/hub] - path to WebDriver server.
  * @prop {boolean} [restart=true] - restart browser between tests.
  * @prop {boolean|number} [smartWait=false] - **enables [SmartWait](http://codecept.io/acceptance/#smartwait)**; wait for additional milliseconds for element to appear. Enable for 5 secs: "smartWait": 5000.
  * @prop {boolean} [disableScreenshots=false] - don't save screenshots on failure.
@@ -463,7 +463,7 @@ class WebDriver extends Helper {
       delete config.capabilities.selenoidOptions;
     }
 
-    config.waitForTimeout /= 1000; // convert to seconds
+    config.waitForTimeoutInSeconds = config.waitForTimeout / 1000; // convert to seconds
 
     if (!config.capabilities.platformName && (!config.url || !config.browser)) {
       throw new Error(`
@@ -1440,7 +1440,7 @@ class WebDriver extends Helper {
    */
   async grabHTMLFrom(locator) {
     const html = await this.grabHTMLFromAll(locator);
-    assertElementExists(html);
+    assertElementExists(html, locator);
     if (html.length > 1) {
       this.debugSection('GrabHTML', `Using first element out of ${html.length}`);
     }
@@ -1789,7 +1789,7 @@ class WebDriver extends Helper {
     const res = await this._locate(locator, true);
     assertElementExists(res, locator);
     const selected = await forEachAsync(res, async el => el.isDisplayed());
-    return truth(`elements of ${locator}`, 'to be seen').assert(selected);
+    return truth(`elements of ${(new Locator(locator))}`, 'to be seen').assert(selected);
   }
 
   /**
@@ -1807,10 +1807,10 @@ class WebDriver extends Helper {
   async dontSeeElement(locator) {
     const res = await this._locate(locator, false);
     if (!res || res.length === 0) {
-      return truth(`elements of ${locator}`, 'to be seen').negate(false);
+      return truth(`elements of ${(new Locator(locator))}`, 'to be seen').negate(false);
     }
     const selected = await forEachAsync(res, async el => el.isDisplayed());
-    return truth(`elements of ${locator}`, 'to be seen').negate(selected);
+    return truth(`elements of ${(new Locator(locator))}`, 'to be seen').negate(selected);
   }
 
   /**
@@ -1948,7 +1948,7 @@ class WebDriver extends Helper {
    */
   async seeNumberOfElements(locator, num) {
     const res = await this._locate(locator);
-    return assert.equal(res.length, num, `expected number of elements (${locator}) is ${num}, but found ${res.length}`);
+    return assert.equal(res.length, num, `expected number of elements (${(new Locator(locator))}) is ${num}, but found ${res.length}`);
   }
 
   /**
@@ -1967,7 +1967,7 @@ class WebDriver extends Helper {
    */
   async seeNumberOfVisibleElements(locator, num) {
     const res = await this.grabNumberOfVisibleElements(locator);
-    return assert.equal(res, num, `expected number of visible elements (${locator}) is ${num}, but found ${res}`);
+    return assert.equal(res, num, `expected number of visible elements (${(new Locator(locator))}) is ${num}, but found ${res}`);
   }
 
   /**
@@ -2010,7 +2010,7 @@ class WebDriver extends Helper {
     });
     return assert.ok(
       chunked.length === elemAmount,
-      `expected all elements (${locator}) to have CSS property ${JSON.stringify(cssProperties)}`,
+      `expected all elements (${(new Locator(locator))}) to have CSS property ${JSON.stringify(cssProperties)}`,
     );
   }
 
@@ -2046,7 +2046,7 @@ class WebDriver extends Helper {
     });
     return assert.ok(
       chunked.length === elemAmount,
-      `expected all elements (${locator}) to have attributes ${JSON.stringify(attributes)}`,
+      `expected all elements (${(new Locator(locator))}) to have attributes ${JSON.stringify(attributes)}`,
     );
   }
 
@@ -2224,7 +2224,7 @@ class WebDriver extends Helper {
    */
   async scrollIntoView(locator, scrollIntoViewOptions) {
     const res = await this._locate(withStrictLocator(locator), true);
-    assertElementExists(res);
+    assertElementExists(res, locator);
     const elem = usingFirstElement(res);
     return elem.scrollIntoView(scrollIntoViewOptions);
   }
@@ -2254,12 +2254,12 @@ class WebDriver extends Helper {
 
     if (locator) {
       const res = await this._locate(withStrictLocator(locator), true);
-      assertElementExists(res);
+      assertElementExists(res, locator);
       const elem = usingFirstElement(res);
       const elementId = getElementId(elem);
       if (this.browser.isMobile && !this.browser.isW3C) return this.browser.touchScroll(offsetX, offsetY, elementId);
       const location = await elem.getLocation();
-      assertElementExists(location, 'Failed to receive', 'location');
+      assertElementExists(location, locator, 'Failed to receive', 'location');
       /* eslint-disable prefer-arrow-callback */
       return this.browser.execute(function (x, y) { return window.scrollTo(x, y); }, location.x + offsetX, location.y + offsetY);
       /* eslint-enable */
@@ -2316,7 +2316,7 @@ class WebDriver extends Helper {
     assertElementExists(res, locator);
     const elem = usingFirstElement(res);
 
-    this.debug(`Screenshot of ${locator} element has been saved to ${outputFile}`);
+    this.debug(`Screenshot of ${(new Locator(locator))} element has been saved to ${outputFile}`);
     return elem.saveScreenshot(outputFile);
   }
 
@@ -2773,11 +2773,11 @@ class WebDriver extends Helper {
    */
   async dragAndDrop(srcElement, destElement) {
     let sourceEl = await this._locate(srcElement);
-    assertElementExists(sourceEl);
+    assertElementExists(sourceEl, srcElement);
     sourceEl = usingFirstElement(sourceEl);
 
     let destEl = await this._locate(destElement);
-    assertElementExists(destEl);
+    assertElementExists(destEl, destElement);
     destEl = usingFirstElement(destEl);
 
     return sourceEl.dragAndDrop(destEl);
@@ -2922,7 +2922,7 @@ class WebDriver extends Helper {
    * 
    */
   async waitForEnabled(locator, sec = null) {
-    const aSec = sec || this.options.waitForTimeout;
+    const aSec = sec || this.options.waitForTimeoutInSeconds;
     if (isWebDriver5()) {
       return this.browser.waitUntil(async () => {
         const res = await this.$$(withStrictLocator(locator));
@@ -2967,17 +2967,17 @@ class WebDriver extends Helper {
    * 
    */
   async waitForElement(locator, sec = null) {
-    const aSec = sec || this.options.waitForTimeout;
+    const aSec = sec || this.options.waitForTimeoutInSeconds;
     if (isWebDriver5()) {
       return this.browser.waitUntil(async () => {
         const res = await this.$$(withStrictLocator(locator));
         return res && res.length;
-      }, aSec * 1000, `element (${locator}) still not present on page after ${aSec} sec`);
+      }, aSec * 1000, `element (${(new Locator(locator))}) still not present on page after ${aSec} sec`);
     }
     return this.browser.waitUntil(async () => {
       const res = await this._res(locator);
       return res && res.length;
-    }, { timeout: aSec * 1000, timeoutMsg: `element (${locator}) still not present on page after ${aSec} sec` });
+    }, { timeout: aSec * 1000, timeoutMsg: `element (${(new Locator(locator))}) still not present on page after ${aSec} sec` });
   }
 
   /**
@@ -2995,7 +2995,7 @@ class WebDriver extends Helper {
    * 
    */
   async waitForClickable(locator, waitTimeout) {
-    waitTimeout = waitTimeout || this.options.waitForTimeout;
+    waitTimeout = waitTimeout || this.options.waitForTimeoutInSeconds;
     let res = await this._locate(locator);
     res = usingFirstElement(res);
     assertElementExists(res, locator);
@@ -3020,7 +3020,7 @@ class WebDriver extends Helper {
    */
   async waitInUrl(urlPart, sec = null) {
     const client = this.browser;
-    const aSec = sec || this.options.waitForTimeout;
+    const aSec = sec || this.options.waitForTimeoutInSeconds;
     let currUrl = '';
     if (isWebDriver5()) {
       return client
@@ -3064,7 +3064,7 @@ class WebDriver extends Helper {
    * 
    */
   async waitUrlEquals(urlPart, sec = null) {
-    const aSec = sec || this.options.waitForTimeout;
+    const aSec = sec || this.options.waitForTimeoutInSeconds;
     const baseUrl = this.options.url;
     if (urlPart.indexOf('http') < 0) {
       urlPart = baseUrl + urlPart;
@@ -3101,7 +3101,7 @@ class WebDriver extends Helper {
    *
    */
   async waitForText(text, sec = null, context = null) {
-    const aSec = sec || this.options.waitForTimeout;
+    const aSec = sec || this.options.waitForTimeoutInSeconds;
     const _context = context || this.root;
     if (isWebDriver5()) {
       return this.browser.waitUntil(
@@ -3149,7 +3149,7 @@ class WebDriver extends Helper {
    */
   async waitForValue(field, value, sec = null) {
     const client = this.browser;
-    const aSec = sec || this.options.waitForTimeout;
+    const aSec = sec || this.options.waitForTimeoutInSeconds;
     if (isWebDriver5()) {
       return client.waitUntil(
         async () => {
@@ -3195,7 +3195,7 @@ class WebDriver extends Helper {
    *
    */
   async waitForVisible(locator, sec = null) {
-    const aSec = sec || this.options.waitForTimeout;
+    const aSec = sec || this.options.waitForTimeoutInSeconds;
     if (isWebDriver5()) {
       return this.browser.waitUntil(async () => {
         const res = await this.$$(withStrictLocator(locator));
@@ -3232,7 +3232,7 @@ class WebDriver extends Helper {
    * 
    */
   async waitNumberOfVisibleElements(locator, num, sec = null) {
-    const aSec = sec || this.options.waitForTimeout;
+    const aSec = sec || this.options.waitForTimeoutInSeconds;
     if (isWebDriver5()) {
       return this.browser.waitUntil(async () => {
         const res = await this.$$(withStrictLocator(locator));
@@ -3269,7 +3269,7 @@ class WebDriver extends Helper {
    * 
    */
   async waitForInvisible(locator, sec = null) {
-    const aSec = sec || this.options.waitForTimeout;
+    const aSec = sec || this.options.waitForTimeoutInSeconds;
     if (isWebDriver5()) {
       return this.browser.waitUntil(async () => {
         const res = await this.$$(withStrictLocator(locator));
@@ -3317,7 +3317,7 @@ class WebDriver extends Helper {
    * 
    */
   async waitForDetached(locator, sec = null) {
-    const aSec = sec || this.options.waitForTimeout;
+    const aSec = sec || this.options.waitForTimeoutInSeconds;
     if (isWebDriver5()) {
       return this.browser.waitUntil(async () => {
         const res = await this._res(locator);
@@ -3366,7 +3366,7 @@ class WebDriver extends Helper {
       }
     }
 
-    const aSec = sec || this.options.waitForTimeout;
+    const aSec = sec || this.options.waitForTimeoutInSeconds;
     if (isWebDriver5()) {
       return this.browser.waitUntil(async () => this.browser.execute(fn, ...args), aSec * 1000, '');
     }
@@ -3414,7 +3414,7 @@ class WebDriver extends Helper {
    * 
    */
   async switchToNextTab(num = 1, sec = null) {
-    const aSec = sec || this.options.waitForTimeout;
+    const aSec = sec || this.options.waitForTimeoutInSeconds;
     let target;
     const current = await this.browser.getWindowHandle();
 
@@ -3455,7 +3455,7 @@ class WebDriver extends Helper {
    * 
    */
   async switchToPreviousTab(num = 1, sec = null) {
-    const aSec = sec || this.options.waitForTimeout;
+    const aSec = sec || this.options.waitForTimeoutInSeconds;
     const current = await this.browser.getWindowHandle();
     let target;
 

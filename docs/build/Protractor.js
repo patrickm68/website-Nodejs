@@ -153,7 +153,7 @@ class Protractor extends Helper {
     if (config.proxy) config.capabilities.proxy = config.proxy;
     if (config.browser) config.capabilities.browserName = config.browser;
 
-    config.waitForTimeout /= 1000; // convert to seconds
+    config.waitForTimeoutInSeconds = config.waitForTimeout / 1000; // convert to seconds
     return config;
   }
 
@@ -1011,7 +1011,7 @@ class Protractor extends Helper {
    */
   async grabTextFrom(locator) {
     const texts = await this.grabTextFromAll(locator);
-    assertElementExists(texts);
+    assertElementExists(texts, locator);
     if (texts.length > 1) {
       this.debugSection('GrabText', `Using first element out of ${texts.length}`);
     }
@@ -1056,7 +1056,7 @@ class Protractor extends Helper {
    */
   async grabHTMLFrom(locator) {
     const html = await this.grabHTMLFromAll(locator);
-    assertElementExists(html);
+    assertElementExists(html, locator);
     if (html.length > 1) {
       this.debugSection('GrabHTMl', `Using first element out of ${html.length}`);
     }
@@ -1381,7 +1381,7 @@ class Protractor extends Helper {
    */
   async seeNumberOfElements(locator, num) {
     const elements = await this._locate(locator);
-    return equals(`expected number of elements (${locator}) is ${num}, but found ${elements.length}`).assert(elements.length, num);
+    return equals(`expected number of elements (${(new Locator(locator))}) is ${num}, but found ${elements.length}`).assert(elements.length, num);
   }
 
   /**
@@ -1399,7 +1399,7 @@ class Protractor extends Helper {
    */
   async seeNumberOfVisibleElements(locator, num) {
     const res = await this.grabNumberOfVisibleElements(locator);
-    return equals(`expected number of visible elements (${locator}) is ${num}, but found ${res}`).assert(res, num);
+    return equals(`expected number of visible elements (${(new Locator(locator))}) is ${num}, but found ${res}`).assert(res, num);
   }
 
   /**
@@ -1456,7 +1456,7 @@ class Protractor extends Helper {
         missingAttributes.push(...missing);
       }
     }
-    return equals(`all elements (${locator}) to have CSS property ${JSON.stringify(cssProperties)}`).assert(missingAttributes.length, 0);
+    return equals(`all elements (${(new Locator(locator))}) to have CSS property ${JSON.stringify(cssProperties)}`).assert(missingAttributes.length, 0);
   }
 
   /**
@@ -1492,7 +1492,7 @@ class Protractor extends Helper {
       }
     }
 
-    return equals(`all elements (${locator}) to have attributes ${JSON.stringify(attributes)}`).assert(missingAttributes.length, 0);
+    return equals(`all elements (${(new Locator(locator))}) to have attributes ${JSON.stringify(attributes)}`).assert(missingAttributes.length, 0);
   }
 
   /**
@@ -1650,7 +1650,7 @@ class Protractor extends Helper {
     assertElementExists(res, locator);
     if (res.length > 1) this.debug(`[Elements] Using first element out of ${res.length}`);
     const elem = res[0];
-    this.debug(`Screenshot of ${locator} element has been saved to ${outputFile}`);
+    this.debug(`Screenshot of ${(new Locator(locator))} element has been saved to ${outputFile}`);
     const png = await elem.takeScreenshot();
     return writeFile(png, outputFile);
   }
@@ -1862,8 +1862,8 @@ class Protractor extends Helper {
   async dragAndDrop(srcElement, destElement) {
     const srcEl = await this._locate(srcElement, true);
     const destEl = await this._locate(destElement, true);
-    assertElementExists(srcEl);
-    assertElementExists(destEl);
+    assertElementExists(srcEl, srcElement);
+    assertElementExists(destEl, destElement);
     return this.browser
       .actions()
       .dragAndDrop(srcEl[0], destEl[0])
@@ -2046,7 +2046,7 @@ class Protractor extends Helper {
    * 
    */
   async waitForElement(locator, sec = null) {
-    const aSec = sec || this.options.waitForTimeout;
+    const aSec = sec || this.options.waitForTimeoutInSeconds;
     const el = global.element(guessLocator(locator) || global.by.css(locator));
     return this.browser.wait(EC.presenceOf(el), aSec * 1000);
   }
@@ -2072,7 +2072,7 @@ class Protractor extends Helper {
    * 
    */
   async waitForDetached(locator, sec = null) {
-    const aSec = sec || this.options.waitForTimeout;
+    const aSec = sec || this.options.waitForTimeoutInSeconds;
     const el = global.element(guessLocator(locator) || global.by.css(locator));
     return this.browser.wait(EC.not(EC.presenceOf(el)), aSec * 1000).catch((err) => {
       if (err.message && err.message.indexOf('Wait timed out after') > -1) {
@@ -2089,7 +2089,7 @@ class Protractor extends Helper {
    * ```
    */
   async waitForClickable(locator, sec = null) {
-    const aSec = sec || this.options.waitForTimeout;
+    const aSec = sec || this.options.waitForTimeoutInSeconds;
     const el = global.element(guessLocator(locator) || global.by.css(locator));
     return this.browser.wait(EC.elementToBeClickable(el), aSec * 1000);
   }
@@ -2108,7 +2108,7 @@ class Protractor extends Helper {
    * 
    */
   async waitForVisible(locator, sec = null) {
-    const aSec = sec || this.options.waitForTimeout;
+    const aSec = sec || this.options.waitForTimeoutInSeconds;
     const el = global.element(guessLocator(locator) || global.by.css(locator));
     return this.browser.wait(EC.visibilityOf(el), aSec * 1000);
   }
@@ -2144,7 +2144,7 @@ class Protractor extends Helper {
    * 
    */
   async waitForInvisible(locator, sec = null) {
-    const aSec = sec || this.options.waitForTimeout;
+    const aSec = sec || this.options.waitForTimeoutInSeconds;
     const el = global.element(guessLocator(locator) || global.by.css(locator));
     return this.browser.wait(EC.invisibilityOf(el), aSec * 1000);
   }
@@ -2179,12 +2179,12 @@ class Protractor extends Helper {
       };
     }
 
-    const aSec = sec || this.options.waitForTimeout;
+    const aSec = sec || this.options.waitForTimeoutInSeconds;
     const guessLoc = guessLocator(locator) || global.by.css(locator);
 
     return this.browser.wait(visibilityCountOf(guessLoc, num), aSec * 1000)
       .catch(() => {
-        throw Error(`The number of elements (${locator}) is not ${num} after ${aSec} sec`);
+        throw Error(`The number of elements (${(new Locator(locator))}) is not ${num} after ${aSec} sec`);
       });
   }
 
@@ -2198,12 +2198,12 @@ class Protractor extends Helper {
    * 
    */
   async waitForEnabled(locator, sec = null) {
-    const aSec = sec || this.options.waitForTimeout;
+    const aSec = sec || this.options.waitForTimeoutInSeconds;
     const el = global.element(guessLocator(locator) || global.by.css(locator));
 
     return this.browser.wait(EC.elementToBeClickable(el), aSec * 1000)
       .catch(() => {
-        throw Error(`element (${locator}) still not enabled after ${aSec} sec`);
+        throw Error(`element (${(new Locator(locator))}) still not enabled after ${aSec} sec`);
       });
   }
 
@@ -2221,7 +2221,7 @@ class Protractor extends Helper {
    * 
    */
   async waitForValue(field, value, sec = null) {
-    const aSec = sec || this.options.waitForTimeout;
+    const aSec = sec || this.options.waitForTimeoutInSeconds;
 
     const valueToBeInElementValue = (loc) => {
       return async () => {
@@ -2271,7 +2271,7 @@ class Protractor extends Helper {
       }
     }
 
-    const aSec = sec || this.options.waitForTimeout;
+    const aSec = sec || this.options.waitForTimeoutInSeconds;
     return this.browser.wait(() => this.browser.executeScript.call(this.browser, fn, ...args), aSec * 1000);
   }
 
@@ -2288,7 +2288,7 @@ class Protractor extends Helper {
    * 
    */
   async waitInUrl(urlPart, sec = null) {
-    const aSec = sec || this.options.waitForTimeout;
+    const aSec = sec || this.options.waitForTimeoutInSeconds;
     const waitTimeout = aSec * 1000;
 
     return this.browser.wait(EC.urlContains(urlPart), waitTimeout)
@@ -2316,7 +2316,7 @@ class Protractor extends Helper {
    * 
    */
   async waitUrlEquals(urlPart, sec = null) {
-    const aSec = sec || this.options.waitForTimeout;
+    const aSec = sec || this.options.waitForTimeoutInSeconds;
     const waitTimeout = aSec * 1000;
     const baseUrl = this.options.url;
     if (urlPart.indexOf('http') < 0) {
@@ -2355,7 +2355,7 @@ class Protractor extends Helper {
       context = this.context;
     }
     const el = global.element(guessLocator(context) || global.by.css(context));
-    const aSec = sec || this.options.waitForTimeout;
+    const aSec = sec || this.options.waitForTimeoutInSeconds;
     return this.browser.wait(EC.textToBePresentInElement(el, text), aSec * 1000);
   }
 
@@ -2414,7 +2414,7 @@ class Protractor extends Helper {
     if (locator) {
       const res = await this._locate(locator, true);
       if (!res || res.length === 0) {
-        return truth(`elements of ${locator}`, 'to be seen').assert(false);
+        return truth(`elements of ${(new Locator(locator))}`, 'to be seen').assert(false);
       }
       const elem = res[0];
       const location = await elem.getLocation();

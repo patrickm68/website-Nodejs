@@ -65,7 +65,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         {
           group: "Other",
           items: [
-            { text: "Custom Helpers", link: '/custom-helpers' },
             { text: "Locators", link: "/locators" },
             { text: "Page Objects", link: "/pageobjects" },
             { text: "Behavior Driven Development", link: "/bdd" },
@@ -78,8 +77,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         {
           group: "Other",
           items: [
-            { text: "Best Practices", link: "/best" },
-            { text: "Advanced Usage", link: "/advanced" },
+            { text: "Organizing Tests...", link: "/pageobjects" },
+            { text: "Advanced Usage...", link: "/advanced" },
           ]
         },
 
@@ -169,7 +168,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         { text: "Commands", link: "/commands" },
         { text: "Configuration", link: "/configuration" },
         { text: "Docker", link: "/docker" },
-        { text: "Translation", link: "/translation" },
       ],
     },
     {
@@ -245,13 +243,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         {
           title: 'Organizing Tests',
           children: [
-            "custom-helpers",
-            "typescript",
-            "locators",
             "pageobjects",
+            "typescript",
             "data",
-            "best",
             "bdd",
+            "locators",
+            "translation",
+            "custom-helpers",
+            "best",
           ]
         },
         {

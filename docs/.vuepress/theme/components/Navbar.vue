@@ -89,6 +89,7 @@ function css (el, property) {
 <style lang="scss">
 .navbar {
   @apply bg-purple-600 shadow-md;
+  color: #ffffff;
 
 
   .links {

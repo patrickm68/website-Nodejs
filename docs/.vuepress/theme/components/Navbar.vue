@@ -89,7 +89,6 @@ function css (el, property) {
 <style lang="scss">
 .navbar {
   @apply bg-purple-600 shadow-md;
-  color: #ffffff;
 
 
   .links {
@@ -98,7 +97,7 @@ function css (el, property) {
 
   a, .site-name {
     font-weight: 600;
-    @apply text-gray-200
+    color: #ffffff;
   }
 }
 </style>

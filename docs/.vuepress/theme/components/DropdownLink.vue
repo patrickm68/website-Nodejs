@@ -116,7 +116,7 @@ export default {
     line-height 1.4rem
     background transparent
     border none
-    @apply text-gray-200
+    color #ffffff
     &:hover
       border-color transparent
     &:focus

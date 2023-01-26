@@ -16,7 +16,6 @@
     "sass": "^1.57.1",
     "sass-loader": "^10.3.1",
     "tailwindcss": "^1.9.6",
-    "vue": "^2.6.14",
     "vue-carousel": "^0.18.0",
     "vue-slider-component": "^3.2.24",
     "vueperslides": "^2.15.3",

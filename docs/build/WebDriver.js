@@ -4,12 +4,12 @@ const assert = require('assert');
 const path = require('path');
 const fs = require('fs');
 
-const Helper = require('../helper');
+const Helper = require('@codeceptjs/helper');
 const stringIncludes = require('../assert/include').includes;
 const { urlEquals, equals } = require('../assert/equal');
 const { debug } = require('../output');
-const empty = require('../assert/empty').empty;
-const truth = require('../assert/truth').truth;
+const { empty } = require('../assert/empty');
+const { truth } = require('../assert/truth');
 const {
   xpathLocator,
   fileExists,
@@ -30,8 +30,6 @@ const Locator = require('../locator');
 
 const SHADOW = 'shadow';
 const webRoot = 'body';
-
-let version;
 
 /**
  * ## Configuration
@@ -266,7 +264,7 @@ const config = {};
  * ```js
  * plugins: {
  *    wdio: {
-  *       enabled: true,
+ *       enabled: true,
  *        services: ['sauce'],
  *        user: ... ,// saucelabs username
  *        key: ... // saucelabs api key
@@ -294,7 +292,7 @@ const config = {};
  * ```js
  * plugins: {
  *    wdio: {
-  *       enabled: true,
+ *       enabled: true,
  *        services: ['browserstack'],
  *        user: ... ,// browserstack username
  *        key: ... // browserstack api key
@@ -386,16 +384,6 @@ class WebDriver extends Helper {
     super(config);
     webdriverio = require('webdriverio');
 
-    try {
-      version = JSON.parse(fs.readFileSync(path.join(require.resolve('webdriverio'), '/../../', 'package.json')).toString()).version;
-    } catch (err) {
-      this.debug('Can\'t detect webdriverio version, assuming webdriverio v6 is used');
-    }
-
-    if (isWebDriver5()) {
-      console.log('DEPRECATION NOTICE:');
-      console.log('You are using webdriverio v5. It is recommended to update to webdriverio@6.\nSupport of webdriverio v5 is deprecated and will be removed in CodeceptJS 3.0\n');
-    }
     // set defaults
     this.root = webRoot;
     this.isWeb = true;
@@ -661,23 +649,23 @@ class WebDriver extends Helper {
   }
 
   /**
-  * Use [webdriverio](https://webdriver.io/docs/api.html) API inside a test.
-  *
-  * First argument is a description of an action.
-  * Second argument is async function that gets this helper as parameter.
-  *
-  * { [`browser`](https://webdriver.io/docs/api.html)) } object from WebDriver API is available.
-  *
-  * ```js
-  * I.useWebDriverTo('open multiple windows', async ({ browser }) {
-  *    // create new window
-  *    await browser.newWindow('https://webdriver.io');
-  * });
-  * ```
-  *
-  * @param {string} description used to show in logs.
-  * @param {function} fn async functuion that executed with WebDriver helper as argument
-  */
+   * Use [webdriverio](https://webdriver.io/docs/api.html) API inside a test.
+   *
+   * First argument is a description of an action.
+   * Second argument is async function that gets this helper as parameter.
+   *
+   * { [`browser`](https://webdriver.io/docs/api.html)) } object from WebDriver API is available.
+   *
+   * ```js
+   * I.useWebDriverTo('open multiple windows', async ({ browser }) {
+   *    // create new window
+   *    await browser.newWindow('https://webdriver.io');
+   * });
+   * ```
+   *
+   * @param {string} description used to show in logs.
+   * @param {function} fn async functuion that executed with WebDriver helper as argument
+   */
   useWebDriverTo(description, fn) {
     return this._useTo(...arguments);
   }
@@ -2291,7 +2279,6 @@ class WebDriver extends Helper {
     const res = await this._locate(withStrictLocator(locator), true);
     assertElementExists(res, locator);
     const elem = usingFirstElement(res);
-    if (isWebDriver5()) return elem.moveTo(xOffset, yOffset);
     return elem.moveTo({ xOffset, yOffset });
   }
 
@@ -2923,19 +2910,7 @@ class WebDriver extends Helper {
    */
   async waitForEnabled(locator, sec = null) {
     const aSec = sec || this.options.waitForTimeoutInSeconds;
-    if (isWebDriver5()) {
-      return this.browser.waitUntil(async () => {
-        const res = await this.$$(withStrictLocator(locator));
-        if (!res || res.length === 0) {
-          return false;
-        }
-        const selected = await forEachAsync(res, async el => this.browser.isElementEnabled(getElementId(el)));
-        if (Array.isArray(selected)) {
-          return selected.filter(val => val === true).length > 0;
-        }
-        return selected;
-      }, aSec * 1000, `element (${new Locator(locator)}) still not enabled after ${aSec} sec`);
-    }
+
     return this.browser.waitUntil(async () => {
       const res = await this._res(locator);
       if (!res || res.length === 0) {
@@ -2968,12 +2943,7 @@ class WebDriver extends Helper {
    */
   async waitForElement(locator, sec = null) {
     const aSec = sec || this.options.waitForTimeoutInSeconds;
-    if (isWebDriver5()) {
-      return this.browser.waitUntil(async () => {
-        const res = await this.$$(withStrictLocator(locator));
-        return res && res.length;
-      }, aSec * 1000, `element (${(new Locator(locator))}) still not present on page after ${aSec} sec`);
-    }
+
     return this.browser.waitUntil(async () => {
       const res = await this._res(locator);
       return res && res.length;
@@ -3022,20 +2992,7 @@ class WebDriver extends Helper {
     const client = this.browser;
     const aSec = sec || this.options.waitForTimeoutInSeconds;
     let currUrl = '';
-    if (isWebDriver5()) {
-      return client
-        .waitUntil(function () {
-          return this.getUrl().then((res) => {
-            currUrl = decodeUrl(res);
-            return currUrl.indexOf(urlPart) > -1;
-          });
-        }, aSec * 1000).catch((e) => {
-          if (e.message.indexOf('timeout')) {
-            throw new Error(`expected url to include ${urlPart}, but found ${currUrl}`);
-          }
-          throw e;
-        });
-    }
+
     return client
       .waitUntil(function () {
         return this.getUrl().then((res) => {
@@ -3103,20 +3060,6 @@ class WebDriver extends Helper {
   async waitForText(text, sec = null, context = null) {
     const aSec = sec || this.options.waitForTimeoutInSeconds;
     const _context = context || this.root;
-    if (isWebDriver5()) {
-      return this.browser.waitUntil(
-        async () => {
-          const res = await this.$$(withStrictLocator.call(this, _context));
-          if (!res || res.length === 0) return false;
-          const selected = await forEachAsync(res, async el => this.browser.getElementText(getElementId(el)));
-          if (Array.isArray(selected)) {
-            return selected.filter(part => part.indexOf(text) >= 0).length > 0;
-          }
-          return selected.indexOf(text) >= 0;
-        }, aSec * 1000,
-        `element (${_context}) is not in DOM or there is no element(${_context}) with text "${text}" after ${aSec} sec`,
-      );
-    }
 
     return this.browser.waitUntil(
       async () => {
@@ -3150,20 +3093,7 @@ class WebDriver extends Helper {
   async waitForValue(field, value, sec = null) {
     const client = this.browser;
     const aSec = sec || this.options.waitForTimeoutInSeconds;
-    if (isWebDriver5()) {
-      return client.waitUntil(
-        async () => {
-          const res = await findFields.call(this, field);
-          if (!res || res.length === 0) return false;
-          const selected = await forEachAsync(res, async el => el.getValue());
-          if (Array.isArray(selected)) {
-            return selected.filter(part => part.indexOf(value) >= 0).length > 0;
-          }
-          return selected.indexOf(value) >= 0;
-        }, aSec * 1000,
-        `element (${field}) is not in DOM or there is no element(${field}) with value "${value}" after ${aSec} sec`,
-      );
-    }
+
     return client.waitUntil(
       async () => {
         const res = await findFields.call(this, field);
@@ -3196,17 +3126,7 @@ class WebDriver extends Helper {
    */
   async waitForVisible(locator, sec = null) {
     const aSec = sec || this.options.waitForTimeoutInSeconds;
-    if (isWebDriver5()) {
-      return this.browser.waitUntil(async () => {
-        const res = await this.$$(withStrictLocator(locator));
-        if (!res || res.length === 0) return false;
-        const selected = await forEachAsync(res, async el => el.isDisplayed());
-        if (Array.isArray(selected)) {
-          return selected.filter(val => val === true).length > 0;
-        }
-        return selected;
-      }, aSec * 1000, `element (${new Locator(locator)}) still not visible after ${aSec} sec`);
-    }
+
     return this.browser.waitUntil(async () => {
       const res = await this._res(locator);
       if (!res || res.length === 0) return false;
@@ -3233,17 +3153,7 @@ class WebDriver extends Helper {
    */
   async waitNumberOfVisibleElements(locator, num, sec = null) {
     const aSec = sec || this.options.waitForTimeoutInSeconds;
-    if (isWebDriver5()) {
-      return this.browser.waitUntil(async () => {
-        const res = await this.$$(withStrictLocator(locator));
-        if (!res || res.length === 0) return false;
-        let selected = await forEachAsync(res, async el => el.isDisplayed());
 
-        if (!Array.isArray(selected)) selected = [selected];
-        selected = selected.filter(val => val === true);
-        return selected.length === num;
-      }, aSec * 1000, `The number of elements (${new Locator(locator)}) is not ${num} after ${aSec} sec`);
-    }
     return this.browser.waitUntil(async () => {
       const res = await this._res(locator);
       if (!res || res.length === 0) return false;
@@ -3270,14 +3180,7 @@ class WebDriver extends Helper {
    */
   async waitForInvisible(locator, sec = null) {
     const aSec = sec || this.options.waitForTimeoutInSeconds;
-    if (isWebDriver5()) {
-      return this.browser.waitUntil(async () => {
-        const res = await this.$$(withStrictLocator(locator));
-        if (!res || res.length === 0) return true;
-        const selected = await forEachAsync(res, async el => el.isDisplayed());
-        return !selected.length;
-      }, aSec * 1000, `element (${new Locator(locator)}) still visible after ${aSec} sec`);
-    }
+
     return this.browser.waitUntil(async () => {
       const res = await this._res(locator);
       if (!res || res.length === 0) return true;
@@ -3318,15 +3221,7 @@ class WebDriver extends Helper {
    */
   async waitForDetached(locator, sec = null) {
     const aSec = sec || this.options.waitForTimeoutInSeconds;
-    if (isWebDriver5()) {
-      return this.browser.waitUntil(async () => {
-        const res = await this._res(locator);
-        if (!res || res.length === 0) {
-          return true;
-        }
-        return false;
-      }, aSec * 1000, `element (${new Locator(locator)}) still on page after ${aSec} sec`);
-    }
+
     return this.browser.waitUntil(async () => {
       const res = await this._res(locator);
       if (!res || res.length === 0) {
@@ -3367,9 +3262,7 @@ class WebDriver extends Helper {
     }
 
     const aSec = sec || this.options.waitForTimeoutInSeconds;
-    if (isWebDriver5()) {
-      return this.browser.waitUntil(async () => this.browser.execute(fn, ...args), aSec * 1000, '');
-    }
+
     return this.browser.waitUntil(async () => this.browser.execute(fn, ...args), { timeout: aSec * 1000, timeoutMsg: '' });
   }
 
@@ -3418,18 +3311,6 @@ class WebDriver extends Helper {
     let target;
     const current = await this.browser.getWindowHandle();
 
-    if (isWebDriver5()) {
-      await this.browser.waitUntil(async () => {
-        await this.browser.getWindowHandles().then((handles) => {
-          if (handles.indexOf(current) + num + 1 <= handles.length) {
-            target = handles[handles.indexOf(current) + num];
-          }
-        });
-        return target;
-      }, aSec * 1000, `There is no ability to switch to next tab with offset ${num}`);
-      return this.browser.switchToWindow(target);
-    }
-
     await this.browser.waitUntil(async () => {
       await this.browser.getWindowHandles().then((handles) => {
         if (handles.indexOf(current) + num + 1 <= handles.length) {
@@ -3458,18 +3339,6 @@ class WebDriver extends Helper {
     const aSec = sec || this.options.waitForTimeoutInSeconds;
     const current = await this.browser.getWindowHandle();
     let target;
-
-    if (isWebDriver5()) {
-      await this.browser.waitUntil(async () => {
-        await this.browser.getWindowHandles().then((handles) => {
-          if (handles.indexOf(current) - num > -1) {
-            target = handles[handles.indexOf(current) - num];
-          }
-        });
-        return target;
-      }, aSec * 1000, `There is no ability to switch to previous tab with offset ${num}`);
-      return this.browser.switchToWindow(target);
-    }
 
     await this.browser.waitUntil(async () => {
       await this.browser.getWindowHandles().then((handles) => {
@@ -4143,10 +4012,6 @@ function prepareLocateFn(context) {
       return res[0].$$(l.simplify());
     });
   };
-}
-
-function isWebDriver5() {
-  return version && version.indexOf('5') === 0;
 }
 
 module.exports = WebDriver;

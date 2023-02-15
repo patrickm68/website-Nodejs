@@ -1,6 +1,6 @@
 ---
 permalink: /tutorial
-title: CodeceptJS Testing Tutorial: Create a Complete Test Suite
+title: CoeceptJS Complete Tutorial
 ---
 
 **[CodeceptJS](https://codecept.io) is a popular open-source testing framework** for JavaScript. It is designed to simplify writing and maintain end-to-end tests for web applications, using a readable and intuitive syntax. To run tests in browser it uses **[Playwright](https://playwright.dev)** library from Microsoft.

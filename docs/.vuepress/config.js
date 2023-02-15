@@ -48,6 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           group: "Basics",
           items: [
             { text: "Getting Started", link: '/basics' },
+            { text: "Tutorial", link: '/tutorial' },
             { text: "CodeceptUI", link: '/ui' },
           ]
         },

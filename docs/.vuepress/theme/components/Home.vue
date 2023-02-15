@@ -103,9 +103,9 @@
 
     <div class="feature">
       <img src="/img/Prism-3.svg" style="filter: hue-rotate(180deg); transform: rotate(90deg)" alt="feature" />
-      <div class="inner"><h5>Beautiful Reports</h5>
-      Integrated with Allure reporter
-      <router-link to="/plugins#allure">Learn More </router-link>
+      <div class="inner"><h5>API Testing</h5>
+      Write tests for <b>REST</b> and <b>GraphQL</b> APIs 
+      <router-link to="/api">Learn More </router-link>
       </div >
     </div>
 

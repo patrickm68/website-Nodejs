@@ -16,10 +16,11 @@
     "sass": "^1.58.3",
     "sass-loader": "^10.3.1",
     "tailwindcss": "^1.9.6",
+    "vue": "^2.7.14",
     "vue-carousel": "^0.18.0",
     "vue-slider-component": "^3.2.24",
     "vueperslides": "^2.15.3",
-    "vuepress": "^1.9.7",
+    "vuepress": "^1.9.9",
     "vuepress-plugin-sitemap": "^2.3.1"
   },
   "devDependencies": {

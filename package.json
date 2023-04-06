@@ -19,7 +19,7 @@
     "vue": "^2.7.14",
     "vue-carousel": "^0.18.0",
     "vue-slider-component": "^3.2.24",
-    "vueperslides": "^2.15.3",
+    "vueperslides": "^2.16.0",
     "vuepress": "^1.9.9",
     "vuepress-plugin-sitemap": "^2.3.1"
   },

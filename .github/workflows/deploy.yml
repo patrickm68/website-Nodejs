@@ -24,8 +24,8 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      - run: npm ci
-      - run: npm run build
+      - run: npm i
+      - run: vuepress build docs
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
@@ -34,7 +34,7 @@ jobs:
           deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
           external_repository: codeceptjs/codeceptjs.github.io
           publish_branch: master
-          publish_dir: docs/.vuepress/dist
+          publish_dir: ./docs/.vuepress/dist
           force_orphan: true
           enable_jekyll: true
           user_name: 'github-actions[bot]'

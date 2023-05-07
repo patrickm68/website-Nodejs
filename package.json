@@ -13,8 +13,8 @@
   "dependencies": {
     "autoprefixer": "^10.4.14",
     "npm": "^9.6.5",
-    "postcss": "^8.4.21",
-    "sass": "^1.61.0",
+    "postcss": "^8.4.23",
+    "sass": "^1.62.1",
     "sass-loader": "^10.3.1",
     "tailwindcss": "^1.9.6",
     "vue": "^2.7.14",

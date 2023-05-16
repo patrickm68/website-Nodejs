@@ -24,7 +24,7 @@
         <ul>
           <li><a href="https://github.com/codeceptjs/CodeceptJS">GitHub</a></li>
           <li><a href="https://github.com/codeceptjs/CodeceptJS/discussions">GitHub discussions</a></li>
-          <li><a href="http://bit.ly/chat-codeceptjs">Slack Chat</a></li>
+          <li><a href="https://bit.ly/chat-codeceptjs">Slack Chat</a></li>
           <li><a href="https://codecept.discourse.group/">Forum</a></li>
           <li><a href="https://twitter.com/codeceptjs">Twitter</a></li>
         </ul>
@@ -32,8 +32,8 @@
       <div class="col">
         <h4 class="important">Commercial Support</h4>
         <ul>
-          <li><a href="http://sdclabs.com/codeceptjs?utm_source=codecept.io&utm_medium=footer&utm_term=link&utm_campaign=reference">Consulting</a></li>
-          <li><a href="http://sdclabs.com/trainings/web-automation-codeceptjs?utm_source=codecept.io&utm_medium=top_menu&utm_term=link&utm_campaign=reference">Trainings</a> </li>
+          <li><a href="https://sdclabs.com/codeceptjs?utm_source=codecept.io&utm_medium=footer&utm_term=link&utm_campaign=reference">Consulting</a></li>
+          <li><a href="https://sdclabs.com/trainings/web-automation-codeceptjs?utm_source=codecept.io&utm_medium=top_menu&utm_term=link&utm_campaign=reference">Trainings</a> </li>
           <li><a href="https://sdclabs.com/#services">Hire Engineers</a></li>
         </ul>
       </div>

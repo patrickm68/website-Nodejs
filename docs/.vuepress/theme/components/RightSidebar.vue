@@ -20,13 +20,13 @@
         <hr>
 
         <p class="border">
-          <a href="http://sdclabs.com/codeceptjs?utm_source=codecept.io&utm_medium=right&utm_term=link&utm_campaign=reference" class="dashed">
+          <a href="https://sdclabs.com/codeceptjs?utm_source=codecept.io&utm_medium=right&utm_term=link&utm_campaign=reference" class="dashed">
             Commercial Services &rarr;
           </a>
         </p>
 
         <p class="border">
-          <a href="http://sdclabs.com/trainings/web-automation-codeceptjs?utm_source=codecept.io&utm_medium=rigth&utm_term=link&utm_campaign=reference" class="dashed">
+          <a href="https://sdclabs.com/trainings/web-automation-codeceptjs?utm_source=codecept.io&utm_medium=rigth&utm_term=link&utm_campaign=reference" class="dashed">
             Trainings &rarr;
           </a>
         </p>

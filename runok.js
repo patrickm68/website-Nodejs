@@ -47,22 +47,22 @@ module.exports = {
     await npx('vuepress dev docs');
   },
 
-  // async publish() {
-  //   await exec('npm i');
-  //   await npx('vuepress build docs');
-  //   await chdir('docs/.vuepress/dist', async () => {
-  //     writeToFile('CNAME', cfg => cfg.line('codecept.io'));
-  //     stopOnFail(false);
-  //     await exec('git init');
-  //     await exec('git remote add origin git@github.com:codeceptjs/codeceptjs.github.io.git');
-  //     await exec('git checkout -b deploy');
-  //     await exec('git reset --soft HEAD~$(git rev-list --count HEAD ^master)');
-  //     await exec('git add -A');
-  //     await exec('git commit -m "deploy"');
-  //     stopOnFail(true);
-  //     await exec('git push -f origin deploy:master');
-  //   });
-  // },
+  async publish() {
+    await exec('npm i');
+    await npx('vuepress build docs');
+    await chdir('docs/.vuepress/dist', async () => {
+      writeToFile('CNAME', cfg => cfg.line('codecept.io'));
+      stopOnFail(false);
+      await exec('git init');
+      await exec('git remote add origin git@github.com:codeceptjs/codeceptjs.github.io.git');
+      await exec('git checkout -b deploy');
+      await exec('git reset --soft HEAD~$(git rev-list --count HEAD ^master)');
+      await exec('git add -A');
+      await exec('git commit -m "deploy"');
+      stopOnFail(true);
+      await exec('git push -f origin deploy:master');
+    });
+  },
 }
 
 if (require.main === module) runok(module.exports);

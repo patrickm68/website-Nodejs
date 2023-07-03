@@ -8,10 +8,13 @@
         :alt="data.heroAlt || 'hero'"
       >
       <h1>
-        <span class="name">CodeceptJS 3</span> &dash; supercharged<br><span class="name">End 2 End</span> Testing
+        <span class="name">CodeceptJS</span> &dash; supercharged<br><span class="name">End 2 End</span> Testing
       </h1>
 
-      <pre><code>npx create-codeceptjs .</code></pre>
+      <div class="ai">First 
+        <a href="/ai">AI-powered</a>
+       testing framework 🪄 </div>
+
 
       <img src="/img/runui.gif" class="ui" alt="CodeceptUI" />
 
@@ -139,9 +142,9 @@
 
     <div class="feature">
       <img src="/img/Prism-3.svg" style="filter: hue-rotate(135deg) saturate(20%); transform: rotate(0deg)" alt="feature" />
-      <div class="inner"><h5>Multi-Session Testing</h5>
-      Run a test using several browser windows
-
+      <div class="inner"><h5>AI-powered</h5>
+      Use OpenAI GPT to heal failing tests
+      <router-link to="/ai">Learn More </router-link>
       </div >
     </div>
   </div>
@@ -452,9 +455,13 @@ export default {
   max-width 100%
   display block
   h1
-    @apply text-gray-400 mb-12
+    @apply text-gray-400 mb-8
     .name
       @apply text-gray-200
+  .ai
+    @apply text-sm capitalize tracking-widest font-bold
+    a
+      color: #fff
   .hero
     padding $navbarHeight 2rem 0
     @apply text-gray-400

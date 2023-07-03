@@ -49,6 +49,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           items: [
             { text: "Getting Started", link: '/basics' },
             { text: "Tutorial", link: '/tutorial' },
+            { text: "AI Testing 🪄", link: '/ai' },
             { text: "CodeceptUI", link: '/ui' },
           ]
         },

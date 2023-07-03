@@ -3,6 +3,8 @@ permalink: /ai
 title: Testing with AI 🪄 
 ---
 
+# 🪄 Testing with AI
+
 **CodeceptJS is the first open-source test automation framework with AI** features to improve the testing experience. CodeceptJS uses OpenAI GPT to auto-heal failing tests, assist in writing tests, and more...
 
 Think of it as your testing co-pilot built into the testing framework
@@ -32,7 +34,7 @@ GPT models have limits on information passed, and HTML pages can be huge. And so
 
 Even though, the HTML is still quite big and may exceed the token limit. So we recommend using **gpt-3.5-turbo-16k** model, as it accepts 16K tokens (approx. 50K of HTML text), which should be enough for most web pages. It is possible to strictly limit the size of HTML to not exceed GPT tokens limit.
 
-> 👨‍💼 **AI features require sending HTML contents** of tested applications to OpenAI servers for analysis. If you use it in enterprise, ensure that your company requirements match [OpenAI complience](https://openai.com/security).
+> ❗AI features require sending HTML contents to OpenAI. If you use it in enterprise, ensure that your company requirements match [OpenAI complience](https://openai.com/security). If you work on public web applications this should be ok, as HTML code is genrally available to all web application users.
 
 
 ### Getting Started
@@ -98,7 +100,7 @@ This AI copilot works best with long static forms. In the case of complex and dy
 
 Please keep in mind that GPT can't react to page changes and operates with static text only. This is why it is not ready yet to write the test completely. However, if you are new to CodeceptJS and automated testing AI copilot may help you write tests more efficiently. 
 
-> 👶 Eable AI copilot for junior test automation engineers. It may help them to get started with CodeceptJS and to write good semantic locators.
+> 👶 Enable AI copilot for junior test automation engineers. It may help them to get started with CodeceptJS and to write good semantic locators.
 
 ### Self-Healing Tests
 
@@ -153,7 +155,7 @@ Here are some good use cases for this helper:
 const pageDoc = await I.askGptOnPageFragment('Act as technical writer, describe what is this page for', '#container');
 ```
 
-As of now, those use cases are not really applicable to test automation but maybe you can apply them to your testing setup. 
+As of now, those use cases do not apply to test automation but maybe you can apply them to your testing setup. 
 
 ## Configuration
 

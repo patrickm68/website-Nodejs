@@ -853,6 +853,8 @@ class Protractor extends Helper {
    * 
    * ```js
    * I.appendField('#myTextField', 'appended');
+   * // typing secret
+   * I.appendField('password', secret('123456'));
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator
    * @param {string} value text value to append.
@@ -862,7 +864,7 @@ class Protractor extends Helper {
   async appendField(field, value) {
     const els = await findFields(this.browser, field);
     assertElementExists(els, field, 'Field');
-    return els[0].sendKeys(value);
+    return els[0].sendKeys(value.toString());
   }
 
   /**

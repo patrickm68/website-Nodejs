@@ -1037,6 +1037,8 @@ class Nightmare extends Helper {
    * 
    * ```js
    * I.appendField('#myTextField', 'appended');
+   * // typing secret
+   * I.appendField('password', secret('123456'));
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator
    * @param {string} value text value to append.
@@ -1046,7 +1048,7 @@ class Nightmare extends Helper {
   async appendField(field, value) {
     const el = await findField.call(this, field);
     assertElementExists(el, field, 'Field');
-    return this.browser.enterText(el, value, false)
+    return this.browser.enterText(el, value.toString(), false)
       .wait(this.options.waitForAction);
   }
 

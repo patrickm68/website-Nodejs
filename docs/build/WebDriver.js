@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 
 const Helper = require('@codeceptjs/helper');
+const crypto = require('crypto');
 const stringIncludes = require('../assert/include').includes;
 const { urlEquals, equals } = require('../assert/equal');
 const { debug } = require('../output');
@@ -27,6 +28,8 @@ const {
 const ElementNotFound = require('./errors/ElementNotFound');
 const ConnectionRefused = require('./errors/ConnectionRefused');
 const Locator = require('../locator');
+const { highlightElement } = require('./scripts/highlightElement');
+const store = require('../store');
 
 const SHADOW = 'shadow';
 const webRoot = 'body';
@@ -39,7 +42,7 @@ const webRoot = 'body';
  * @typedef WebDriverConfig
  * @type {object}
  * @prop {string} url - base url of website to be tested.
- * @prop {string} browser browser in which to perform testing.
+ * @prop {string} browser - Browser in which to perform testing.
  * @prop {string} [basicAuth] - (optional) the basic authentication to pass to base url. Example: {username: 'username', password: 'password'}
  * @prop {string} [host=localhost] - WebDriver host to connect.
  * @prop {number} [port=4444] - WebDriver port to connect.
@@ -57,6 +60,7 @@ const webRoot = 'body';
  * @prop {object} [desiredCapabilities] Selenium's [desired capabilities](https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities).
  * @prop {boolean} [manualStart=false] - do not start browser before a test, start it manually inside a helper with `this.helpers["WebDriver"]._startBrowser()`.
  * @prop {object} [timeouts] [WebDriver timeouts](http://webdriver.io/docs/timeouts.html) defined as hash.
+ * @prop {boolean} [highlightElement] - highlight the interacting elements
  */
 const config = {};
 
@@ -822,7 +826,7 @@ class WebDriver extends Helper {
   }
 
   /**
-   * Find a checkbox by providing human readable text:
+   * Find a checkbox by providing human-readable text:
    *
    * ```js
    * this.helpers['WebDriver']._locateCheckable('I agree with terms and conditions').then // ...
@@ -835,7 +839,7 @@ class WebDriver extends Helper {
   }
 
   /**
-   * Find a clickable element by providing human readable text:
+   * Find a clickable element by providing human-readable text:
    *
    * ```js
    * const els = await this.helpers.WebDriver._locateClickable('Next page');
@@ -850,7 +854,7 @@ class WebDriver extends Helper {
   }
 
   /**
-   * Find field elements by providing human readable text:
+   * Find field elements by providing human-readable text:
    *
    * ```js
    * this.helpers['WebDriver']._locateFields('Your email').then // ...
@@ -949,6 +953,7 @@ class WebDriver extends Helper {
       assertElementExists(res, locator, 'Clickable element');
     }
     const elem = usingFirstElement(res);
+    highlightActiveElement.call(this, elem);
     return this.browser[clickMethod](getElementId(elem));
   }
 
@@ -995,6 +1000,7 @@ class WebDriver extends Helper {
       assertElementExists(res, locator, 'Clickable element');
     }
     const elem = usingFirstElement(res);
+    highlightActiveElement.call(this, elem);
 
     return this.executeScript((el) => {
       if (document.activeElement instanceof HTMLElement) {
@@ -1035,6 +1041,7 @@ class WebDriver extends Helper {
     }
 
     const elem = usingFirstElement(res);
+    highlightActiveElement.call(this, elem);
     return elem.doubleClick();
   }
 
@@ -1148,6 +1155,7 @@ class WebDriver extends Helper {
     const res = await findFields.call(this, field);
     assertElementExists(res, field, 'Field');
     const elem = usingFirstElement(res);
+    highlightActiveElement.call(this, elem);
     return elem.setValue(value.toString());
   }
 
@@ -1157,6 +1165,8 @@ class WebDriver extends Helper {
    * 
    * ```js
    * I.appendField('#myTextField', 'appended');
+   * // typing secret
+   * I.appendField('password', secret('123456'));
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator
    * @param {string} value text value to append.
@@ -1168,7 +1178,8 @@ class WebDriver extends Helper {
     const res = await findFields.call(this, field);
     assertElementExists(res, field, 'Field');
     const elem = usingFirstElement(res);
-    return elem.addValue(value);
+    highlightActiveElement.call(this, elem);
+    return elem.addValue(value.toString());
   }
 
   /**
@@ -1188,6 +1199,7 @@ class WebDriver extends Helper {
     const res = await findFields.call(this, field);
     assertElementExists(res, field, 'Field');
     const elem = usingFirstElement(res);
+    highlightActiveElement.call(this, elem);
     return elem.clearValue(getElementId(elem));
   }
 
@@ -1219,6 +1231,7 @@ class WebDriver extends Helper {
     const res = await findFields.call(this, select);
     assertElementExists(res, select, 'Selectable field');
     const elem = usingFirstElement(res);
+    highlightActiveElement.call(this, elem);
 
     if (!Array.isArray(option)) {
       option = [option];
@@ -1310,6 +1323,7 @@ class WebDriver extends Helper {
     assertElementExists(res, field, 'Checkable');
     const elem = usingFirstElement(res);
     const elementId = getElementId(elem);
+    highlightActiveElement.call(this, elem);
 
     const isSelected = await this.browser.isElementSelected(elementId);
     if (isSelected) return Promise.resolve(true);
@@ -1342,6 +1356,7 @@ class WebDriver extends Helper {
     assertElementExists(res, field, 'Checkable');
     const elem = usingFirstElement(res);
     const elementId = getElementId(elem);
+    highlightActiveElement.call(this, elem);
 
     const isSelected = await this.browser.isElementSelected(elementId);
     if (!isSelected) return Promise.resolve(true);
@@ -2689,6 +2704,9 @@ class WebDriver extends Helper {
    * 
    * // passing in an array
    * I.type(['T', 'E', 'X', 'T']);
+   * 
+   * // passing a secret
+   * I.type(secret('123456'));
    * ```
    * 
    * @param {string|string[]} key or array of keys to type.
@@ -2698,6 +2716,7 @@ class WebDriver extends Helper {
    */
   async type(keys, delay = null) {
     if (!Array.isArray(keys)) {
+      keys = keys.toString();
       keys = keys.split('');
     }
     if (delay) {
@@ -3998,6 +4017,12 @@ function getNormalizedKey(key) {
 const unicodeModifierKeys = modifierKeys.map(k => convertKeyToRawKey(k));
 function isModifierKey(key) {
   return unicodeModifierKeys.includes(key);
+}
+
+function highlightActiveElement(element) {
+  if (!this.options.enableHighlight && !store.debugMode) return;
+
+  highlightElement(element, this.browser);
 }
 
 function prepareLocateFn(context) {

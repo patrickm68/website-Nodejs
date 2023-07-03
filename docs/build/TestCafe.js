@@ -488,6 +488,8 @@ class TestCafe extends Helper {
    * 
    * ```js
    * I.appendField('#myTextField', 'appended');
+   * // typing secret
+   * I.appendField('password', secret('123456'));
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator
    * @param {string} value text value to append.
@@ -501,7 +503,7 @@ class TestCafe extends Helper {
     const el = await els.nth(0);
 
     return this.t
-      .typeText(el, value, { replace: false })
+      .typeText(el, value.toString(), { replace: false })
       .catch(mapError);
   }
 

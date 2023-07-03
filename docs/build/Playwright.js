@@ -2,7 +2,9 @@ const path = require('path');
 const fs = require('fs');
 
 const Helper = require('@codeceptjs/helper');
+const { v4: uuidv4 } = require('uuid');
 const Locator = require('../locator');
+const store = require('../store');
 const recorder = require('../recorder');
 const stringIncludes = require('../assert/include').includes;
 const { urlEquals } = require('../assert/equal');
@@ -43,6 +45,7 @@ const {
   setRestartStrategy, restartsSession, restartsContext, restartsBrowser,
 } = require('./extras/PlaywrightRestartOpts');
 const { createValueEngine, createDisabledEngine } = require('./extras/PlaywrightPropEngine');
+const { highlightElement } = require('./scripts/highlightElement');
 
 const pathSeparator = path.sep;
 
@@ -54,7 +57,7 @@ const pathSeparator = path.sep;
  * @typedef PlaywrightConfig
  * @type {object}
  * @prop {string} url - base url of website to be tested
- * @prop {string} [browser] - a browser to test on, either: `chromium`, `firefox`, `webkit`, `electron`. Default: chromium.
+ * @prop {'chromium' | 'firefox'| 'webkit' | 'electron'} [browser='chromium'] - a browser to test on, either: `chromium`, `firefox`, `webkit`, `electron`. Default: chromium.
  * @prop {boolean} [show=false] - show browser window.
  * @prop {string|boolean} [restart=false] - restart strategy between tests. Possible values:
  *   * 'context' or **false** - restarts [browser context](https://playwright.dev/docs/api/class-browsercontext) but keeps running browser. Recommended by Playwright team to keep tests isolated.
@@ -72,13 +75,13 @@ const pathSeparator = path.sep;
  * @prop {boolean} [keepBrowserState=false] - keep browser state between tests when `restart` is set to 'session'.
  * @prop {boolean} [keepCookies=false] - keep cookies between tests when `restart` is set to 'session'.
  * @prop {number} [waitForAction] - how long to wait after click, doubleClick or PressKey actions in ms. Default: 100.
- * @prop {string} [waitForNavigation] - When to consider navigation succeeded. Possible options: `load`, `domcontentloaded`, `networkidle`. Choose one of those options is possible. See [Playwright API](https://playwright.dev/docs/api/class-page#page-wait-for-navigation).
+ * @prop {'load' | 'domcontentloaded' | 'networkidle'} [waitForNavigation] - When to consider navigation succeeded. Possible options: `load`, `domcontentloaded`, `networkidle`. Choose one of those options is possible. See [Playwright API](https://playwright.dev/docs/api/class-page#page-wait-for-navigation).
  * @prop {number} [pressKeyDelay=10] - Delay between key presses in ms. Used when calling Playwrights page.type(...) in fillField/appendField
  * @prop {number} [getPageTimeout] - config option to set maximum navigation time in milliseconds.
  * @prop {number} [waitForTimeout] - default wait* timeout in ms. Default: 1000.
  * @prop {object} [basicAuth] - the basic authentication to pass to base url. Example: {username: 'username', password: 'password'}
  * @prop {string} [windowSize] - default window size. Set a dimension like `640x480`.
- * @prop {string} [colorScheme] - default color scheme. Possible values: `dark` | `light` | `no-preference`.
+ * @prop {'dark' | 'light' | 'no-preference'} [colorScheme] - default color scheme. Possible values: `dark` | `light` | `no-preference`.
  * @prop {string} [userAgent] - user-agent string.
  * @prop {string} [locale] - locale string. Example: 'en-GB', 'de-DE', 'fr-FR', ...
  * @prop {boolean} [manualStart] - do not start browser before a test, start it manually inside a helper with `this.helpers["Playwright"]._startBrowser()`.
@@ -88,6 +91,8 @@ const pathSeparator = path.sep;
  * @prop {any} [channel] - (While Playwright can operate against the stock Google Chrome and Microsoft Edge browsers available on the machine. In particular, current Playwright version will support Stable and Beta channels of these browsers. See [Google Chrome & Microsoft Edge](https://playwright.dev/docs/browsers/#google-chrome--microsoft-edge).
  * @prop {string[]} [ignoreLog] - An array with console message types that are not logged to debug log. Default value is `['warning', 'log']`. E.g. you can set `[]` to log all messages. See all possible [values](https://playwright.dev/docs/api/class-consolemessage#console-message-type).
  * @prop {boolean} [ignoreHTTPSErrors] - Allows access to untrustworthy pages, e.g. to a page with an expired certificate. Default value is `false`
+ * @prop {boolean} [bypassCSP] - bypass Content Security Policy or CSP
+ * @prop {boolean} [highlightElement] - highlight the interacting elements
  */
 const config = {};
 
@@ -125,7 +130,7 @@ const config = {};
  *
  * #### Trace Recording Customization
  *
- * Trace recording provides a complete information on test execution and includes DOM snapshots, screenshots, and network requests logged during run.
+ * Trace recording provides complete information on test execution and includes DOM snapshots, screenshots, and network requests logged during run.
  * Traces will be saved to `output/trace`
  *
  * * `trace`: enables trace recording for failed tests; trace are saved into `output/trace` folder
@@ -939,6 +944,58 @@ class Playwright extends Helper {
   }
 
   /**
+   * Calls [focus](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus) on the matching element.
+   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
+   * @param {any} [options] [Additional options](https://playwright.dev/docs/api/class-locator#locator-focus) for available options object as 2nd argument.
+   *
+   * Examples:
+   *
+   * ```js
+   * I.dontSee('#add-to-cart-btn');
+   * I.focus('#product-tile')
+   * I.see('#add-to-cart-bnt');
+   * ```
+   *
+   */
+  async focus(locator, options = {}) {
+    const els = await this._locate(locator);
+    assertElementExists(els, locator, 'Element to focus');
+    const el = els[0];
+
+    await el.focus(options);
+    return this._waitForAction();
+  }
+
+  /**
+   * Remove focus from a text input, button, etc
+   * Calls [blur](https://playwright.dev/docs/api/class-locator#locator-blur) on the element.
+   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
+   * @param {any} [options] [Additional options](https://playwright.dev/docs/api/class-locator#locator-blur) for available options object as 2nd argument.
+   *
+   * Examples:
+   *
+   * ```js
+   * I.blur('.text-area')
+   * ```
+   * ```js
+   * //element `#product-tile` is focused
+   * I.see('#add-to-cart-btn');
+   * I.blur('#product-tile')
+   * I.dontSee('#add-to-cart-btn');
+   * ```
+   *
+   */
+  async blur(locator, options = {}) {
+    const els = await this._locate(locator);
+    assertElementExists(els, locator, 'Element to blur');
+    // TODO: locator change required after #3677 implementation
+    const elXpath = await getXPathForElement(els[0]);
+
+    await this.page.locator(elXpath).blur(options);
+    return this._waitForAction();
+  }
+
+  /**
    * Drag an item to a destination element.
    * 
    * ```js
@@ -949,7 +1006,6 @@ class Playwright extends Helper {
    * @param {LocatorOrString} destElement located by CSS|XPath|strict locator.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
-   *
    * @param {any} [options] [Additional options](https://playwright.dev/docs/api/class-page#page-drag-and-drop) can be passed as 3rd argument.
    *
    * ```js
@@ -957,13 +1013,27 @@ class Playwright extends Helper {
    * I.dragAndDrop('img.src', 'img.dst', { sourcePosition: {x: 10, y: 10} })
    * ```
    *
-   * > By default option `force: true` is set
+   * > When no option is set, custom drag and drop would be used, to use the dragAndDrop API from Playwright, please set options, for example `force: true`
    */
-  async dragAndDrop(srcElement, destElement, options = { force: true }) {
-    const src = new Locator(srcElement, 'css');
-    const dst = new Locator(destElement, 'css');
+  async dragAndDrop(srcElement, destElement, options) {
+    const src = new Locator(srcElement);
+    const dst = new Locator(destElement);
 
-    return this.page.dragAndDrop(buildLocatorString(src), buildLocatorString(dst), options);
+    if (options) {
+      return this.page.dragAndDrop(buildLocatorString(src), buildLocatorString(dst), options);
+    }
+
+    const _smallWaitInMs = 600;
+    await this.page.locator(buildLocatorString(src)).hover();
+    await this.page.mouse.down();
+    await this.page.waitForTimeout(_smallWaitInMs);
+
+    const destElBox = await this.page.locator(buildLocatorString(dst)).boundingBox();
+
+    await this.page.mouse.move(destElBox.x + destElBox.width / 2, destElBox.y + destElBox.height / 2);
+    await this.page.locator(buildLocatorString(dst)).hover({ position: { x: 10, y: 10 } });
+    await this.page.waitForTimeout(_smallWaitInMs);
+    await this.page.mouse.up();
   }
 
   /**
@@ -1461,7 +1531,7 @@ class Playwright extends Helper {
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    *
-   * @param {any} [opts] [Additional options](https://playwright.dev/docs/api/class-page#page-click) for click available as 3rd argument.
+   * @param {any} [options] [Additional options](https://playwright.dev/docs/api/class-page#page-click) for click available as 3rd argument.
    *
    * Examples:
    *
@@ -1474,8 +1544,8 @@ class Playwright extends Helper {
    * ```
    *
    */
-  async click(locator, context = null, opts = {}) {
-    return proceedClick.call(this, locator, context, opts);
+  async click(locator, context = null, options = {}) {
+    return proceedClick.call(this, locator, context, options);
   }
 
   /**
@@ -1811,6 +1881,9 @@ class Playwright extends Helper {
    * 
    * // passing in an array
    * I.type(['T', 'E', 'X', 'T']);
+   * 
+   * // passing a secret
+   * I.type(secret('123456'));
    * ```
    * 
    * @param {string|string[]} key or array of keys to type.
@@ -1820,6 +1893,7 @@ class Playwright extends Helper {
    */
   async type(keys, delay = null) {
     if (!Array.isArray(keys)) {
+      keys = keys.toString();
       keys = keys.split('');
     }
 
@@ -1860,24 +1934,44 @@ class Playwright extends Helper {
     } else if (editable) {
       await this._evaluateHandeInContext(el => el.innerHTML = '', el);
     }
+
+    highlightActiveElement.call(this, el, this.page);
+
     await el.type(value.toString(), { delay: this.options.pressKeyDelay });
+
     return this._waitForAction();
   }
 
   /**
-   * Clears a `<textarea>` or text `<input>` element's value.
-   * 
+   * Clear the <input>, <textarea> or [contenteditable] .
+   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
+   * @param {any} [options] [Additional options](https://playwright.dev/docs/api/class-locator#locator-clear) for available options object as 2nd argument.
+   *
+   * Examples:
+   *
    * ```js
-   * I.clearField('Email');
-   * I.clearField('user[email]');
-   * I.clearField('#email');
+   * I.clearField('.text-area')
    * ```
-   * @param {LocatorOrString} editable field located by label|name|CSS|XPath|strict locator.
-   * ⚠️ returns a _promise_ which is synchronized internally by recorder.
-   * 
+   * ```js
+   * I.clearField('#submit', { force: true }) // force to bypass the [actionability](https://playwright.dev/docs/actionability) checks.
+   * ```
    */
-  async clearField(field) {
-    return this.fillField(field, '');
+  async clearField(locator, options = {}) {
+    let result;
+    const isNewClearMethodPresent = typeof this.page.locator().clear === 'function';
+
+    if (isNewClearMethodPresent) {
+      const els = await findFields.call(this, locator);
+      assertElementExists(els, locator, 'Field to clear');
+      // TODO: locator change required after #3677 implementation
+      const elXpath = await getXPathForElement(els[0]);
+
+      await this.page.locator(elXpath).clear(options);
+      result = await this._waitForAction();
+    } else {
+      result = await this.fillField(locator, '');
+    }
+    return result;
   }
 
   /**
@@ -1886,6 +1980,8 @@ class Playwright extends Helper {
    * 
    * ```js
    * I.appendField('#myTextField', 'appended');
+   * // typing secret
+   * I.appendField('password', secret('123456'));
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator
    * @param {string} value text value to append.
@@ -1897,8 +1993,9 @@ class Playwright extends Helper {
   async appendField(field, value) {
     const els = await findFields.call(this, field);
     assertElementExists(els, field, 'Field');
+    highlightActiveElement.call(this, els[0], this.page);
     await els[0].press('End');
-    await els[0].type(value, { delay: this.options.pressKeyDelay });
+    await els[0].type(value.toString(), { delay: this.options.pressKeyDelay });
     return this._waitForAction();
   }
 
@@ -1998,6 +2095,7 @@ class Playwright extends Helper {
     if (await el.getProperty('tagName').then(t => t.jsonValue()) !== 'SELECT') {
       throw new Error('Element is not <select>');
     }
+    highlightActiveElement.call(this, el, this.page);
     if (!Array.isArray(option)) option = [option];
 
     for (const key in option) {
@@ -2793,23 +2891,32 @@ class Playwright extends Helper {
    */
   async saveScreenshot(fileName, fullPage) {
     const fullPageOption = fullPage || this.options.fullPageScreenshots;
-    const outputFile = screenshotOutputFolder(fileName);
+    let outputFile = screenshotOutputFolder(fileName);
 
     this.debug(`Screenshot is saving to ${outputFile}`);
 
-    if (this.activeSessionName) {
-      const activeSessionPage = this.sessionPages[this.activeSessionName];
+    await this.page.screenshot({
+      path: outputFile,
+      fullPage: fullPageOption,
+      type: 'png',
+    });
 
-      if (activeSessionPage) {
-        return activeSessionPage.screenshot({
-          path: outputFile,
-          fullPage: fullPageOption,
-          type: 'png',
-        });
+    if (this.activeSessionName) {
+      for (const sessionName in this.sessionPages) {
+        const activeSessionPage = this.sessionPages[sessionName];
+        outputFile = screenshotOutputFolder(`${sessionName}_${fileName}`);
+
+        this.debug(`${sessionName} - Screenshot is saving to ${outputFile}`);
+
+        if (activeSessionPage) {
+          await activeSessionPage.screenshot({
+            path: outputFile,
+            fullPage: fullPageOption,
+            type: 'png',
+          });
+        }
       }
     }
-
-    return this.page.screenshot({ path: outputFile, fullPage: fullPageOption, type: 'png' });
   }
 
   /**
@@ -2877,7 +2984,7 @@ class Playwright extends Helper {
       test.artifacts.trace = await saveTraceForContext(this.browserContext, `${test.title}.failed`);
       for (const sessionName in this.sessionPages) {
         if (!this.sessionPages[sessionName].context) continue;
-        test.artifacts[`trace_${sessionName}`] = await saveTraceForContext(this.sessionPages[sessionName].context(), `${test.title}_${sessionName}.failed`);
+        test.artifacts[`trace_${sessionName}`] = await saveTraceForContext(this.sessionPages[sessionName].context, `${test.title}_${sessionName}.failed`);
       }
     }
   }
@@ -2900,7 +3007,7 @@ class Playwright extends Helper {
           test.artifacts.trace = await saveTraceForContext(this.browserContext, `${test.title}.passed`);
           for (const sessionName in this.sessionPages) {
             if (!this.sessionPages[sessionName].context) continue;
-            test.artifacts[`trace_${sessionName}`] = await saveTraceForContext(this.sessionPages[sessionName].context(), `${test.title}_${sessionName}.passed`);
+            test.artifacts[`trace_${sessionName}`] = await saveTraceForContext(this.sessionPages[sessionName].context, `${test.title}_${sessionName}.passed`);
           }
         }
       } else {
@@ -3386,15 +3493,15 @@ class Playwright extends Helper {
    *
    * See [Playwright's reference](https://playwright.dev/docs/api/class-page?_highlight=waitfornavi#pagewaitfornavigationoptions)
    *
-   * @param {*} opts
+   * @param {*} options
    */
-  async waitForNavigation(opts = {}) {
-    opts = {
+  async waitForNavigation(options = {}) {
+    options = {
       timeout: this.options.getPageTimeout,
       waitUntil: this.options.waitForNavigation,
-      ...opts,
+      ...options,
     };
-    return this.page.waitForNavigation(opts);
+    return this.page.waitForNavigation(options);
   }
 
   async waitUntilExists(locator, sec) {
@@ -3536,10 +3643,40 @@ function buildLocatorString(locator) {
   if (locator.isCustom()) {
     return `${locator.type}=${locator.value}`;
   } if (locator.isXPath()) {
-    // dont rely on heuristics of playwright for figuring out xpath
     return `xpath=${locator.value}`;
   }
   return locator.simplify();
+}
+// TODO: locator change required after #3677 implementation. Temporary solution before migration. Should be deleted after #3677 implementation
+async function getXPathForElement(elementHandle) {
+  function calculateIndex(node) {
+    let index = 1;
+    let sibling = node.previousElementSibling;
+    while (sibling) {
+      if (sibling.tagName === node.tagName) {
+        index++;
+      }
+      sibling = sibling.previousElementSibling;
+    }
+    return index;
+  }
+
+  function generateXPath(node) {
+    const segments = [];
+    while (node && node.nodeType === Node.ELEMENT_NODE) {
+      if (node.hasAttribute('id')) {
+        segments.unshift(`*[@id="${node.getAttribute('id')}"]`);
+        break;
+      } else {
+        const index = calculateIndex(node);
+        segments.unshift(`${node.localName}[${index}]`);
+        node = node.parentNode;
+      }
+    }
+    return `//${segments.join('/')}`;
+  }
+
+  return elementHandle.evaluate(generateXPath);
 }
 
 async function findElements(matcher, locator) {
@@ -3574,6 +3711,10 @@ async function proceedClick(locator, context = null, options = {}) {
   } else {
     assertElementExists(els, locator, 'Clickable element');
   }
+
+  const element = els[0];
+  highlightActiveElement.call(this, els[0], this.page);
+
   /*
     using the force true options itself but instead dispatching a click
   */
@@ -3588,6 +3729,7 @@ async function proceedClick(locator, context = null, options = {}) {
     promises.push(this.waitForNavigation());
   }
   promises.push(this._waitForAction());
+
   return Promise.all(promises);
 }
 
@@ -3969,7 +4111,7 @@ async function refreshContextSession() {
 
 async function saveVideoForPage(page, name) {
   if (!page.video()) return null;
-  const fileName = `${`${global.output_dir}${pathSeparator}videos${pathSeparator}${Date.now()}_${clearString(name)}`.slice(0, 245)}.webm`;
+  const fileName = `${`${global.output_dir}${pathSeparator}videos${pathSeparator}${uuidv4()}_${clearString(name)}`.slice(0, 245)}.webm`;
   page.video().saveAs(fileName).then(() => {
     if (!page) return;
     page.video().delete().catch(e => {});
@@ -3980,7 +4122,13 @@ async function saveVideoForPage(page, name) {
 async function saveTraceForContext(context, name) {
   if (!context) return;
   if (!context.tracing) return;
-  const fileName = `${`${global.output_dir}${pathSeparator}trace${pathSeparator}${Date.now()}_${clearString(name)}`.slice(0, 245)}.zip`;
+  const fileName = `${`${global.output_dir}${pathSeparator}trace${pathSeparator}${uuidv4()}_${clearString(name)}`.slice(0, 245)}.zip`;
   await context.tracing.stop({ path: fileName });
   return fileName;
+}
+
+function highlightActiveElement(element, context) {
+  if (!this.options.enableHighlight && !store.debugMode) return;
+
+  highlightElement(element, context);
 }

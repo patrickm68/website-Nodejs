@@ -6,6 +6,7 @@ const path = require('path');
 const Helper = require('@codeceptjs/helper');
 const Locator = require('../locator');
 const recorder = require('../recorder');
+const store = require('../store');
 const stringIncludes = require('../assert/include').includes;
 const { urlEquals } = require('../assert/equal');
 const { equals } = require('../assert/equal');
@@ -33,6 +34,7 @@ const RemoteBrowserConnectionRefused = require('./errors/RemoteBrowserConnection
 const Popup = require('./extras/Popup');
 const Console = require('./extras/Console');
 const findReact = require('./extras/React');
+const { highlightElement } = require('./scripts/highlightElement');
 
 let puppeteer;
 let perfTiming;
@@ -65,6 +67,7 @@ const consoleLogStore = new Console();
  * @prop {boolean} [manualStart=false] - do not start browser before a test, start it manually inside a helper with `this.helpers["Puppeteer"]._startBrowser()`.
  * @prop {string} [browser=chrome] - can be changed to `firefox` when using [puppeteer-firefox](https://codecept.io/helpers/Puppeteer-firefox).
  * @prop {object} [chrome] - pass additional [Puppeteer run options](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#puppeteerlaunchoptions).
+ * @prop {boolean} [highlightElement] - highlight the interacting elements
 */
 const config = {};
 
@@ -1643,6 +1646,9 @@ class Puppeteer extends Helper {
    * 
    * // passing in an array
    * I.type(['T', 'E', 'X', 'T']);
+   * 
+   * // passing a secret
+   * I.type(secret('123456'));
    * ```
    * 
    * @param {string|string[]} key or array of keys to type.
@@ -1652,6 +1658,7 @@ class Puppeteer extends Helper {
    */
   async type(keys, delay = null) {
     if (!Array.isArray(keys)) {
+      keys = keys.toString();
       keys = keys.split('');
     }
 
@@ -1692,7 +1699,10 @@ class Puppeteer extends Helper {
     } else if (editable) {
       await this._evaluateHandeInContext(el => el.innerHTML = '', el);
     }
+
+    highlightActiveElement.call(this, el, this.page);
     await el.type(value.toString(), { delay: this.options.pressKeyDelay });
+
     return this._waitForAction();
   }
 
@@ -1718,6 +1728,8 @@ class Puppeteer extends Helper {
    * 
    * ```js
    * I.appendField('#myTextField', 'appended');
+   * // typing secret
+   * I.appendField('password', secret('123456'));
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator
    * @param {string} value text value to append.
@@ -1729,8 +1741,9 @@ class Puppeteer extends Helper {
   async appendField(field, value) {
     const els = await findVisibleFields.call(this, field);
     assertElementExists(els, field, 'Field');
+    highlightActiveElement.call(this, els[0], this.page);
     await els[0].press('End');
-    await els[0].type(value, { delay: this.options.pressKeyDelay });
+    await els[0].type(value.toString(), { delay: this.options.pressKeyDelay });
     return this._waitForAction();
   }
 
@@ -1831,6 +1844,7 @@ class Puppeteer extends Helper {
     if (await el.getProperty('tagName').then(t => t.jsonValue()) !== 'SELECT') {
       throw new Error('Element is not <select>');
     }
+    highlightActiveElement.call(this, els[0], this.page);
     if (!Array.isArray(option)) option = [option];
 
     for (const key in option) {
@@ -2680,23 +2694,32 @@ class Puppeteer extends Helper {
    */
   async saveScreenshot(fileName, fullPage) {
     const fullPageOption = fullPage || this.options.fullPageScreenshots;
-    const outputFile = screenshotOutputFolder(fileName);
+    let outputFile = screenshotOutputFolder(fileName);
 
     this.debug(`Screenshot is saving to ${outputFile}`);
 
-    if (this.activeSessionName) {
-      const activeSessionPage = this.sessionPages[this.activeSessionName];
+    await this.page.screenshot({
+      path: outputFile,
+      fullPage: fullPageOption,
+      type: 'png',
+    });
 
-      if (activeSessionPage) {
-        return activeSessionPage.screenshot({
-          path: outputFile,
-          fullPage: fullPageOption,
-          type: 'png',
-        });
+    if (this.activeSessionName) {
+      for (const sessionName in this.sessionPages) {
+        const activeSessionPage = this.sessionPages[sessionName];
+        outputFile = screenshotOutputFolder(`${sessionName}_${fileName}`);
+
+        this.debug(`${sessionName} - Screenshot is saving to ${outputFile}`);
+
+        if (activeSessionPage) {
+          await activeSessionPage.screenshot({
+            path: outputFile,
+            fullPage: fullPageOption,
+            type: 'png',
+          });
+        }
       }
     }
-
-    return this.page.screenshot({ path: outputFile, fullPage: fullPageOption, type: 'png' });
   }
 
   async _failed() {
@@ -3358,12 +3381,16 @@ async function proceedClick(locator, context = null, options = {}) {
   } else {
     assertElementExists(els, locator, 'Clickable element');
   }
+
+  highlightActiveElement.call(this, els[0], this.page);
+
   await els[0].click(options);
   const promises = [];
   if (options.waitForNavigation) {
     promises.push(this.waitForNavigation());
   }
   promises.push(this._waitForAction());
+
   return Promise.all(promises);
 }
 
@@ -3707,4 +3734,10 @@ function getNormalizedKey(key) {
     return keyDefinitionMap[normalizedKey];
   }
   return normalizedKey;
+}
+
+function highlightActiveElement(element, context) {
+  if (!this.options.enableHighlight && !store.debugMode) return;
+
+  highlightElement(element, context);
 }

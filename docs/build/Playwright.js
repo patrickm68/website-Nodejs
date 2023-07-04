@@ -969,21 +969,18 @@ class Playwright extends Helper {
   /**
    * Remove focus from a text input, button, etc
    * Calls [blur](https://playwright.dev/docs/api/class-locator#locator-blur) on the element.
-   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
-   * @param {any} [options] [Additional options](https://playwright.dev/docs/api/class-locator#locator-blur) for available options object as 2nd argument.
    *
    * Examples:
    *
    * ```js
-   * I.blur('.text-area')
-   * ```
-   * ```js
+   * I.blur('.text-area');
    * //element `#product-tile` is focused
    * I.see('#add-to-cart-btn');
    * I.blur('#product-tile')
    * I.dontSee('#add-to-cart-btn');
    * ```
-   *
+   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
+   * @param {any} [options] [Additional options](https://playwright.dev/docs/api/class-locator#locator-blur) for available options object as 2nd argument.
    */
   async blur(locator, options = {}) {
     const els = await this._locate(locator);
@@ -1944,7 +1941,7 @@ class Playwright extends Helper {
 
   /**
    * Clears the text input element: `<input>`, `<textarea>` or `[contenteditable]` .
-   * 
+   *
   *
   * Examples:
   *
@@ -1952,10 +1949,10 @@ class Playwright extends Helper {
   * I.clearField('.text-area')
   *
   * // if this doesn't work use force option
-  * I.clearField('#submit', { force: true }) 
+  * I.clearField('#submit', { force: true })
   * ```
   * Use `force` to bypass the [actionability](https://playwright.dev/docs/actionability) checks.
-  * 
+  *
    * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
    * @param {any} [options] [Additional options](https://playwright.dev/docs/api/class-locator#locator-clear) for available options object as 2nd argument.
    */

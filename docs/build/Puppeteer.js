@@ -726,7 +726,7 @@ class Puppeteer extends Helper {
    * I.moveCursorTo('#submit', 5,5);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
@@ -750,8 +750,8 @@ class Puppeteer extends Helper {
    * I.dragAndDrop('#dragHandle', '#container');
    * ```
    * 
-   * @param {LocatorOrString} srcElement located by CSS|XPath|strict locator.
-   * @param {LocatorOrString} destElement located by CSS|XPath|strict locator.
+   * @param {string | object} srcElement located by CSS|XPath|strict locator.
+   * @param {string | object} destElement located by CSS|XPath|strict locator.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    */
@@ -816,7 +816,7 @@ class Puppeteer extends Helper {
    * I.scrollTo('#submit', 5, 5);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @param {number} [offsetX=0] (optional, `0` by default) X-axis offset.
    * @param {number} [offsetY=0] (optional, `0` by default) Y-axis offset.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
@@ -1094,7 +1094,7 @@ class Puppeteer extends Helper {
    * ```js
    * I.seeElement('#modal');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    * {{ react }}
@@ -1115,7 +1115,7 @@ class Puppeteer extends Helper {
    * I.dontSeeElement('.modal'); // modal is not shown
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
+   * @param {string | object} locator located by CSS|XPath|Strict locator.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    * {{ react }}
@@ -1136,7 +1136,7 @@ class Puppeteer extends Helper {
    * ```js
    * I.seeElementInDOM('#modal');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    */
@@ -1152,7 +1152,7 @@ class Puppeteer extends Helper {
    * I.dontSeeElementInDOM('.nav'); // checks that element is not on page visible or not
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|Strict locator.
+   * @param {string | object} locator located by CSS|XPath|Strict locator.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    */
@@ -1184,8 +1184,8 @@ class Puppeteer extends Helper {
    * I.click({css: 'nav a.login'});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?CodeceptJS.LocatorOrString | null} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?string | object | null} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    *
@@ -1221,8 +1221,8 @@ class Puppeteer extends Helper {
    * I.forceClick({css: 'nav a.login'});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    *
@@ -1259,8 +1259,8 @@ class Puppeteer extends Helper {
    * ```js
    * I.clickLink('Logout', '#nav');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator
+   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator
+   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    *
@@ -1378,8 +1378,8 @@ class Puppeteer extends Helper {
    * I.doubleClick('.btn.edit');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
+   * @param {string | object} locator clickable link or button located by text, or any element located by CSS|XPath|strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element to search in CSS|XPath|Strict locator.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    *
@@ -1401,8 +1401,8 @@ class Puppeteer extends Helper {
    * I.rightClick('Click me', '.context');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator clickable element located by CSS|XPath|strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
+   * @param {string | object} locator clickable element located by CSS|XPath|strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    *
@@ -1423,8 +1423,8 @@ class Puppeteer extends Helper {
    * I.checkOption('I Agree to Terms and Conditions');
    * I.checkOption('agree', '//form');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
+   * @param {string | object} field checkbox located by label | name | CSS | XPath | strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    */
@@ -1450,8 +1450,8 @@ class Puppeteer extends Helper {
    * I.uncheckOption('I Agree to Terms and Conditions');
    * I.uncheckOption('agree', '//form');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field checkbox located by label | name | CSS | XPath | strict locator.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
+   * @param {string | object} field checkbox located by label | name | CSS | XPath | strict locator.
+   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS | XPath | strict locator.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    */
@@ -1475,7 +1475,7 @@ class Puppeteer extends Helper {
    * I.seeCheckboxIsChecked({css: '#signup_form input[type=checkbox]'});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    */
@@ -1492,7 +1492,7 @@ class Puppeteer extends Helper {
    * I.dontSeeCheckboxIsChecked('agree'); // located by name
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    */
@@ -1682,8 +1682,8 @@ class Puppeteer extends Helper {
    * // or by strict locator
    * I.fillField({css: 'form#login input[name=username]'}, 'John');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @param {CodeceptJS.StringOrSecret} value text value to fill.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} value text value to fill.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    * {{ react }}
@@ -1714,7 +1714,7 @@ class Puppeteer extends Helper {
    * I.clearField('user[email]');
    * I.clearField('#email');
    * ```
-   * @param {LocatorOrString} editable field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} editable field located by label|name|CSS|XPath|strict locator.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder.
    * 
    */
@@ -1731,7 +1731,7 @@ class Puppeteer extends Helper {
    * // typing secret
    * I.appendField('password', secret('123456'));
    * ```
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator
    * @param {string} value text value to append.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
@@ -1757,7 +1757,7 @@ class Puppeteer extends Helper {
    * I.seeInField('form input[type=hidden]','hidden_value');
    * I.seeInField('#searchform input','Search');
    * ```
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
@@ -1775,7 +1775,7 @@ class Puppeteer extends Helper {
    * I.dontSeeInField({ css: 'form input.email' }, 'user@user.com'); // field by CSS
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} field located by label|name|CSS|XPath|strict locator.
    * @param {string} value value to check.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
@@ -1794,7 +1794,7 @@ class Puppeteer extends Helper {
    * I.attachFile('form input[name=avatar]', 'data/avatar.jpg');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
    * @param {string} pathToFile local file path relative to codecept.conf.ts or codecept.conf.js config file.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
@@ -1832,7 +1832,7 @@ class Puppeteer extends Helper {
    * ```js
    * I.selectOption('Which OS do you use?', ['Android', 'iOS']);
    * ```
-   * @param {LocatorOrString} select field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} select field located by label|name|CSS|XPath|strict locator.
    * @param {string|Array<*>} option visible text or value of option.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
@@ -1875,7 +1875,7 @@ class Puppeteer extends Helper {
    * let numOfElements = await I.grabNumberOfVisibleElements('p');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @returns {Promise<number>} number of visible elements
    * {{ react }}
    */
@@ -1959,7 +1959,7 @@ class Puppeteer extends Helper {
    * I.see('Register', {css: 'form.register'}); // use strict locator
    * ```
    * @param {string} text expected on page.
-   * @param {?CodeceptJS.LocatorOrString} [context=null] (optional, `null` by default) element located by CSS|Xpath|strict locator in which to search for text.
+   * @param {?string | object} [context=null] (optional, `null` by default) element located by CSS|Xpath|strict locator in which to search for text.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    *
@@ -1977,7 +1977,7 @@ class Puppeteer extends Helper {
    * ```
    * 
    * @param {string} text element value to check.
-   * @param {CodeceptJS.LocatorOrString?} [context=null]  element located by CSS|XPath|strict locator.
+   * @param {(string | object)?} [context=null]  element located by CSS|XPath|strict locator.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    */
@@ -1995,7 +1995,7 @@ class Puppeteer extends Helper {
    * ```
    * 
    * @param {string} text which is not present.
-   * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator in which to perfrom search.
+   * @param {string | object} [context] (optional) element located by CSS|XPath|strict locator in which to perfrom search.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    *
@@ -2089,7 +2089,7 @@ class Puppeteer extends Helper {
    * I.seeNumberOfElements('#submitBtn', 1);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
@@ -2109,7 +2109,7 @@ class Puppeteer extends Helper {
    * I.seeNumberOfVisibleElements('.buttons', 3);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
@@ -2316,7 +2316,7 @@ class Puppeteer extends Helper {
    * let pins = await I.grabTextFromAll('#pin li');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @returns {Promise<string[]>} attribute value
    * 
    * {{ react }}
@@ -2339,7 +2339,7 @@ class Puppeteer extends Helper {
    * ```
    * If multiple elements found returns first element.
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @returns {Promise<string>} attribute value
    * 
    * {{ react }}
@@ -2361,7 +2361,7 @@ class Puppeteer extends Helper {
    * ```js
    * let inputs = await I.grabValueFromAll('//form/input');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
    * @returns {Promise<string[]>} attribute value
    * 
    */
@@ -2382,7 +2382,7 @@ class Puppeteer extends Helper {
    * ```js
    * let email = await I.grabValueFrom('input[name=email]');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator field located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} locator field located by label|name|CSS|XPath|strict locator.
    * @returns {Promise<string>} attribute value
    * 
    */
@@ -2404,7 +2404,7 @@ class Puppeteer extends Helper {
    * let postHTMLs = await I.grabHTMLFromAll('.post');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} element located by CSS|XPath|strict locator.
+   * @param {string | object} element located by CSS|XPath|strict locator.
    * @returns {Promise<string[]>} HTML code for an element
    * 
    */
@@ -2423,7 +2423,7 @@ class Puppeteer extends Helper {
    * let postHTML = await I.grabHTMLFrom('#post');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} element located by CSS|XPath|strict locator.
+   * @param {string | object} element located by CSS|XPath|strict locator.
    * @returns {Promise<string>} HTML code for an element
    * 
    */
@@ -2445,7 +2445,7 @@ class Puppeteer extends Helper {
    * const values = await I.grabCssPropertyFromAll('h3', 'font-weight');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {string} cssProperty CSS property name.
    * @returns {Promise<string[]>} CSS value
    * 
@@ -2468,7 +2468,7 @@ class Puppeteer extends Helper {
    * const value = await I.grabCssPropertyFrom('h3', 'font-weight');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {string} cssProperty CSS property name.
    * @returns {Promise<string>} CSS value
    * 
@@ -2492,7 +2492,7 @@ class Puppeteer extends Helper {
    * I.seeCssPropertiesOnElements('h3', { 'font-weight': "bold"});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @param {object} cssProperties object with CSS properties and their values to check.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
@@ -2540,7 +2540,7 @@ class Puppeteer extends Helper {
    * I.seeAttributesOnElements('//form', { method: "post"});
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by CSS|XPath|strict locator.
+   * @param {string | object} locator located by CSS|XPath|strict locator.
    * @param {object} attributes attributes and their values to check.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
@@ -2582,7 +2582,7 @@ class Puppeteer extends Helper {
    * I.dragSlider('#slider', -70);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator located by label|name|CSS|XPath|strict locator.
+   * @param {string | object} locator located by label|name|CSS|XPath|strict locator.
    * @param {number} offsetX position to drag.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
@@ -2613,7 +2613,7 @@ class Puppeteer extends Helper {
    * ```js
    * let hints = await I.grabAttributeFromAll('.tooltip', 'title');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {string} attr attribute name.
    * @returns {Promise<string[]>} attribute value
    * 
@@ -2637,7 +2637,7 @@ class Puppeteer extends Helper {
    * ```js
    * let hint = await I.grabAttributeFrom('#tooltip', 'title');
    * ```
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {string} attr attribute name.
    * @returns {Promise<string>} attribute value
    * 
@@ -2661,7 +2661,7 @@ class Puppeteer extends Helper {
    * I.saveElementScreenshot(`#submit`,'debug.png');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {string} fileName file name to save.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
@@ -2747,7 +2747,7 @@ class Puppeteer extends Helper {
    * Waits for element to become enabled (by default waits for 1sec).
    * Element can be located by CSS or XPath.
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional) time in seconds to wait, 1 by default.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
@@ -2786,7 +2786,7 @@ class Puppeteer extends Helper {
    * I.waitForValue('//input', "GoodValue");
    * ```
    * 
-   * @param {LocatorOrString} field input field.
+   * @param {string | object} field input field.
    * @param {string }value expected value.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
@@ -2827,7 +2827,7 @@ class Puppeteer extends Helper {
    * I.waitNumberOfVisibleElements('a', 3);
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} num number of elements.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
@@ -2870,7 +2870,7 @@ class Puppeteer extends Helper {
    * I.waitForClickable('.btn.continue', 5); // wait for 5 secs
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
@@ -2897,7 +2897,7 @@ class Puppeteer extends Helper {
    * I.waitForElement('.btn.continue', 5); // wait for 5 secs
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec] (optional, `1` by default) time in seconds to wait
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
@@ -2927,7 +2927,7 @@ class Puppeteer extends Helper {
    * I.waitForVisible('#popup');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
@@ -2958,7 +2958,7 @@ class Puppeteer extends Helper {
    * I.waitForInvisible('#popup');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
@@ -2987,7 +2987,7 @@ class Puppeteer extends Helper {
    * I.waitToHide('#popup');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
@@ -3088,7 +3088,7 @@ class Puppeteer extends Helper {
    * 
    * @param {string }text to wait for.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
-   * @param {CodeceptJS.LocatorOrString} [context] (optional) element located by CSS|XPath|strict locator.
+   * @param {string | object} [context] (optional) element located by CSS|XPath|strict locator.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    */
@@ -3165,7 +3165,7 @@ class Puppeteer extends Helper {
    * I.switchTo(); // switch back to main page
    * ```
    * 
-   * @param {?CodeceptJS.LocatorOrString} [locator=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
+   * @param {?string | object} [locator=null] (optional, `null` by default) element located by CSS|XPath|strict locator.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    */
@@ -3269,7 +3269,7 @@ class Puppeteer extends Helper {
    * I.waitForDetached('#popup');
    * ```
    * 
-   * @param {CodeceptJS.LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {number} [sec=1] (optional, `1` by default) time in seconds to wait
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
@@ -3345,7 +3345,7 @@ class Puppeteer extends Helper {
    * const width = await I.grabElementBoundingRect('h3', 'width');
    * // width == 527
    * ```
-   * @param {LocatorOrString} locator element located by CSS|XPath|strict locator.
+   * @param {string | object} locator element located by CSS|XPath|strict locator.
    * @param {string=} elementSize x, y, width or height of the given element.
    * @returns {Promise<DOMRect>|Promise<number>} Element bounding rectangle
    * 

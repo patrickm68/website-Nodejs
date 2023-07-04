@@ -24,7 +24,7 @@ CodeceptJS AI can do the following:
 * 🚑 **self-heal failing tests** (can be used on CI)
 * 💬 send arbitrary prompts to GPT from any tested page attaching its HTML contents
 
-![](/images/fill_form.gif)
+![](/img/fill_form.gif)
 
 ### How it works
 
@@ -90,11 +90,11 @@ When pause mode started you can ask GPT to fill in the fields on this page. Use 
  I.fill checkout form with valid values without submitting it
 ```
 
-![](/images/ai_form1.png)
+![](/img/fill_form_1.png)
 
 GPT will generate code and data and CodeceptJS will try to execute its code. If it succeeds, the code will be saved to history and you will be able to copy it to your test.
 
-![](/images/ai_form2.png)
+![](/img/fill_form2.png)
 
 This AI copilot works best with long static forms. In the case of complex and dynamic single-page applications, it may not perform as well, as the form may not be present on HTML page yet. For instance, interacting with calendars or inputs with real-time validations (like credit cards) can not yet be performed by AI.
 
@@ -128,7 +128,7 @@ and run tests in AI mode with `OPENAI_API_KEY` provided:
 OPENAI_API_KEY=sk-******** npx codeceptjs run
 ```
 
-![](/images/heal.png)
+![](/img/heal.png)
 
 
 ### Arbitrary GPT Prompts

@@ -153,6 +153,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         {
           group: 'other',
           items: [
+            { text: "OpenAI", link: "/helpers/OpenAI" },
             { text: "FileSystem", link: "/helpers/FileSystem" },
             { text: "Community Helpers", link: "/community-helpers" },
           ]

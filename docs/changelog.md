@@ -7,6 +7,13 @@ layout: Section
 
 # Releases
 
+## 3.5.2
+
+🐛 Bug Fixes
+
+* **[Playwright]** reverted `clearField` to previous implementation
+* **[OpenAI]** fixed running helper in pause mode. [#3755](https://github.com/codeceptjs/CodeceptJS/issues/3755) by **[KobeNguyenT](https://github.com/KobeNguyenT)**
+
 ## 3.5.1
 
 🛩️ Features

@@ -11,7 +11,18 @@ layout: Section
 
 🛩️ Features
 
-* **[Playwright]** Provide new steps to check network traffic [#3748](https://github.com/codeceptjs/CodeceptJS/issues/3748) - by **[ngraf](https://github.com/ngraf)** **[KobeNguyenT](https://github.com/KobeNguyenT)**
+* **[Playwright]** Added commands to check network traffic [#3748](https://github.com/codeceptjs/CodeceptJS/issues/3748) - by **[ngraf](https://github.com/ngraf)** **[KobeNguyenT](https://github.com/KobeNguyenT)**
+  * `startRecordingTraffic`
+  * `grabRecordedNetworkTraffics`
+  * `blockTraffic`
+  * `mockTraffic`
+  * `flushNetworkTraffics`
+  * `stopRecordingTraffic`
+  * `seeTraffic`
+  * `grabTrafficUrl`
+  * `dontSeeTraffic`
+
+Examples:
 
 ```js
 // recording traffics and verify the traffic

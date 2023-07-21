@@ -125,9 +125,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             { text: "Playwright", link: "/helpers/Playwright" },
             { text: "WebDriver", link: "/helpers/WebDriver" },
             { text: "Puppeteer", link: "/helpers/Puppeteer" },
-            { text: "Protractor", link: "/helpers/Protractor" },
             { text: "TestCafe", link: "/helpers/TestCafe" },
-            { text: "Nightmare", link: "/helpers/Nightmare" },
           ]
         },
         {
@@ -233,7 +231,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             'puppeteer',
             'api',
             'testcafe',
-            'angular',
           ]
         },
         {

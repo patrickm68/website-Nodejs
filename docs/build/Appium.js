@@ -1505,14 +1505,15 @@ class Appium extends Webdriver {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @param {string} value value to check.
+   * @param {CodeceptJS.StringOrSecret} value value to check.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    *
    */
   async dontSeeInField(field, value) {
-    if (this.isWeb) return super.dontSeeInField(field, value);
-    return super.dontSeeInField(parseLocator.call(this, field), value);
+    const _value = (typeof value === 'boolean') ? value : value.toString();
+    if (this.isWeb) return super.dontSeeInField(field, _value);
+    return super.dontSeeInField(parseLocator.call(this, field), _value);
   }
 
   /**
@@ -1768,14 +1769,15 @@ class Appium extends Webdriver {
    * I.seeInField('#searchform input','Search');
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @param {string} value value to check.
+   * @param {CodeceptJS.StringOrSecret} value value to check.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    *
    */
   async seeInField(field, value) {
-    if (this.isWeb) return super.seeInField(field, value);
-    return super.seeInField(parseLocator.call(this, field), value);
+    const _value = (typeof value === 'boolean') ? value : value.toString();
+    if (this.isWeb) return super.seeInField(field, _value);
+    return super.seeInField(parseLocator.call(this, field), _value);
   }
 
   /**

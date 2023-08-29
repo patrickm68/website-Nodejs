@@ -821,12 +821,13 @@ class Protractor extends Helper {
    * I.seeInField('#searchform input','Search');
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @param {string} value value to check.
+   * @param {CodeceptJS.StringOrSecret} value value to check.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    */
   async seeInField(field, value) {
-    return proceedSeeInField.call(this, 'assert', field, value);
+    const _value = (typeof value === 'boolean') ? value : value.toString();
+    return proceedSeeInField.call(this, 'assert', field, _value);
   }
 
   /**
@@ -839,12 +840,13 @@ class Protractor extends Helper {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @param {string} value value to check.
+   * @param {CodeceptJS.StringOrSecret} value value to check.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    */
   async dontSeeInField(field, value) {
-    return proceedSeeInField.call(this, 'negate', field, value);
+    const _value = (typeof value === 'boolean') ? value : value.toString();
+    return proceedSeeInField.call(this, 'negate', field, _value);
   }
 
   /**
@@ -1645,7 +1647,7 @@ class Protractor extends Helper {
       const stream = fs.createWriteStream(outputFile);
       stream.write(Buffer.from(png, 'base64'));
       stream.end();
-      return new Promise(resolve => stream.on('finish', resolve));
+      return new Promise(resolve => stream.on('finish', resolve)); // eslint-disable-line no-promise-executor-return
     };
 
     const res = await this._locate(locator);
@@ -1680,7 +1682,7 @@ class Protractor extends Helper {
       const stream = fs.createWriteStream(outputFile);
       stream.write(Buffer.from(png, 'base64'));
       stream.end();
-      return new Promise(resolve => stream.on('finish', resolve));
+      return new Promise(resolve => stream.on('finish', resolve)); // eslint-disable-line no-promise-executor-return
     };
 
     if (!fullPage) {
@@ -2458,8 +2460,11 @@ class Protractor extends Helper {
       const body = document.body;
       const html = document.documentElement;
       window.scrollTo(0, Math.max(
-        body.scrollHeight, body.offsetHeight,
-        html.clientHeight, html.scrollHeight, html.offsetHeight
+        body.scrollHeight,
+        body.offsetHeight,
+        html.clientHeight,
+        html.scrollHeight,
+        html.offsetHeight
       ));
     });
     /* eslint-enable */

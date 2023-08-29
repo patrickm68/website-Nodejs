@@ -45,7 +45,7 @@ Type: [object][16]
 -   `desiredCapabilities` **[object][16]?** Selenium's [desired capabilities][6].
 -   `manualStart` **[boolean][32]?** do not start browser before a test, start it manually inside a helper with `this.helpers["WebDriver"]._startBrowser()`.
 -   `timeouts` **[object][16]?** [WebDriver timeouts][37] defined as hash.
--   `highlightElement` **[boolean][32]?** highlight the interacting elements
+-   `highlightElement` **[boolean][32]?** highlight the interacting elements. Default: false
 
 
 
@@ -757,7 +757,7 @@ I.dontSeeInField({ css: 'form input.email' }, 'user@user.com'); // field by CSS
 #### Parameters
 
 -   `field` **([string][17] | [object][16])** located by label|name|CSS|XPath|strict locator.
--   `value` **[string][17]** value to check.
+-   `value` **([string][17] | [object][16])** value to check.
     ⚠️ returns a _promise_ which is synchronized internally by recorder
 
 ### dontSeeInSource
@@ -1783,7 +1783,7 @@ I.seeInField('#searchform input','Search');
 #### Parameters
 
 -   `field` **([string][17] | [object][16])** located by label|name|CSS|XPath|strict locator.
--   `value` **[string][17]** value to check.
+-   `value` **([string][17] | [object][16])** value to check.
     ⚠️ returns a _promise_ which is synchronized internally by recorder
 
 ### seeInPopup

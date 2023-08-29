@@ -1063,12 +1063,13 @@ class Nightmare extends Helper {
    * I.seeInField('#searchform input','Search');
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @param {string} value value to check.
+   * @param {CodeceptJS.StringOrSecret} value value to check.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    */
   async seeInField(field, value) {
-    return proceedSeeInField.call(this, 'assert', field, value);
+    const _value = (typeof value === 'boolean') ? value : value.toString();
+    return proceedSeeInField.call(this, 'assert', field, _value);
   }
 
   /**
@@ -1081,12 +1082,13 @@ class Nightmare extends Helper {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @param {string} value value to check.
+   * @param {CodeceptJS.StringOrSecret} value value to check.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    */
   async dontSeeInField(field, value) {
-    return proceedSeeInField.call(this, 'negate', field, value);
+    const _value = (typeof value === 'boolean') ? value : value.toString();
+    return proceedSeeInField.call(this, 'negate', field, _value);
   }
 
   /**
@@ -1990,8 +1992,11 @@ class Nightmare extends Helper {
       const body = document.body;
       const html = document.documentElement;
       window.scrollTo(0, Math.max(
-        body.scrollHeight, body.offsetHeight,
-        html.clientHeight, html.scrollHeight, html.offsetHeight
+        body.scrollHeight,
+        body.offsetHeight,
+        html.clientHeight,
+        html.scrollHeight,
+        html.offsetHeight
       ));
     });
     /* eslint-enable */

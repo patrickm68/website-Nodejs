@@ -62,7 +62,7 @@ const webRoot = 'body';
  * @prop {object} [desiredCapabilities] Selenium's [desired capabilities](https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities).
  * @prop {boolean} [manualStart=false] - do not start browser before a test, start it manually inside a helper with `this.helpers["WebDriver"]._startBrowser()`.
  * @prop {object} [timeouts] [WebDriver timeouts](http://webdriver.io/docs/timeouts.html) defined as hash.
- * @prop {boolean} [highlightElement] - highlight the interacting elements
+ * @prop {boolean} [highlightElement] - highlight the interacting elements. Default: false
  */
 const config = {};
 
@@ -429,6 +429,7 @@ class WebDriver extends Helper {
       keepCookies: false,
       keepBrowserState: false,
       deprecationWarnings: false,
+      highlightElement: false,
     };
 
     // override defaults with config
@@ -1713,13 +1714,14 @@ class WebDriver extends Helper {
    * I.seeInField('#searchform input','Search');
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @param {string} value value to check.
+   * @param {CodeceptJS.StringOrSecret} value value to check.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    *
    */
   async seeInField(field, value) {
-    return proceedSeeField.call(this, 'assert', field, value);
+    const _value = (typeof value === 'boolean') ? value : value.toString();
+    return proceedSeeField.call(this, 'assert', field, _value);
   }
 
   /**
@@ -1732,13 +1734,14 @@ class WebDriver extends Helper {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @param {string} value value to check.
+   * @param {CodeceptJS.StringOrSecret} value value to check.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    *
    */
   async dontSeeInField(field, value) {
-    return proceedSeeField.call(this, 'negate', field, value);
+    const _value = (typeof value === 'boolean') ? value : value.toString();
+    return proceedSeeField.call(this, 'negate', field, _value);
   }
 
   /**
@@ -2970,7 +2973,9 @@ class WebDriver extends Helper {
    * 
    */
   async wait(sec) {
-    return new Promise(resolve => setTimeout(resolve, sec * 1000));
+    return new Promise(resolve => {
+      setTimeout(resolve, sec * 1000);
+    });
   }
 
   /**
@@ -3135,20 +3140,18 @@ class WebDriver extends Helper {
     const aSec = sec || this.options.waitForTimeoutInSeconds;
     const _context = context || this.root;
 
-    return this.browser.waitUntil(
-      async () => {
-        const res = await this.$$(withStrictLocator.call(this, _context));
-        if (!res || res.length === 0) return false;
-        const selected = await forEachAsync(res, async el => this.browser.getElementText(getElementId(el)));
-        if (Array.isArray(selected)) {
-          return selected.filter(part => part.indexOf(text) >= 0).length > 0;
-        }
-        return selected.indexOf(text) >= 0;
-      }, {
-        timeout: aSec * 1000,
-        timeoutMsg: `element (${_context}) is not in DOM or there is no element(${_context}) with text "${text}" after ${aSec} sec`,
-      },
-    );
+    return this.browser.waitUntil(async () => {
+      const res = await this.$$(withStrictLocator.call(this, _context));
+      if (!res || res.length === 0) return false;
+      const selected = await forEachAsync(res, async el => this.browser.getElementText(getElementId(el)));
+      if (Array.isArray(selected)) {
+        return selected.filter(part => part.indexOf(text) >= 0).length > 0;
+      }
+      return selected.indexOf(text) >= 0;
+    }, {
+      timeout: aSec * 1000,
+      timeoutMsg: `element (${_context}) is not in DOM or there is no element(${_context}) with text "${text}" after ${aSec} sec`,
+    });
   }
 
   /**
@@ -3168,20 +3171,18 @@ class WebDriver extends Helper {
     const client = this.browser;
     const aSec = sec || this.options.waitForTimeoutInSeconds;
 
-    return client.waitUntil(
-      async () => {
-        const res = await findFields.call(this, field);
-        if (!res || res.length === 0) return false;
-        const selected = await forEachAsync(res, async el => el.getValue());
-        if (Array.isArray(selected)) {
-          return selected.filter(part => part.indexOf(value) >= 0).length > 0;
-        }
-        return selected.indexOf(value) >= 0;
-      }, {
-        timeout: aSec * 1000,
-        timeoutMsg: `element (${field}) is not in DOM or there is no element(${field}) with value "${value}" after ${aSec} sec`,
-      },
-    );
+    return client.waitUntil(async () => {
+      const res = await findFields.call(this, field);
+      if (!res || res.length === 0) return false;
+      const selected = await forEachAsync(res, async el => el.getValue());
+      if (Array.isArray(selected)) {
+        return selected.filter(part => part.indexOf(value) >= 0).length > 0;
+      }
+      return selected.indexOf(value) >= 0;
+    }, {
+      timeout: aSec * 1000,
+      timeoutMsg: `element (${field}) is not in DOM or there is no element(${field}) with value "${value}" after ${aSec} sec`,
+    });
   }
 
   /**
@@ -3525,8 +3526,11 @@ class WebDriver extends Helper {
       const body = document.body;
       const html = document.documentElement;
       window.scrollTo(0, Math.max(
-        body.scrollHeight, body.offsetHeight,
-        html.clientHeight, html.scrollHeight, html.offsetHeight
+        body.scrollHeight,
+        body.offsetHeight,
+        html.clientHeight,
+        html.scrollHeight,
+        html.offsetHeight
       ));
     });
     /* eslint-enable */
@@ -4075,7 +4079,7 @@ function isModifierKey(key) {
 }
 
 function highlightActiveElement(element) {
-  if (!this.options.enableHighlight && !store.debugMode) return;
+  if (!this.options.highlightElement && !store.debugMode) return;
 
   highlightElement(element, this.browser);
 }

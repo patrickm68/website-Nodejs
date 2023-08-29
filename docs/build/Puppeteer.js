@@ -23,7 +23,7 @@ const {
   screenshotOutputFolder,
   getNormalizedKeyAttributeValue,
   isModifierKey,
-  requireWithFallback,
+  requireWithFallback, normalizeSpacesInString,
 } = require('../utils');
 const {
   isColorProperty,
@@ -69,7 +69,7 @@ const consoleLogStore = new Console();
  * @prop {boolean} [manualStart=false] - do not start browser before a test, start it manually inside a helper with `this.helpers["Puppeteer"]._startBrowser()`.
  * @prop {string} [browser=chrome] - can be changed to `firefox` when using [puppeteer-firefox](https://codecept.io/helpers/Puppeteer-firefox).
  * @prop {object} [chrome] - pass additional [Puppeteer run options](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#puppeteerlaunchoptions).
- * @prop {boolean} [highlightElement] - highlight the interacting elements
+ * @prop {boolean} [highlightElement] - highlight the interacting elements. Default: false
 */
 const config = {};
 
@@ -231,6 +231,7 @@ class Puppeteer extends Helper {
       keepBrowserState: false,
       show: false,
       defaultPopupAction: 'accept',
+      highlightElement: false,
     };
 
     return Object.assign(defaults, config);
@@ -857,8 +858,11 @@ class Puppeteer extends Helper {
       const body = document.body;
       const html = document.documentElement;
       window.scrollTo(0, Math.max(
-        body.scrollHeight, body.offsetHeight,
-        html.clientHeight, html.scrollHeight, html.offsetHeight,
+        body.scrollHeight,
+        body.offsetHeight,
+        html.clientHeight,
+        html.scrollHeight,
+        html.offsetHeight,
       ));
     });
   }
@@ -1756,7 +1760,7 @@ class Puppeteer extends Helper {
       await this._evaluateHandeInContext(el => el.innerHTML = '', el);
     }
 
-    highlightActiveElement.call(this, el, this.page);
+    highlightActiveElement.call(this, el, await this._getContext());
     await el.type(value.toString(), { delay: this.options.pressKeyDelay });
 
     return this._waitForAction();
@@ -1797,7 +1801,7 @@ class Puppeteer extends Helper {
   async appendField(field, value) {
     const els = await findVisibleFields.call(this, field);
     assertElementExists(els, field, 'Field');
-    highlightActiveElement.call(this, els[0], this.page);
+    highlightActiveElement.call(this, els[0], await this._getContext());
     await els[0].press('End');
     await els[0].type(value.toString(), { delay: this.options.pressKeyDelay });
     return this._waitForAction();
@@ -1814,12 +1818,13 @@ class Puppeteer extends Helper {
    * I.seeInField('#searchform input','Search');
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @param {string} value value to check.
+   * @param {CodeceptJS.StringOrSecret} value value to check.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    */
   async seeInField(field, value) {
-    return proceedSeeInField.call(this, 'assert', field, value);
+    const _value = (typeof value === 'boolean') ? value : value.toString();
+    return proceedSeeInField.call(this, 'assert', field, _value);
   }
 
   /**
@@ -1832,12 +1837,13 @@ class Puppeteer extends Helper {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @param {string} value value to check.
+   * @param {CodeceptJS.StringOrSecret} value value to check.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    */
   async dontSeeInField(field, value) {
-    return proceedSeeInField.call(this, 'negate', field, value);
+    const _value = (typeof value === 'boolean') ? value : value.toString();
+    return proceedSeeInField.call(this, 'negate', field, _value);
   }
 
   /**
@@ -1900,7 +1906,7 @@ class Puppeteer extends Helper {
     if (await el.getProperty('tagName').then(t => t.jsonValue()) !== 'SELECT') {
       throw new Error('Element is not <select>');
     }
-    highlightActiveElement.call(this, els[0], this.page);
+    highlightActiveElement.call(this, els[0], await this._getContext());
     if (!Array.isArray(option)) option = [option];
 
     for (const key in option) {
@@ -3438,7 +3444,7 @@ async function proceedClick(locator, context = null, options = {}) {
     assertElementExists(els, locator, 'Clickable element');
   }
 
-  highlightActiveElement.call(this, els[0], this.page);
+  highlightActiveElement.call(this, els[0], await this._getContext());
 
   await els[0].click(options);
   const promises = [];
@@ -3498,7 +3504,7 @@ async function proceedSee(assertType, text, context, strict = false) {
   if (strict) {
     return allText.map(elText => equals(description)[assertType](text, elText));
   }
-  return stringIncludes(description)[assertType](text, allText.join(' | '));
+  return stringIncludes(description)[assertType](normalizeSpacesInString(text), normalizeSpacesInString(allText.join(' | ')));
 }
 
 async function findCheckable(locator, context) {
@@ -3793,7 +3799,7 @@ function getNormalizedKey(key) {
 }
 
 function highlightActiveElement(element, context) {
-  if (!this.options.enableHighlight && !store.debugMode) return;
+  if (!this.options.highlightElement && !store.debugMode) return;
 
   highlightElement(element, context);
 }

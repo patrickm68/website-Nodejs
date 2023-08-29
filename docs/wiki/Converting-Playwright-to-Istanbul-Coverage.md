@@ -5,25 +5,57 @@ To convert coverage generated from `playwright` to `istanbul` coverage, you firs
 
 Once installed, convert the coverage to a format which `istanbul` can recognize, by writing a script as shown below.
 
-```js
-const v8toIstanbul = require('v8-to-istanbul');
-// read all the coverage file from output/coverage folder
-const coverage = require('./output/coverage/Visit_Home_1630335005.coverage.json');
-const fs = require('fs/promises');
+```ts
+import glob from 'glob'
+import v8toIstanbul from 'v8-to-istanbul'
+let coverage
 
-(async () => {
+import fs from 'fs'
+
+const coverageFolder = `${process.cwd()}/coverage`
+
+async function isExists(path) {
+    try {
+        await fs.access(path, null)
+        return true
+    } catch {
+        return false
+    }
+}
+
+glob.sync(process.cwd() + '/output/coverage/**/').forEach(item => {
+    const directory = fs.opendirSync(item)
+    let file
+    while ((file = directory.readSync()) !== null) {
+        if (file && file.name.includes('.coverage.json') === true) {
+            const fileName = file.name
+            if (fileName) {
+                coverage = require(`${process.cwd()}/output/coverage/${fileName}`)
+            }
+        }
+    }
+    directory.closeSync()
+})
+
+void (async () => {
     for (const entry of coverage) {
         // Used to get file name
-        const file = entry.url.match(/(?:http(s)*:\/\/.*\/)(?<file>.*)/);
-        const converter = new v8toIstanbul(file.groups.file, 0, {
-            source: entry.source
-        });
+        const file = entry.url.match(/(?:http(s)*:\/\/.*\/)(?<file>.*)/)
 
-        await converter.load();
-        converter.applyCoverage(entry.functions);
+        const converter = v8toIstanbul(file.groups.file, 0, {
+            source: entry.source,
+        })
+
+        await converter.load()
+        converter.applyCoverage(entry.functions)
 
         // Store converted coverage file which can later be used to generate report
-        await fs.writeFile('./coverage/final.json', JSON.stringify(converter.toIstanbul(), null, 2));
+        const exist = await isExists(coverageFolder)
+        if (!exist) {
+            fs.mkdirSync(coverageFolder, {recursive: true})
+        }
+
+        await fs.writeFileSync(`${coverageFolder}/final.json`, JSON.stringify(converter.toIstanbul(), null, 2))
     }
-})();
+})()
 ```

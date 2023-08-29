@@ -56,7 +56,7 @@ Type: [object][4]
 -   `manualStart` **[boolean][20]?** do not start browser before a test, start it manually inside a helper with `this.helpers["Puppeteer"]._startBrowser()`.
 -   `browser` **[string][6]?** can be changed to `firefox` when using [puppeteer-firefox][2].
 -   `chrome` **[object][4]?** pass additional [Puppeteer run options][25].
--   `highlightElement` **[boolean][20]?** highlight the interacting elements
+-   `highlightElement` **[boolean][20]?** highlight the interacting elements. Default: false
 
 
 
@@ -589,7 +589,7 @@ I.dontSeeInField({ css: 'form input.email' }, 'user@user.com'); // field by CSS
 #### Parameters
 
 -   `field` **([string][6] | [object][4])** located by label|name|CSS|XPath|strict locator.
--   `value` **[string][6]** value to check.
+-   `value` **([string][6] | [object][4])** value to check.
     ⚠️ returns a _promise_ which is synchronized internally by recorder
 
 ### dontSeeInSource
@@ -1618,7 +1618,7 @@ I.seeInField('#searchform input','Search');
 #### Parameters
 
 -   `field` **([string][6] | [object][4])** located by label|name|CSS|XPath|strict locator.
--   `value` **[string][6]** value to check.
+-   `value` **([string][6] | [object][4])** value to check.
     ⚠️ returns a _promise_ which is synchronized internally by recorder
 
 ### seeInPopup

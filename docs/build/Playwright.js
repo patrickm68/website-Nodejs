@@ -23,6 +23,7 @@ const {
   isModifierKey,
   clearString,
   requireWithFallback,
+  normalizeSpacesInString,
 } = require('../utils');
 const {
   isColorProperty,
@@ -76,7 +77,7 @@ const pathSeparator = path.sep;
  * @prop {boolean} [keepBrowserState=false] - keep browser state between tests when `restart` is set to 'session'.
  * @prop {boolean} [keepCookies=false] - keep cookies between tests when `restart` is set to 'session'.
  * @prop {number} [waitForAction] - how long to wait after click, doubleClick or PressKey actions in ms. Default: 100.
- * @prop {'load' | 'domcontentloaded' | 'networkidle'} [waitForNavigation] - When to consider navigation succeeded. Possible options: `load`, `domcontentloaded`, `networkidle`. Choose one of those options is possible. See [Playwright API](https://playwright.dev/docs/api/class-page#page-wait-for-navigation).
+ * @prop {'load' | 'domcontentloaded' | 'commit'} [waitForNavigation] - When to consider navigation succeeded. Possible options: `load`, `domcontentloaded`, `commit`. Choose one of those options is possible. See [Playwright API](https://playwright.dev/docs/api/class-page#page-wait-for-url).
  * @prop {number} [pressKeyDelay=10] - Delay between key presses in ms. Used when calling Playwrights page.type(...) in fillField/appendField
  * @prop {number} [getPageTimeout] - config option to set maximum navigation time in milliseconds.
  * @prop {number} [waitForTimeout] - default wait* timeout in ms. Default: 1000.
@@ -93,7 +94,7 @@ const pathSeparator = path.sep;
  * @prop {string[]} [ignoreLog] - An array with console message types that are not logged to debug log. Default value is `['warning', 'log']`. E.g. you can set `[]` to log all messages. See all possible [values](https://playwright.dev/docs/api/class-consolemessage#console-message-type).
  * @prop {boolean} [ignoreHTTPSErrors] - Allows access to untrustworthy pages, e.g. to a page with an expired certificate. Default value is `false`
  * @prop {boolean} [bypassCSP] - bypass Content Security Policy or CSP
- * @prop {boolean} [highlightElement] - highlight the interacting elements
+ * @prop {boolean} [highlightElement] - highlight the interacting elements. Default: false
  */
 const config = {};
 
@@ -207,6 +208,7 @@ const config = {};
  *      url: "http://localhost",
  *      show: true // headless mode not supported for extensions
  *      chromium: {
+ *        // Note: due to this would launch persistent context, so to avoid the error when running tests with run-workers a timestamp would be appended to the defined folder name. For instance: playwright-tmp_1692715649511
  *        userDataDir: '/tmp/playwright-tmp', // necessary to launch the browser in normal mode instead of incognito,
  *        args: [
  *           `--disable-extensions-except=${pathToExtension}`,
@@ -317,6 +319,12 @@ class Playwright extends Helper {
     this.recording = false;
     this.recordedAtLeastOnce = false;
 
+    // for websocket messages
+    this.webSocketMessages = [];
+    this.recordingWebSocketMessages = false;
+    this.recordedWebSocketMessagesAtLeastOnce = false;
+    this.cdpSession = null;
+
     // override defaults with config
     this._setConfig(config);
   }
@@ -343,7 +351,8 @@ class Playwright extends Helper {
       show: false,
       defaultPopupAction: 'accept',
       use: { actionTimeout: 0 },
-      ignoreHTTPSErrors: false, // Adding it here o that context can be set up to ignore the SSL errors
+      ignoreHTTPSErrors: false, // Adding it here o that context can be set up to ignore the SSL errors,
+      highlightElement: false,
     };
 
     config = Object.assign(defaults, config);
@@ -388,7 +397,7 @@ class Playwright extends Helper {
     }
     this.isRemoteBrowser = !!this.playwrightOptions.browserWSEndpoint;
     this.isElectron = this.options.browser === 'electron';
-    this.userDataDir = this.playwrightOptions.userDataDir;
+    this.userDataDir = this.playwrightOptions.userDataDir ? `${this.playwrightOptions.userDataDir}_${Date.now().toString()}` : undefined;
     this.isCDPConnection = this.playwrightOptions.cdpConnection;
     popupStore.defaultAction = this.options.defaultPopupAction;
   }
@@ -461,7 +470,7 @@ class Playwright extends Helper {
     this.isAuthenticated = false;
     if (this.isElectron) {
       this.browserContext = this.browser.context();
-    } else if (this.userDataDir) {
+    } else if (this.playwrightOptions.userDataDir) {
       this.browserContext = this.browser;
     } else {
       const contextOptions = {
@@ -487,8 +496,17 @@ class Playwright extends Helper {
     if (this.isElectron) {
       mainPage = await this.browser.firstWindow();
     } else {
-      const existingPages = await this.browserContext.pages();
-      mainPage = existingPages[0] || await this.browserContext.newPage();
+      try {
+        const existingPages = await this.browserContext.pages();
+        mainPage = existingPages[0] || await this.browserContext.newPage();
+      } catch (e) {
+        if (this.playwrightOptions.userDataDir) {
+          this.browser = await playwright[this.options.browser].launchPersistentContext(this.userDataDir, this.playwrightOptions);
+          this.browserContext = this.browser;
+          const existingPages = await this.browserContext.pages();
+          mainPage = existingPages[0];
+        }
+      }
     }
     await targetCreatedHandler.call(this, mainPage);
 
@@ -519,13 +537,15 @@ class Playwright extends Helper {
 
     // close other sessions
     try {
-      const contexts = await this.browser.contexts();
-      const currentContext = contexts[0];
-      if (currentContext && (this.options.keepCookies || this.options.keepBrowserState)) {
-        this.storageState = await currentContext.storageState();
-      }
+      if ((await this.browser)._type === 'Browser') {
+        const contexts = await this.browser.contexts();
+        const currentContext = contexts[0];
+        if (currentContext && (this.options.keepCookies || this.options.keepBrowserState)) {
+          this.storageState = await currentContext.storageState();
+        }
 
-      await Promise.all(contexts.map(c => c.close()));
+        await Promise.all(contexts.map(c => c.close()));
+      }
     } catch (e) {
       console.log(e);
     }
@@ -555,8 +575,16 @@ class Playwright extends Helper {
           browserContext = browser.context();
           page = await browser.firstWindow();
         } else {
-          browserContext = await this.browser.newContext(Object.assign(this.options, config));
-          page = await browserContext.newPage();
+          try {
+            browserContext = await this.browser.newContext(Object.assign(this.options, config));
+            page = await browserContext.newPage();
+          } catch (e) {
+            if (this.playwrightOptions.userDataDir) {
+              browserContext = await playwright[this.options.browser].launchPersistentContext(`${this.userDataDir}_${this.activeSessionName}`, this.playwrightOptions);
+              this.browser = browserContext;
+              page = await browserContext.pages()[0];
+            }
+          }
         }
 
         if (this.options.trace) await browserContext.tracing.start({ screenshots: true, snapshots: true });
@@ -569,10 +597,12 @@ class Playwright extends Helper {
         // is closed by _after
       },
       loadVars: async (context) => {
-        this.browserContext = context;
-        const existingPages = await context.pages();
-        this.sessionPages[this.activeSessionName] = existingPages[0];
-        return this._setPage(this.sessionPages[this.activeSessionName]);
+        if (context) {
+          this.browserContext = context;
+          const existingPages = await context.pages();
+          this.sessionPages[this.activeSessionName] = existingPages[0];
+          return this._setPage(this.sessionPages[this.activeSessionName]);
+        }
       },
       restoreVars: async (session) => {
         this.withinLocator = null;
@@ -771,7 +801,7 @@ class Playwright extends Helper {
         }
         throw err;
       }
-    } else if (this.userDataDir) {
+    } else if (this.playwrightOptions.userDataDir) {
       this.browser = await playwright[this.options.browser].launchPersistentContext(this.userDataDir, this.playwrightOptions);
     } else {
       this.browser = await playwright[this.options.browser].launch(this.playwrightOptions);
@@ -832,9 +862,9 @@ class Playwright extends Helper {
       return;
     }
 
-    const els = await this._locate(locator);
-    assertElementExists(els, locator);
-    this.context = els[0];
+    const el = await this._locateElement(locator);
+    assertElementExists(el, locator);
+    this.context = el;
     this.contextLocator = locator;
 
     this.withinLocator = new Locator(locator);
@@ -965,11 +995,11 @@ class Playwright extends Helper {
    *
    */
   async moveCursorTo(locator, offsetX = 0, offsetY = 0) {
-    const els = await this._locate(locator);
-    assertElementExists(els, locator);
+    const el = await this._locateElement(locator);
+    assertElementExists(el, locator);
 
     // Use manual mouse.move instead of .hover() so the offset can be added to the coordinates
-    const { x, y } = await clickablePoint(els[0]);
+    const { x, y } = await clickablePoint(el);
     await this.page.mouse.move(x + offsetX, y + offsetY);
     return this._waitForAction();
   }
@@ -991,9 +1021,8 @@ class Playwright extends Helper {
    *
    */
   async focus(locator, options = {}) {
-    const els = await this._locate(locator);
-    assertElementExists(els, locator, 'Element to focus');
-    const el = els[0];
+    const el = await this._locateElement(locator);
+    assertElementExists(el, locator, 'Element to focus');
 
     await el.focus(options);
     return this._waitForAction();
@@ -1021,12 +1050,10 @@ class Playwright extends Helper {
    *
    */
   async blur(locator, options = {}) {
-    const els = await this._locate(locator);
-    assertElementExists(els, locator, 'Element to blur');
-    // TODO: locator change required after #3677 implementation
-    const elXpath = await getXPathForElement(els[0]);
+    const el = await this._locateElement(locator);
+    assertElementExists(el, locator, 'Element to blur');
 
-    await this.page.locator(elXpath).blur(options);
+    await el.blur(options);
     return this._waitForAction();
   }
 
@@ -1133,8 +1160,11 @@ class Playwright extends Helper {
       const body = document.body;
       const html = document.documentElement;
       window.scrollTo(0, Math.max(
-        body.scrollHeight, body.offsetHeight,
-        html.clientHeight, html.scrollHeight, html.offsetHeight,
+        body.scrollHeight,
+        body.offsetHeight,
+        html.clientHeight,
+        html.scrollHeight,
+        html.offsetHeight,
       ));
     });
   }
@@ -1162,10 +1192,10 @@ class Playwright extends Helper {
     }
 
     if (locator) {
-      const els = await this._locate(locator);
-      assertElementExists(els, locator, 'Element');
-      await els[0].scrollIntoViewIfNeeded();
-      const elementCoordinates = await clickablePoint(els[0]);
+      const el = await this._locateElement(locator);
+      assertElementExists(el, locator, 'Element');
+      await el.scrollIntoViewIfNeeded();
+      const elementCoordinates = await clickablePoint(el);
       await this.executeScript((offsetX, offsetY) => window.scrollBy(offsetX, offsetY), { offsetX: elementCoordinates.x + offsetX, offsetY: elementCoordinates.y + offsetY });
     } else {
       await this.executeScript(({ offsetX, offsetY }) => window.scrollTo(offsetX, offsetY), { offsetX, offsetY });
@@ -1272,7 +1302,20 @@ class Playwright extends Helper {
   }
 
   /**
-   * Find a checkbox by providing human readable text:
+   * Get the first element by different locator types, including strict locator
+   * Should be used in custom helpers:
+   *
+   * ```js
+   * const element = await this.helpers['Playwright']._locateElement({name: 'password'});
+   * ```
+   */
+  async _locateElement(locator) {
+    const context = await this.context || await this._getContext();
+    return findElement(context, locator);
+  }
+
+  /**
+   * Find a checkbox by providing human-readable text:
    * NOTE: Assumes the checkable element exists
    *
    * ```js
@@ -1287,7 +1330,7 @@ class Playwright extends Helper {
   }
 
   /**
-   * Find a clickable element by providing human readable text:
+   * Find a clickable element by providing human-readable text:
    *
    * ```js
    * this.helpers['Playwright']._locateClickable('Next page').then // ...
@@ -1299,7 +1342,7 @@ class Playwright extends Helper {
   }
 
   /**
-   * Find field elements by providing human readable text:
+   * Find field elements by providing human-readable text:
    *
    * ```js
    * this.helpers['Playwright']._locateFields('Your email').then // ...
@@ -1962,15 +2005,10 @@ class Playwright extends Helper {
     const els = await findFields.call(this, field);
     assertElementExists(els, field, 'Field');
     const el = els[0];
-    const tag = await el.getProperty('tagName').then(el => el.jsonValue());
-    const editable = await el.getProperty('contenteditable').then(el => el.jsonValue());
-    if (tag === 'INPUT' || tag === 'TEXTAREA') {
-      await this._evaluateHandeInContext(el => el.value = '', el);
-    } else if (editable) {
-      await this._evaluateHandeInContext(el => el.innerHTML = '', el);
-    }
 
-    highlightActiveElement.call(this, el, this.page);
+    await el.clear();
+
+    highlightActiveElement.call(this, el, await this._getContext());
 
     await el.type(value.toString(), { delay: this.options.pressKeyDelay });
 
@@ -1995,21 +2033,16 @@ class Playwright extends Helper {
    * @param {any} [options] [Additional options](https://playwright.dev/docs/api/class-locator#locator-clear) for available options object as 2nd argument.
    */
   async clearField(locator, options = {}) {
-    let result;
-    const isNewClearMethodPresent = false; // not works, disabled for now. Prev: typeof this.page.locator().clear === 'function';
+    const els = await findFields.call(this, locator);
+    assertElementExists(els, locator, 'Field to clear');
 
-    if (isNewClearMethodPresent) {
-      const els = await findFields.call(this, locator);
-      assertElementExists(els, locator, 'Field to clear');
-      // TODO: locator change required after #3677 implementation
-      const elXpath = await getXPathForElement(els[0]);
+    const el = els[0];
 
-      await this.page.locator(elXpath).clear(options);
-      result = await this._waitForAction();
-    } else {
-      result = await this.fillField(locator, '');
-    }
-    return result;
+    highlightActiveElement.call(this, el, this.page);
+
+    await el.clear();
+
+    return this._waitForAction();
   }
 
   /**
@@ -2031,7 +2064,7 @@ class Playwright extends Helper {
   async appendField(field, value) {
     const els = await findFields.call(this, field);
     assertElementExists(els, field, 'Field');
-    highlightActiveElement.call(this, els[0], this.page);
+    highlightActiveElement.call(this, els[0], await this._getContext());
     await els[0].press('End');
     await els[0].type(value.toString(), { delay: this.options.pressKeyDelay });
     return this._waitForAction();
@@ -2048,12 +2081,13 @@ class Playwright extends Helper {
    * I.seeInField('#searchform input','Search');
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @param {string} value value to check.
+   * @param {CodeceptJS.StringOrSecret} value value to check.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    */
   async seeInField(field, value) {
-    return proceedSeeInField.call(this, 'assert', field, value);
+    const _value = (typeof value === 'boolean') ? value : value.toString();
+    return proceedSeeInField.call(this, 'assert', field, _value);
   }
 
   /**
@@ -2066,12 +2100,13 @@ class Playwright extends Helper {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @param {string} value value to check.
+   * @param {CodeceptJS.StringOrSecret} value value to check.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    */
   async dontSeeInField(field, value) {
-    return proceedSeeInField.call(this, 'negate', field, value);
+    const _value = (typeof value === 'boolean') ? value : value.toString();
+    return proceedSeeInField.call(this, 'negate', field, _value);
   }
 
   /**
@@ -2130,29 +2165,12 @@ class Playwright extends Helper {
     const els = await findFields.call(this, select);
     assertElementExists(els, select, 'Selectable field');
     const el = els[0];
-    if (await el.getProperty('tagName').then(t => t.jsonValue()) !== 'SELECT') {
-      throw new Error('Element is not <select>');
-    }
-    highlightActiveElement.call(this, el, this.page);
+
+    highlightActiveElement.call(this, el, await this._getContext());
+
     if (!Array.isArray(option)) option = [option];
 
-    for (const key in option) {
-      const opt = xpathLocator.literal(option[key]);
-      let optEl = await findElements.call(this, el, { xpath: Locator.select.byVisibleText(opt) });
-      if (optEl.length) {
-        this._evaluateHandeInContext(el => el.selected = true, optEl[0]);
-        continue;
-      }
-      optEl = await findElements.call(this, el, { xpath: Locator.select.byValue(opt) });
-      if (optEl.length) {
-        this._evaluateHandeInContext(el => el.selected = true, optEl[0]);
-      }
-    }
-    await this._evaluateHandeInContext((element) => {
-      element.dispatchEvent(new Event('input', { bubbles: true }));
-      element.dispatchEvent(new Event('change', { bubbles: true }));
-    }, el);
-
+    await el.selectOption(option);
     return this._waitForAction();
   }
 
@@ -2598,7 +2616,7 @@ class Playwright extends Helper {
     const els = await this._locate(locator);
     const texts = [];
     for (const el of els) {
-      texts.push(await (await el.getProperty('innerText')).jsonValue());
+      texts.push(await (await el.innerText()));
     }
     this.debug(`Matched ${els.length} elements`);
     return texts;
@@ -2637,7 +2655,7 @@ class Playwright extends Helper {
   async grabValueFromAll(locator) {
     const els = await findFields.call(this, locator);
     this.debug(`Matched ${els.length} elements`);
-    return Promise.all(els.map(el => el.getProperty('value').then(t => t.jsonValue())));
+    return Promise.all(els.map(el => el.inputValue()));
   }
 
   /**
@@ -2675,7 +2693,7 @@ class Playwright extends Helper {
   async grabHTMLFromAll(locator) {
     const els = await this._locate(locator);
     this.debug(`Matched ${els.length} elements`);
-    return Promise.all(els.map(el => el.$eval('xpath=.', element => element.innerHTML, el)));
+    return Promise.all(els.map(el => el.innerHTML()));
   }
 
   /**
@@ -2717,7 +2735,7 @@ class Playwright extends Helper {
   async grabCssPropertyFromAll(locator, cssProperty) {
     const els = await this._locate(locator);
     this.debug(`Matched ${els.length} elements`);
-    const cssValues = await Promise.all(els.map(el => el.$eval('xpath=.', (el, cssProperty) => getComputedStyle(el).getPropertyValue(cssProperty), cssProperty)));
+    const cssValues = await Promise.all(els.map(el => el.evaluate((el, cssProperty) => getComputedStyle(el).getPropertyValue(cssProperty), cssProperty)));
 
     return cssValues;
   }
@@ -2742,21 +2760,20 @@ class Playwright extends Helper {
     const cssPropertiesCamelCase = convertCssPropertiesToCamelCase(cssProperties);
     const elemAmount = res.length;
     const commands = [];
-    res.forEach((el) => {
-      Object.keys(cssPropertiesCamelCase).forEach((prop) => {
-        commands.push(el.$eval('xpath=.', (el) => {
-          const style = window.getComputedStyle ? getComputedStyle(el) : el.currentStyle;
-          return JSON.parse(JSON.stringify(style));
-        }, el)
-          .then((props) => {
-            if (isColorProperty(prop)) {
-              return convertColorToRGBA(props[prop]);
-            }
-            return props[prop];
-          }));
+    let props = [];
+
+    for (const element of res) {
+      const cssProperties = await element.evaluate((el) => getComputedStyle(el));
+
+      Object.keys(cssPropertiesCamelCase).forEach(prop => {
+        if (isColorProperty(prop)) {
+          props.push(convertColorToRGBA(cssProperties[prop]));
+        } else {
+          props.push(cssProperties[prop]);
+        }
       });
-    });
-    let props = await Promise.all(commands);
+    }
+
     const values = Object.keys(cssPropertiesCamelCase).map(key => cssPropertiesCamelCase[key]);
     if (!Array.isArray(props)) props = [props];
     let chunked = chunkArray(props, values.length);
@@ -2791,7 +2808,7 @@ class Playwright extends Helper {
     res.forEach((el) => {
       Object.keys(attributes).forEach((prop) => {
         commands.push(el
-          .$eval('xpath=.', (el, attr) => el[attr] || el.getAttribute(attr), prop));
+          .evaluate((el, attr) => el[attr] || el.getAttribute(attr), prop));
       });
     });
     let attrs = await Promise.all(commands);
@@ -2823,11 +2840,11 @@ class Playwright extends Helper {
    *
    */
   async dragSlider(locator, offsetX = 0) {
-    const src = await this._locate(locator);
+    const src = await this._locateElement(locator);
     assertElementExists(src, locator, 'Slider Element');
 
     // Note: Using clickablePoint private api because the .BoundingBox does not take into account iframe offsets!
-    const sliderSource = await clickablePoint(src[0]);
+    const sliderSource = await clickablePoint(src);
 
     // Drag start point
     await this.page.mouse.move(sliderSource.x, sliderSource.y, { steps: 5 });
@@ -2880,8 +2897,7 @@ class Playwright extends Helper {
     const array = [];
 
     for (let index = 0; index < els.length; index++) {
-      const a = await this._evaluateHandeInContext(([el, attr]) => el[attr] || el.getAttribute(attr), [els[index], attr]);
-      array.push(await a.jsonValue());
+      array.push(await els[index].getAttribute(attr));
     }
 
     return array;
@@ -2904,10 +2920,9 @@ class Playwright extends Helper {
   async saveElementScreenshot(locator, fileName) {
     const outputFile = screenshotOutputFolder(fileName);
 
-    const res = await this._locate(locator);
+    const res = await this._locateElement(locator);
     assertElementExists(res, locator);
-    if (res.length > 1) this.debug(`[Elements] Using first element out of ${res.length}`);
-    const elem = res[0];
+    const elem = res;
     this.debug(`Screenshot of ${(new Locator(locator))} element has been saved to ${outputFile}`);
     return elem.screenshot({ path: outputFile, type: 'png' });
   }
@@ -3472,16 +3487,26 @@ class Playwright extends Helper {
       }
       return;
     }
+    let contentFrame;
+
     if (!locator) {
-      this.context = this.page;
+      this.context = await this.page.frames()[0];
       this.contextLocator = null;
       return;
     }
 
     // iframe by selector
     const els = await this._locate(locator);
-    assertElementExists(els, locator);
-    const contentFrame = await els[0].contentFrame();
+    // assertElementExists(els, locator);
+
+    // get content of the first iframe
+    if ((locator.frame && locator.frame === 'iframe') || locator.toLowerCase() === 'iframe') {
+      contentFrame = await this.page.frames()[1];
+      // get content of the iframe using its name
+    } else if (locator.toLowerCase().includes('name=')) {
+      const frameName = locator.split('=')[1].replace(/"/g, '').replaceAll(/]/g, '');
+      contentFrame = await this.page.frame(frameName);
+    }
 
     if (contentFrame) {
       this.context = contentFrame;
@@ -3527,19 +3552,38 @@ class Playwright extends Helper {
   }
 
   /**
-   * Waits for navigation to finish. By default takes configured `waitForNavigation` option.
+   * Waits for navigation to finish. By default, it takes configured `waitForNavigation` option.
    *
    * See [Playwright's reference](https://playwright.dev/docs/api/class-page?_highlight=waitfornavi#pagewaitfornavigationoptions)
    *
    * @param {*} options
    */
   async waitForNavigation(options = {}) {
+    console.log(`waitForNavigation deprecated:
+    * This method is inherently racy, please use 'waitForURL' instead.`);
     options = {
       timeout: this.options.getPageTimeout,
       waitUntil: this.options.waitForNavigation,
       ...options,
     };
     return this.page.waitForNavigation(options);
+  }
+
+  /**
+   * Waits for page navigates to a new URL or reloads. By default, it takes configured `waitForNavigation` option.
+   *
+   * See [Playwright's reference](https://playwright.dev/docs/api/class-page#page-wait-for-url)
+   *
+   * @param {string|RegExp} url - A glob pattern, regex pattern or predicate receiving URL to match while waiting for the navigation. Note that if the parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to the string.
+   * @param {*} options
+   */
+  async waitForURL(url, options = {}) {
+    options = {
+      timeout: this.options.getPageTimeout,
+      waitUntil: this.options.waitForNavigation,
+      ...options,
+    };
+    return this.page.waitForURL(url, options);
   }
 
   async waitUntilExists(locator, sec) {
@@ -3636,9 +3680,9 @@ class Playwright extends Helper {
    * 
    */
   async grabElementBoundingRect(locator, prop) {
-    const els = await this._locate(locator);
-    assertElementExists(els, locator);
-    const rect = await els[0].boundingBox();
+    const el = await this._locateElement(locator);
+    assertElementExists(el, locator);
+    const rect = await el.boundingBox();
     if (prop) return rect[prop];
     return rect;
   }
@@ -3675,16 +3719,16 @@ class Playwright extends Helper {
   }
 
   /**
-   * Starts recording of network traffic.
+   * Starts recording the network traffics.
    * This also resets recorded network requests.
    *
    * ```js
    * I.startRecordingTraffic();
    * ```
    *
-   * @return {Promise<void>}
+   * @return {void}
    */
-  async startRecordingTraffic() {
+  startRecordingTraffic() {
     this.flushNetworkTraffics();
     this.recording = true;
     this.recordedAtLeastOnce = true;
@@ -3695,31 +3739,62 @@ class Playwright extends Helper {
         method: request.method(),
         requestHeaders: request.headers(),
         requestPostData: request.postData(),
+        response: request.response(),
       };
 
       this.debugSection('REQUEST: ', JSON.stringify(information));
 
-      information.requestPostData = JSON.parse(information.requestPostData);
+      if (typeof information.requestPostData === 'object') {
+        information.requestPostData = JSON.parse(information.requestPostData);
+      }
+
       this.requests.push(information);
-      return this._waitForAction();
     });
   }
 
   /**
   *  Grab the recording network traffics
   *
-  * @return { Array<any> }
+  * ```js
+  * const traffics = await I.grabRecordedNetworkTraffics();
+  * expect(traffics[0].url).to.equal('https://reqres.in/api/comments/1');
+  * expect(traffics[0].response.status).to.equal(200);
+  * expect(traffics[0].response.body).to.contain({ name: 'this was mocked' });
+  * ```
+  *
+  * @return { Promise<Array<any>> }
   *
   */
-  grabRecordedNetworkTraffics() {
+  async grabRecordedNetworkTraffics() {
     if (!this.recording || !this.recordedAtLeastOnce) {
       throw new Error('Failure in test automation. You use "I.grabRecordedNetworkTraffics", but "I.startRecordingTraffic" was never called before.');
     }
+
+    const requests = await this.requests;
+    const promises = requests.map(async (request) => request.response.then(
+      async (response) => {
+        let body;
+        try {
+          // There's no 'body' for some requests (redirect etc...)
+          body = JSON.parse((await response.body()).toString());
+        } catch (e) {
+          // only interested in JSON, not HTML responses.
+        }
+
+        request.response = {
+          status: response.status(),
+          statusText: response.statusText(),
+          body,
+        };
+      },
+    ));
+    await Promise.all(promises);
+
     return this.requests;
   }
 
   /**
-   * Blocks traffic for URL.
+   * Blocks traffic of a given URL or a list of URLs.
    *
    * Examples:
    *
@@ -3730,16 +3805,30 @@ class Playwright extends Helper {
    * I.blockTraffic(/\.css$/);
    * ```
    *
-   * @param url URL to block . URL can contain * for wildcards. Example: https://www.example.com** to block all traffic for that domain. Regexp are also supported.
+   * ```js
+   * I.blockTraffic(['http://example.com/css/style.css', 'http://example.com/css/*.css']);
+   * ```
+   *
+   * @param {string|Array|RegExp} urls URL or a list of URLs to block . URL can contain * for wildcards. Example: https://www.example.com** to block all traffic for that domain. Regexp are also supported.
    */
-  async blockTraffic(url) {
-    this.page.route(url, (route) => {
-      route
-        .abort()
-        // Sometimes it happens that browser has been closed in the meantime. It is ok to ignore error then.
-        .catch((e) => {});
-    });
-    return this._waitForAction();
+  blockTraffic(urls) {
+    if (Array.isArray(urls)) {
+      urls.forEach(url => {
+        this.page.route(url, (route) => {
+          route
+            .abort()
+            // Sometimes it happens that browser has been closed in the meantime. It is ok to ignore error then.
+            .catch((e) => {});
+        });
+      });
+    } else {
+      this.page.route(urls, (route) => {
+        route
+          .abort()
+          // Sometimes it happens that browser has been closed in the meantime. It is ok to ignore error then.
+          .catch((e) => {});
+      });
+    }
   }
 
   /**
@@ -3758,7 +3847,7 @@ class Playwright extends Helper {
    * @param responseString string The string to return in fake response's body.
    * @param contentType Content type of fake response. If not specified default value 'application/json' is used.
    */
-  async mockTraffic(urls, responseString, contentType = 'application/json') {
+  mockTraffic(urls, responseString, contentType = 'application/json') {
     // Required to mock cross-domain requests
     const headers = { 'access-control-allow-origin': '*' };
 
@@ -3780,7 +3869,6 @@ class Playwright extends Helper {
         });
       });
     });
-    return this._waitForAction();
   }
 
   /**
@@ -3852,7 +3940,7 @@ class Playwright extends Helper {
     }
 
     if (!this.recording || !this.recordedAtLeastOnce) {
-      throw new Error('Failure in test automation. You use "I.seeInTraffic", but "I.startRecordingTraffic" was never called before.');
+      throw new Error('Failure in test automation. You use "I.seeTraffic", but "I.startRecordingTraffic" was never called before.');
     }
 
     for (let i = 0; i <= timeout * 2; i++) {
@@ -3860,7 +3948,9 @@ class Playwright extends Helper {
       if (found) {
         return true;
       }
-      await new Promise((done) => setTimeout(done, 1000));
+      await new Promise((done) => {
+        setTimeout(done, 1000);
+      });
     }
 
     // check request post data
@@ -3997,6 +4087,163 @@ class Playwright extends Helper {
     });
     return dumpedTraffic;
   }
+
+  /**
+   * Starts recording of websocket messages.
+   * This also resets recorded websocket messages.
+   *
+   * ```js
+   * await I.startRecordingWebSocketMessages();
+   * ```
+   *
+   */
+  async startRecordingWebSocketMessages() {
+    this.flushWebSocketMessages();
+    this.recordingWebSocketMessages = true;
+    this.recordedWebSocketMessagesAtLeastOnce = true;
+
+    this.cdpSession = await this.getNewCDPSession();
+    await this.cdpSession.send('Network.enable');
+    await this.cdpSession.send('Page.enable');
+
+    this.cdpSession.on(
+      'Network.webSocketFrameReceived',
+      (payload) => {
+        this._logWebsocketMessages(this._getWebSocketLog('RECEIVED', payload));
+      },
+    );
+
+    this.cdpSession.on(
+      'Network.webSocketFrameSent',
+      (payload) => {
+        this._logWebsocketMessages(this._getWebSocketLog('SENT', payload));
+      },
+    );
+
+    this.cdpSession.on(
+      'Network.webSocketFrameError',
+      (payload) => {
+        this._logWebsocketMessages(this._getWebSocketLog('ERROR', payload));
+      },
+    );
+  }
+
+  /**
+   * Stops recording WS messages. Recorded WS messages is not flashed.
+   *
+   * ```js
+   * await I.stopRecordingWebSocketMessages();
+   * ```
+   */
+  async stopRecordingWebSocketMessages() {
+    await this.cdpSession.send('Network.disable');
+    await this.cdpSession.send('Page.disable');
+    this.page.removeAllListeners('Network');
+    this.recordingWebSocketMessages = false;
+  }
+
+  /**
+   *  Grab the recording WS messages
+   *
+   * @return { Array<any> }
+   *
+   */
+  grabWebSocketMessages() {
+    if (!this.recordingWebSocketMessages) {
+      if (!this.recordedWebSocketMessagesAtLeastOnce) {
+        throw new Error('Failure in test automation. You use "I.grabWebSocketMessages", but "I.startRecordingWebSocketMessages" was never called before.');
+      }
+    }
+    return this.webSocketMessages;
+  }
+
+  /**
+   * Resets all recorded WS messages.
+   */
+  flushWebSocketMessages() {
+    this.webSocketMessages = [];
+  }
+
+  /**
+   * Return a performance metric from the chrome cdp session.
+   * Note: Chrome-only
+   *
+   * Examples:
+   *
+   * ```js
+   * const metrics = await I.grabMetrics();
+   *
+   * // returned metrics
+   *
+   * [
+   *   { name: 'Timestamp', value: 1584904.203473 },
+   *   { name: 'AudioHandlers', value: 0 },
+   *   { name: 'AudioWorkletProcessors', value: 0 },
+   *   { name: 'Documents', value: 22 },
+   *   { name: 'Frames', value: 10 },
+   *   { name: 'JSEventListeners', value: 366 },
+   *   { name: 'LayoutObjects', value: 1240 },
+   *   { name: 'MediaKeySessions', value: 0 },
+   *   { name: 'MediaKeys', value: 0 },
+   *   { name: 'Nodes', value: 4505 },
+   *   { name: 'Resources', value: 141 },
+   *   { name: 'ContextLifecycleStateObservers', value: 34 },
+   *   { name: 'V8PerContextDatas', value: 4 },
+   *   { name: 'WorkerGlobalScopes', value: 0 },
+   *   { name: 'UACSSResources', value: 0 },
+   *   { name: 'RTCPeerConnections', value: 0 },
+   *   { name: 'ResourceFetchers', value: 22 },
+   *   { name: 'AdSubframes', value: 0 },
+   *   { name: 'DetachedScriptStates', value: 2 },
+   *   { name: 'ArrayBufferContents', value: 1 },
+   *   { name: 'LayoutCount', value: 0 },
+   *   { name: 'RecalcStyleCount', value: 0 },
+   *   { name: 'LayoutDuration', value: 0 },
+   *   { name: 'RecalcStyleDuration', value: 0 },
+   *   { name: 'DevToolsCommandDuration', value: 0.000013 },
+   *   { name: 'ScriptDuration', value: 0 },
+   *   { name: 'V8CompileDuration', value: 0 },
+   *   { name: 'TaskDuration', value: 0.000014 },
+   *   { name: 'TaskOtherDuration', value: 0.000001 },
+   *   { name: 'ThreadTime', value: 0.000046 },
+   *   { name: 'ProcessTime', value: 0.616852 },
+   *   { name: 'JSHeapUsedSize', value: 19004908 },
+   *   { name: 'JSHeapTotalSize', value: 26820608 },
+   *   { name: 'FirstMeaningfulPaint', value: 0 },
+   *   { name: 'DomContentLoaded', value: 1584903.690491 },
+   *   { name: 'NavigationStart', value: 1584902.841845 }
+   * ]
+   *
+   * ```
+   *
+   * @return {Promise<Array<Object>>}
+   */
+  async grabMetrics() {
+    const client = await this.page.context().newCDPSession(this.page);
+    await client.send('Performance.enable');
+    const perfMetricObject = await client.send('Performance.getMetrics');
+    return perfMetricObject?.metrics;
+  }
+
+  _getWebSocketMessage(payload) {
+    if (payload.errorMessage) {
+      return payload.errorMessage;
+    }
+
+    return payload.response.payloadData;
+  }
+
+  _getWebSocketLog(prefix, payload) {
+    return `${prefix} ID: ${payload.requestId} TIMESTAMP: ${payload.timestamp} (${new Date().toISOString()})\n\n${this._getWebSocketMessage(payload)}\n\n`;
+  }
+
+  async getNewCDPSession() {
+    return this.page.context().newCDPSession(this.page);
+  }
+
+  _logWebsocketMessages(message) {
+    this.webSocketMessages += message;
+  }
 }
 
 module.exports = Playwright;
@@ -4009,42 +4256,19 @@ function buildLocatorString(locator) {
   }
   return locator.simplify();
 }
-// TODO: locator change required after #3677 implementation. Temporary solution before migration. Should be deleted after #3677 implementation
-async function getXPathForElement(elementHandle) {
-  function calculateIndex(node) {
-    let index = 1;
-    let sibling = node.previousElementSibling;
-    while (sibling) {
-      if (sibling.tagName === node.tagName) {
-        index++;
-      }
-      sibling = sibling.previousElementSibling;
-    }
-    return index;
-  }
-
-  function generateXPath(node) {
-    const segments = [];
-    while (node && node.nodeType === Node.ELEMENT_NODE) {
-      if (node.hasAttribute('id')) {
-        segments.unshift(`*[@id="${node.getAttribute('id')}"]`);
-        break;
-      } else {
-        const index = calculateIndex(node);
-        segments.unshift(`${node.localName}[${index}]`);
-        node = node.parentNode;
-      }
-    }
-    return `//${segments.join('/')}`;
-  }
-
-  return elementHandle.evaluate(generateXPath);
-}
 
 async function findElements(matcher, locator) {
   if (locator.react) return findReact(matcher, locator);
   locator = new Locator(locator, 'css');
-  return matcher.$$(buildLocatorString(locator));
+
+  return matcher.locator(buildLocatorString(locator)).all();
+}
+
+async function findElement(matcher, locator) {
+  if (locator.react) return findReact(matcher, locator);
+  locator = new Locator(locator, 'css');
+
+  return matcher.locator(buildLocatorString(locator));
 }
 
 async function getVisibleElements(elements) {
@@ -4074,8 +4298,7 @@ async function proceedClick(locator, context = null, options = {}) {
     assertElementExists(els, locator, 'Clickable element');
   }
 
-  const element = els[0];
-  highlightActiveElement.call(this, els[0], this.page);
+  highlightActiveElement.call(this, els[0], await this._getContext());
 
   /*
     using the force true options itself but instead dispatching a click
@@ -4088,7 +4311,7 @@ async function proceedClick(locator, context = null, options = {}) {
   }
   const promises = [];
   if (options.waitForNavigation) {
-    promises.push(this.waitForNavigation());
+    promises.push(this.waitForURL(/.*/, { waitUntil: options.waitForNavigation }));
   }
   promises.push(this._waitForAction());
 
@@ -4123,28 +4346,28 @@ async function findClickable(matcher, locator) {
 async function proceedSee(assertType, text, context, strict = false) {
   let description;
   let allText;
+
   if (!context) {
     let el = await this.context;
-
     if (el && !el.getProperty) {
       // Fallback to body
-      el = await this.context.$('body');
+      el = await this.page.$('body');
     }
 
-    allText = [await el.getProperty('innerText').then(p => p.jsonValue())];
+    allText = [await el.innerText()];
     description = 'web application';
   } else {
     const locator = new Locator(context, 'css');
     description = `element ${locator.toString()}`;
     const els = await this._locate(locator);
     assertElementExists(els, locator.toString());
-    allText = await Promise.all(els.map(el => el.getProperty('innerText').then(p => p.jsonValue())));
+    allText = await Promise.all(els.map(el => el.innerText()));
   }
 
   if (strict) {
     return allText.map(elText => equals(description)[assertType](text, elText));
   }
-  return stringIncludes(description)[assertType](text, allText.join(' | '));
+  return stringIncludes(description)[assertType](normalizeSpacesInString(text), normalizeSpacesInString(allText.join(' | ')));
 }
 
 async function findCheckable(locator, context) {
@@ -4206,15 +4429,15 @@ async function proceedSeeInField(assertType, field, value) {
   const els = await findFields.call(this, field);
   assertElementExists(els, field, 'Field');
   const el = els[0];
-  const tag = await el.getProperty('tagName').then(el => el.jsonValue());
-  const fieldType = await el.getProperty('type').then(el => el.jsonValue());
+  const tag = await el.evaluate(e => e.tagName);
+  const fieldType = await el.getAttribute('type');
 
   const proceedMultiple = async (elements) => {
     const fields = Array.isArray(elements) ? elements : [elements];
 
     const elementValues = [];
     for (const element of fields) {
-      elementValues.push(await element.getProperty('value').then(el => el.jsonValue()));
+      elementValues.push(await element.inputValue());
     }
 
     if (typeof value === 'boolean') {
@@ -4228,8 +4451,8 @@ async function proceedSeeInField(assertType, field, value) {
   };
 
   if (tag === 'SELECT') {
-    if (await el.getProperty('multiple')) {
-      const selectedOptions = await el.$$('option:checked');
+    if (await el.getAttribute('multiple')) {
+      const selectedOptions = await el.all('option:checked');
       if (!selectedOptions.length) return null;
 
       const options = await filterFieldsByValue(selectedOptions, value, true);
@@ -4253,14 +4476,23 @@ async function proceedSeeInField(assertType, field, value) {
     return proceedMultiple(els[0]);
   }
 
-  const fieldVal = await el.inputValue();
+  let fieldVal;
+
+  try {
+    fieldVal = await el.inputValue();
+  } catch (e) {
+    if (e.message.includes('Error: Node is not an <input>, <textarea> or <select> element')) {
+      fieldVal = await el.innerText();
+    }
+  }
+
   return stringIncludes(`fields by ${field}`)[assertType](value, fieldVal);
 }
 
 async function filterFieldsByValue(elements, value, onlySelected) {
   const matches = [];
   for (const element of elements) {
-    const val = await element.getProperty('value').then(el => el.jsonValue());
+    const val = await element.getAttribute('value');
     let isSelected = true;
     if (onlySelected) {
       isSelected = await elementSelected(element);
@@ -4284,12 +4516,12 @@ async function filterFieldsBySelectionState(elements, state) {
 }
 
 async function elementSelected(element) {
-  const type = await element.getProperty('type').then(el => !!el && el.jsonValue());
+  const type = await element.getAttribute('type');
 
   if (type === 'checkbox' || type === 'radio') {
     return element.isChecked();
   }
-  return element.getProperty('selected').then(el => el.jsonValue());
+  return element.getAttribute('selected');
 }
 
 function isFrameLocator(locator) {
@@ -4490,7 +4722,7 @@ async function saveTraceForContext(context, name) {
 }
 
 function highlightActiveElement(element, context) {
-  if (!this.options.enableHighlight && !store.debugMode) return;
+  if (!this.options.highlightElement && !store.debugMode) return;
 
   highlightElement(element, context);
 }

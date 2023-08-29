@@ -20,7 +20,7 @@ const { urlEquals } = require('../assert/equal');
 const { empty } = require('../assert/empty');
 const { truth } = require('../assert/truth');
 const {
-  xpathLocator,
+  xpathLocator, normalizeSpacesInString,
 } = require('../utils');
 const Locator = require('../locator');
 
@@ -933,9 +933,9 @@ class TestCafe extends Helper {
   async see(text, context = null) {
     let els;
     if (context) {
-      els = (await findElements.call(this, this.context, context)).withText(text);
+      els = (await findElements.call(this, this.context, context)).withText(normalizeSpacesInString(text));
     } else {
-      els = (await findElements.call(this, this.context, '*')).withText(text);
+      els = (await findElements.call(this, this.context, '*')).withText(normalizeSpacesInString(text));
     }
 
     return this.t
@@ -1091,18 +1091,19 @@ class TestCafe extends Helper {
    * I.seeInField('#searchform input','Search');
    * ```
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @param {string} value value to check.
+   * @param {CodeceptJS.StringOrSecret} value value to check.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    */
   async seeInField(field, value) {
+    const _value = (typeof value === 'boolean') ? value : value.toString();
     // const expectedValue = findElements.call(this, this.context, field).value;
     const els = await findFields.call(this, field);
     assertElementExists(els, field, 'Field');
     const el = await els.nth(0);
 
     return this.t
-      .expect(await el.value).eql(value)
+      .expect(await el.value).eql(_value)
       .catch(mapError);
   }
 
@@ -1116,18 +1117,19 @@ class TestCafe extends Helper {
    * ```
    * 
    * @param {CodeceptJS.LocatorOrString} field located by label|name|CSS|XPath|strict locator.
-   * @param {string} value value to check.
+   * @param {CodeceptJS.StringOrSecret} value value to check.
    * ⚠️ returns a _promise_ which is synchronized internally by recorder
    * 
    */
   async dontSeeInField(field, value) {
+    const _value = (typeof value === 'boolean') ? value : value.toString();
     // const expectedValue = findElements.call(this, this.context, field).value;
     const els = await findFields.call(this, field);
     assertElementExists(els, field, 'Field');
     const el = await els.nth(0);
 
     return this.t
-      .expect(el.value).notEql(value)
+      .expect(el.value).notEql(_value)
       .catch(mapError);
   }
 
@@ -1502,8 +1504,11 @@ class TestCafe extends Helper {
       const body = document.body;
       const html = document.documentElement;
       window.scrollTo(0, Math.max(
-        body.scrollHeight, body.offsetHeight,
-        html.clientHeight, html.scrollHeight, html.offsetHeight,
+        body.scrollHeight,
+        body.offsetHeight,
+        html.clientHeight,
+        html.scrollHeight,
+        html.offsetHeight,
       ));
     }).with({ boundTestRun: this.t })().catch(mapError);
   }
@@ -1926,7 +1931,9 @@ class TestCafe extends Helper {
 }
 
 async function waitForFunction(browserFn, waitTimeout) {
-  const pause = () => new Promise((done => setTimeout(done, 50)));
+  const pause = () => new Promise((done => {
+    setTimeout(done, 50);
+  }));
 
   const start = Date.now();
   // eslint-disable-next-line no-constant-condition

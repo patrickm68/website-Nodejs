@@ -12,7 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "autoprefixer": "^10.4.14",
-    "npm": "^9.7.1",
+    "npm": "^9.8.1",
     "postcss": "^8.4.27",
     "sass": "^1.64.1",
     "sass-loader": "^10.3.1",
